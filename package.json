@@ -1,0 +1,22 @@
+{
+  "name": "unimove-monorepo",
+  "private": true,
+  "description": "Chạy backend + Flutter apps",
+  "scripts": {
+    "dev": "npm run dev:customer",
+    "dev:customer": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/dev-customer.ps1",
+    "dev:provider": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/dev-provider.ps1",
+    "dev:customer:all": "concurrently --handle-input --default-input-target CUSTOMER -n BE,CUSTOMER -c blue,green \"npm run dev --prefix backend\" \"npm run start --prefix mobile/customer_app\"",
+    "dev:be": "npm run dev --prefix backend",
+    "dev:web": "npm run dev --prefix web/unimove_web",
+    "dev:web:customer": "npm run dev --prefix web/customer_app",
+    "dev:web:provider": "npm run dev --prefix web/provider_app",
+    "dev:be+web": "node -e \"console.log('\\n  Backend API → http://localhost:3000/api/health\\n  Web app     → http://localhost:3001  (mở trên trình duyệt)\\n')\" && concurrently -n BACKEND,WEB -c blue,cyan \"npm run dev --prefix backend\" \"npm run dev --prefix web/unimove_web\"",
+    "dev:full": "concurrently -n BE,WEB -c blue,cyan \"npm run dev --prefix backend\" \"npm run dev --prefix web/unimove_web\"",
+    "dev:customer:app": "npm run start --prefix mobile/customer_app --",
+    "dev:provider:app": "npm run start --prefix mobile/provider_app --"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

@@ -1,0 +1,34 @@
+#,Actor,Description
+1,Administrator,"The highest-privilege user who manages the UniMove platform through the Admin Web Dashboard.
+• View dashboard KPIs (orders, revenue, GMV, active customers, active providers).
+• Manage users: view user profiles, suspend or activate accounts.
+• Verify providers: review submitted documents, approve or reject provider registration, update verification status and notes.
+• Manage orders: view order details, monitor order status across the platform.
+• Handle disputes and complaints; process refunds according to platform refund rules.
+• Moderate customer reviews and ratings.
+• Manage platform settings, system notifications, and view activity logs / analytics reports."
+2,Customer (Student),"A registered user with the role of customer (sinh viên), using the Customer Mobile App. This actor can request moving services and participate in the Pass đồ marketplace as a buyer and/or seller.
+• Register, log in (email/password or Google), log out, forgot/reset password, and change password.
+• View and update personal profile (full name, phone, student ID, university, avatar).
+• Book moving services: select locations, recent places, combo packages, browse providers, insurance, pay deposit.
+• Book labor-only or labor add-on services (khuân vác).
+• View order history, track orders, cancel orders, chat with providers.
+• Pass đồ as Seller: create listings, pay listing fee, manage listings, chat, confirm/cancel deals.
+• Pass đồ as Buyer: browse listings, express interest, chat, wait for deal confirmation, book transport, confirm received, rate seller.
+• View wallet, payment history, payment methods, promotions, notifications."
+3,Provider,"A registered user with the role of provider (nhà xe), using the Provider Mobile App.
+• Register, submit verification documents, update business profile.
+• Manage service packages and pricing; set availability and schedule.
+• Receive, accept or decline order requests.
+• Update order status; share location for tracking.
+• View earnings, payouts, configure bank payout methods.
+• Chat with customers; view notifications and reviews.
+• Manage driver registration and provider profile."
+4,Payment Service (PayOS),"An external payment gateway integrated with UniMove to handle financial transactions securely.
+• Processes deposit payments for moving and labor orders.
+• Processes listing fees for Pass đồ when required.
+• Sends payment confirmation webhooks when transactions succeed or fail.
+• Supports refund processing (cancellation, dispute resolution)."
+5,Google Authentication Service,"An external service for sign up / log in with Google accounts.
+• Authenticates credentials when user chooses Continue with Google.
+• Returns identity info so UniMove can create or link user profile."

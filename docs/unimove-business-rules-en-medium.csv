@@ -1,0 +1,36 @@
+ID,Rule Definition
+BR-01,Each user account must have exactly one role: customer provider or administrator.
+BR-02,Customer registration requires a valid email password of at least 8 characters full name and phone number.
+BR-03,Provider registration requires a valid email password of at least 8 characters full name and business name.
+BR-04,Only authenticated users with a valid JWT access token may access protected API endpoints.
+BR-05,Suspended or inactive user accounts are blocked from accessing protected platform features.
+BR-06,Only verified and available providers appear in the customer provider browse list.
+BR-07,A transport order must include pickup address delivery address scheduled time and item or pricing details before creation.
+BR-08,Customers may cancel an order only while its status is pending matched or accepted and must provide a cancellation reason.
+BR-09,Providers may cancel an order only while its status is accepted picking up or in progress.
+BR-10,Completed or already cancelled orders cannot be cancelled again.
+BR-11,Order deposit must be paid through PayOS before the order proceeds to provider acceptance when deposit payment is required.
+BR-12,If a customer cancels before a provider accepts the order the platform applies a 100% deposit refund rate by default.
+BR-13,If a customer cancels within 30 minutes after provider acceptance the platform applies a 90% deposit refund rate by default.
+BR-14,If a customer cancels more than 30 minutes after provider acceptance the platform applies a 70% deposit refund rate by default.
+BR-15,Refund requests may only be submitted after the related order has been cancelled and require administrator approval before wallet credit is issued.
+BR-16,Only the assigned provider may accept start complete or update the status of an order assigned to them.
+BR-17,Provider verification documents must be reviewed and approved by an administrator before the provider is marked as verified.
+BR-18,Only the listing owner may create update or delete their own Pass đồ marketplace listing.
+BR-19,A paid Pass đồ listing fee is required before a priced listing becomes publicly visible when the computed listing fee is greater than zero.
+BR-20,Pass đồ listing fee is calculated as 2% of listing price with a minimum of 5000 VND and a maximum of 30000 VND for priced listings.
+BR-21,Only a buyer who has expressed interest in a listing may be selected by the seller to confirm a Pass đồ deal.
+BR-22,A seller may confirm a Pass đồ deal with only one buyer at a time and the listing status becomes reserved after deal confirmation.
+BR-23,A seller may cancel a confirmed Pass đồ deal only if the buyer has not yet marked transport as booked.
+BR-24,Only the confirmed buyer may book UniMove transport for a Pass đồ item after deal confirmation.
+BR-25,Pass đồ pickup location is fixed to the listing area and the buyer selects only the delivery address for transport booking.
+BR-26,A seller may bump their own listing to the top of browse results at most once every 24 hours.
+BR-27,Customers may rate a provider only after the related transport order is completed.
+BR-28,Customers may rate a Pass đồ seller only after confirming item receipt for the completed marketplace transaction.
+BR-29,Disputes and refund approvals must be reviewed and resolved by an administrator based on order evidence and platform policy.
+BR-30,Only administrators may force-cancel orders approve refunds verify providers and manage platform-wide settings.
+BR-31,All payment webhooks from PayOS must pass signature verification before payment or order status is updated.
+BR-32,Network transmissions involving authentication credentials payment data and personally identifiable information must use HTTPS and secure token-based access.
+BR-33,Provider withdrawal requests must be approved by an administrator before payout is processed.
+BR-34,Promotion codes must be valid active and within usage limits before being applied to an order payment.
+BR-35,System announcements and broadcast notifications may only be created and published by administrators.

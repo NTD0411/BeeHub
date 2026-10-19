@@ -1,0 +1,42 @@
+#,Entity,Description
+1,Profiles,Stores registered user information for customers providers and administrators including role-specific profile fields and account status.
+2,UserCredentials,Stores email and password hash credentials for Node.js JWT authentication.
+3,PasswordResetTokens,Stores OTP and reset tokens for forgot-password and password reset flows.
+4,ProviderDocuments,Stores uploaded verification documents such as ID card driver license and vehicle registration for provider approval.
+5,Orders,Contains transport booking records including pickup and delivery addresses pricing status and linked customer and provider.
+6,OrderStatusHistory,Tracks status change history and timestamps for each transport order.
+7,OrderQuotes,Stores provider price quotes submitted for quotation-based move bookings.
+8,OrderProviderResponses,Records provider accept decline or skip responses to incoming order requests.
+9,OrderTrackingEvents,Logs tracking milestones and status events during active order execution.
+10,Payments,Records payment transactions for order deposits listing fees and other platform charges via PayOS.
+11,PaymentTransactions,Stores detailed payment transaction logs and gateway response metadata.
+12,Refunds,Tracks refund requests approvals and refund amounts linked to orders and payments.
+13,PaymentMethods,Stores customer saved payment methods such as card Momo and PayOS-linked options.
+14,Wallets,Stores customer wallet balance used for listing fees and in-app payments.
+15,WalletTransactions,Records wallet credit and debit transactions including marketplace listing fee deductions.
+16,ProviderEarnings,Tracks provider revenue earned from completed orders and platform commission.
+17,ProviderWithdrawals,Records provider withdrawal requests and admin approval status for payout.
+18,Promotions,Defines promotion codes discount rules validity period and usage limits.
+19,PromotionUsage,Tracks which customers have applied specific promotion codes to orders.
+20,Conversations,Represents chat threads between customer and provider for an active transport order.
+21,Messages,Stores individual chat messages sent within order conversations.
+22,Notifications,Stores in-app notifications for order updates marketplace events and system announcements.
+23,PushTokens,Stores device push notification tokens for FCM delivery to mobile clients.
+24,NotificationPreferences,Stores user preferences for receiving different notification types.
+25,Announcements,Stores admin-created system announcements and broadcast messages.
+26,Reviews,Stores customer ratings and written reviews for providers after completed orders.
+27,ProviderReviewsSummary,Maintains aggregated rating statistics and review counts per provider.
+28,Disputes,Records order disputes raised by customers including evidence and resolution status.
+29,DisputeMessages,Stores messages and communication history within a dispute case.
+30,MarketplaceListings,Stores Pass đồ peer-to-peer used-item listings posted by student sellers.
+31,MarketplaceInterests,Records buyers who expressed interest in a marketplace listing.
+32,MarketplaceConversations,Represents chat threads between buyer and seller for a specific listing.
+33,MarketplaceMessages,Stores negotiation messages exchanged in Pass đồ marketplace conversations.
+34,MarketplaceRatings,Stores buyer ratings for sellers after completed marketplace transactions.
+35,ServicePackages,Defines transport service packages offered by providers or platform combo packages.
+36,ProviderAvailability,Stores provider weekly availability schedule slots for accepting orders.
+37,ProviderLocations,Stores real-time GPS location of providers during active order tracking.
+38,LocationHistory,Archives historical location points for provider movement during transport.
+39,PlatformSettings,Stores system-wide configuration parameters such as fees hints and operational rules.
+40,SharedMoveGroups,Groups compatible move orders for potential shared-move cost optimization.
+41,Referrals,Tracks referral relationships and rewards between users who invite new customers.

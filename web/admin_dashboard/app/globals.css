@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+/* Dark mode via class strategy */
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Font */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* UniMove Brand Colors — Royal Blue */
+  --color-primary: #1A56DB;
+  --color-primary-light: #2563EB;
+  --color-primary-dark: #1D4ED8;
+  --color-primary-tint: #EAF1FF;
+  --color-primary-tint-2: #DBEAFE;
+
+  /* Background */
+  --color-background: #F5F8FF;
+  --color-surface: #FFFFFF;
+  --color-card: #FFFFFF;
+  --color-border: #E2E8F0;
+
+  /* Text */
+  --color-text: #0F172A;
+  --color-muted: #64748B;
+
+  /* Status Colors */
+  --color-success: #16A34A;
+  --color-success-bg: #DCFCE7;
+  --color-warning: #D97706;
+  --color-warning-bg: #FEF3C7;
+  --color-danger: #DC2626;
+  --color-danger-bg: #FEE2E2;
+  --color-info: #2563EB;
+  --color-info-bg: #DBEAFE;
+
+  /* Dark mode overrides */
+  --color-background-dark: #0B1220;
+  --color-surface-dark: #111A2E;
+  --color-card-dark: #1A2540;
+  --color-border-dark: #243049;
+  --color-text-dark: #E2E8F0;
+  --color-muted-dark: #94A3B8;
+  --color-primary-dark-mode: #3B82F6;
+}
+
+:root {
+  --bg: #F5F8FF;
+  --surface: #FFFFFF;
+  --card: #FFFFFF;
+  --border: #E2E8F0;
+  --text: #0F172A;
+  --muted: #64748B;
+  --primary: #1A56DB;
+  --primary-light: #2563EB;
+  --primary-tint: #EAF1FF;
+}
+
+.dark {
+  --bg: #0B1220;
+  --surface: #111A2E;
+  --card: #1A2540;
+  --border: #243049;
+  --text: #E2E8F0;
+  --muted: #94A3B8;
+  --primary: #3B82F6;
+  --primary-light: #60A5FA;
+  --primary-tint: #1E3A5F;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans), Inter, "Plus Jakarta Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}

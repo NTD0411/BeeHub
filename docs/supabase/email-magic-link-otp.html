@@ -1,0 +1,180 @@
+<!--
+  UniMove — Magic link or OTP (giao diện giống email-reset-password-otp.html)
+
+  DÁN VÀO: Authentication → Emails → Magic link or OTP → Save
+  Subject: Mã xác nhận UniMove — {{ .Token }}
+
+  Biến Supabase (chỉ dùng các biến này):
+  {{ .Token }} {{ .Email }} {{ .SiteURL }} {{ .ConfirmationURL }}
+
+  CHỈ dùng: {{ .Token }} {{ .Email }} {{ .SiteURL }} {{ .ConfirmationURL }}
+  KHÔNG dùng {{ index .Token 0 }} — lỗi: "Token is not a method but has arguments"
+
+  API forgot-password dùng template Reset password — file email-reset-password-otp.html
+-->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>UniMove – Mã xác nhận</title>
+</head>
+<body style="margin:0;padding:0;background:#0B1120;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+
+  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">
+    Mã xác nhận UniMove: {{ .Token }}
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0B1120;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="520" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;width:100%;border-radius:16px;overflow:hidden;border:1px solid #2D3A4F;box-shadow:0 24px 48px rgba(0,0,0,0.45);">
+
+          <tr>
+            <td style="background:linear-gradient(135deg,#1D4ED8 0%,#3B82F6 55%,#38BDF8 100%);padding:28px 32px 24px;text-align:center;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 20px;">
+                <tr>
+                  <td style="width:36px;height:36px;background:rgba(255,255,255,0.22);border-radius:10px;text-align:center;vertical-align:middle;">
+                    <span style="font-size:18px;line-height:36px;color:#FFFFFF;">⬡</span>
+                  </td>
+                  <td style="padding-left:10px;font-size:20px;font-weight:700;color:#FFFFFF;letter-spacing:0.2px;vertical-align:middle;">
+                    UniMove
+                  </td>
+                </tr>
+              </table>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 12px;">
+                <tr>
+                  <td style="width:56px;height:56px;border:2px solid rgba(255,255,255,0.55);border-radius:50%;text-align:center;vertical-align:middle;background:rgba(255,255,255,0.12);font-size:26px;line-height:52px;">
+                    🔐
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0;color:rgba(255,255,255,0.95);font-size:11px;letter-spacing:1.4px;text-transform:uppercase;font-weight:600;">
+                Xác minh bảo mật
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background:#1A2332;padding:32px 32px 28px;">
+
+              <p style="margin:0 0 8px;font-size:20px;font-weight:600;color:#F8FAFC;">
+                Xin chào 👋
+              </p>
+              <p style="margin:0 0 28px;font-size:14px;color:#94A3B8;line-height:1.75;">
+                Đây là mã xác nhận một lần (OTP) cho tài khoản
+                <strong style="color:#E2E8F0;">UniMove</strong>
+                (<span style="color:#CBD5E1;">{{ .Email }}</span>).
+                Nhập mã trong app hoặc bấm liên kết bên dưới để tiếp tục.
+              </p>
+
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;border-radius:14px;margin-bottom:16px;">
+                <tr>
+                  <td style="padding:28px 20px 24px;text-align:center;">
+                    <p style="margin:0 0 20px;font-size:11px;font-weight:700;color:#2563EB;letter-spacing:1.6px;text-transform:uppercase;">
+                      Mã xác nhận của bạn
+                    </p>
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 18px;">
+                      <tr>
+                        <td style="padding:14px 28px;background:#F8FAFC;border:1.5px solid #93C5FD;border-radius:12px;text-align:center;font-size:34px;font-weight:700;color:#1D4ED8;letter-spacing:0.42em;font-family:'Courier New',Courier,monospace;">
+                          {{ .Token }}
+                        </td>
+                      </tr>
+                    </table>
+                    <p style="margin:0;font-size:13px;color:#3B82F6;">
+                      <span style="font-size:14px;">⏱</span>
+                      Mã có hiệu lực trong <strong>10 phút</strong>
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Magic link — chỉ có ở template này -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+                <tr>
+                  <td align="center">
+                    <a href="{{ .ConfirmationURL }}"
+                       style="display:inline-block;background:#2563EB;color:#FFFFFF;text-decoration:none;font-size:14px;font-weight:600;padding:12px 28px;border-radius:99px;">
+                      Xác nhận bằng liên kết
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-top:10px;">
+                    <p style="margin:0;font-size:11px;color:#64748B;line-height:1.5;">
+                      Hoặc copy liên kết:<br />
+                      <a href="{{ .ConfirmationURL }}" style="color:#94A3B8;word-break:break-all;">{{ .ConfirmationURL }}</a>
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFF7ED;border:1px solid #FDBA74;border-radius:10px;margin-bottom:28px;">
+                <tr>
+                  <td style="padding:14px 16px;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="vertical-align:top;padding-right:10px;width:22px;">
+                          <span style="display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;font-size:12px;font-weight:700;color:#FFFFFF;background:#F97316;border-radius:50%;">!</span>
+                        </td>
+                        <td style="font-size:13px;color:#9A3412;line-height:1.7;">
+                          Nếu bạn không yêu cầu mã xác nhận, hãy bỏ qua email này. Tài khoản của bạn vẫn an toàn.
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+                <tr>
+                  <td style="border-top:1px solid #2D3A4F;font-size:0;line-height:0;height:1px;">&nbsp;</td>
+                </tr>
+              </table>
+
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="font-size:12px;color:#64748B;line-height:1.5;padding-bottom:8px;">
+                    📧 {{ .Email }}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="font-size:12px;color:#64748B;line-height:1.5;">
+                    🔗 <a href="{{ .SiteURL }}" style="color:#64748B;text-decoration:none;">{{ .SiteURL }}</a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background:#151D2E;padding:22px 32px 26px;text-align:center;border-top:1px solid #2D3A4F;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 12px;">
+                <tr>
+                  <td style="font-size:14px;color:#64748B;vertical-align:middle;">⬡</td>
+                  <td style="padding-left:6px;font-size:13px;font-weight:600;color:#94A3B8;vertical-align:middle;">UniMove</td>
+                </tr>
+              </table>
+              <p style="margin:0 0 12px;font-size:12px;color:#64748B;line-height:1.7;">
+                Email này được gửi tự động, vui lòng không phản hồi trực tiếp.<br />
+                © 2026 UniMove. All rights reserved.
+              </p>
+              <p style="margin:0;font-size:12px;color:#64748B;line-height:1.8;">
+                <a href="{{ .SiteURL }}" style="color:#94A3B8;text-decoration:none;">Chính sách bảo mật</a>
+                <span style="color:#475569;">&nbsp;·&nbsp;</span>
+                <a href="{{ .SiteURL }}" style="color:#94A3B8;text-decoration:none;">Điều khoản dịch vụ</a>
+                <span style="color:#475569;">&nbsp;·&nbsp;</span>
+                <a href="{{ .SiteURL }}" style="color:#94A3B8;text-decoration:none;">Liên hệ hỗ trợ</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

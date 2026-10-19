@@ -1,0 +1,1162 @@
+<title>UniMove — Luồng đặt chuyến</title>
+<style>
+  :root {
+    --yellow: #FFCC00;
+    --yellow-dark: #E6B800;
+    --yellow-light: #FFFBEB;
+    --dark: #0F172A;
+    --text: #1E293B;
+    --muted: #64748B;
+    --border: #E2E8F0;
+    --provider: #1A56DB;
+    --customer: #2563EB;
+    --success: #059669;
+    --danger: #DC2626;
+    --orange: #D97706;
+    --cyan: #0891B2;
+    --bg-provider: #EFF6FF;
+    --bg-customer: #FFF7ED;
+    --bg-system: #F8FAFC;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px 48px;
+  }
+
+  /* ── Print tip ── */
+  .print-tip {
+    background: var(--dark);
+    color: var(--yellow);
+    text-align: center;
+    padding: 8px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    margin: 0 -24px 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  @media print { .print-tip { display: none; } }
+
+  /* ── Header ── */
+  .doc-header {
+    background: var(--dark);
+    color: #fff;
+    margin: 0 -24px;
+    padding: 36px 40px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .doc-header::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 220px; height: 100%;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--yellow) 0px, var(--yellow) 12px,
+      var(--dark)   12px, var(--dark)   24px
+    );
+    opacity: 0.18;
+  }
+  .doc-header-inner { position: relative; z-index: 1; }
+  .logo {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .logo-uni {
+    background: var(--yellow);
+    color: var(--dark);
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+  .logo-move { color: var(--customer); }
+  .doc-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .doc-meta {
+    display: flex;
+    gap: 20px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+  .doc-meta span { color: var(--yellow); }
+
+  /* ── Section titles ── */
+  .section {
+    margin-top: 36px;
+    page-break-inside: avoid;
+  }
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--dark);
+  }
+  .section-title-num {
+    background: var(--yellow);
+    color: var(--dark);
+    font-size: 10px;
+    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+  }
+  .section-title h2 {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: var(--dark);
+    text-transform: uppercase;
+  }
+
+  /* ── Flow timeline ── */
+  .flow-timeline {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .flow-step {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 10px;
+    text-align: center;
+    position: relative;
+    background: #fff;
+  }
+  .flow-step::after {
+    content: '→';
+    position: absolute;
+    right: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 13px;
+    z-index: 1;
+  }
+  .flow-step:last-child::after { display: none; }
+  .flow-step-num {
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 5px;
+  }
+  .flow-step-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+  .flow-step-role {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 999px;
+    letter-spacing: 0.06em;
+    display: inline-block;
+  }
+  .role-customer { background: #DBEAFE; color: var(--customer); }
+  .role-provider { background: #DBEAFE; color: var(--provider); }
+  .role-system   { background: #F1F5F9; color: var(--muted); }
+  .status-badge {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+  }
+  .s-pending   { background: #FFFBEB; color: var(--orange); border: 1px solid #FDE68A; }
+  .s-matched   { background: #EFF6FF; color: var(--customer); border: 1px solid #BFDBFE; }
+  .s-accepted  { background: #ECFDF5; color: var(--success); border: 1px solid #A7F3D0; }
+  .s-scheduled { background: #ECFEFF; color: var(--cyan); border: 1px solid #A5F3FC; }
+  .s-picking   { background: #F5F3FF; color: #7C3AED; border: 1px solid #DDD6FE; }
+  .s-completed { background: #F9FAFB; color: var(--muted); border: 1px solid var(--border); }
+  .s-cancelled { background: #FEF2F2; color: var(--danger); border: 1px solid #FECACA; }
+
+  /* ── Step cards ── */
+  .step-card {
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+  }
+  .step-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    gap: 12px;
+  }
+  .step-header-left { display: flex; align-items: center; gap: 10px; }
+  .step-circle {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--yellow);
+    color: var(--dark);
+    font-size: 12px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--dark);
+    letter-spacing: -0.2px;
+  }
+  .step-subtitle {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+  .step-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-top: 1.5px solid var(--border);
+  }
+  .step-col {
+    padding: 12px 14px;
+    border-right: 1.5px solid var(--border);
+  }
+  .step-col:last-child { border-right: none; }
+  .step-col-title {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-customer .step-col-title { color: var(--customer); }
+  .col-provider .step-col-title { color: var(--provider); }
+  .col-system .step-col-title   { color: var(--muted); }
+
+  .action-list { list-style: none; }
+  .action-list li {
+    font-size: 11.5px;
+    color: var(--text);
+    padding: 2px 0;
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .action-list li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .action-list li.highlight::before { content: '▸'; color: var(--yellow-dark); }
+  .action-list li.system::before   { content: '⚙'; font-size: 9px; top: 1px; }
+
+  code {
+    font-family: 'Courier New', monospace;
+    font-size: 10.5px;
+    background: #F1F5F9;
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--provider);
+    font-weight: 600;
+  }
+
+  /* ── Cancel scenarios ── */
+  .cancel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .cancel-card {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    page-break-inside: avoid;
+  }
+  .cancel-card-header {
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cancel-card-body {
+    padding: 10px 14px;
+    border-top: 1.5px solid var(--border);
+  }
+  .cancel-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 3px 0;
+    font-size: 11px;
+  }
+  .cancel-label {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    width: 54px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .cancel-val { color: var(--text); line-height: 1.4; }
+
+  /* ── Expiry table ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th {
+    background: var(--dark);
+    color: var(--yellow);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 9px 12px;
+    text-align: left;
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #F8FAFC; }
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: var(--yellow-light);
+    color: var(--orange);
+    border: 1px solid #FDE68A;
+  }
+
+  /* ── Test guide ── */
+  .test-card {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+  }
+  .test-header {
+    background: var(--dark);
+    color: #fff;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .test-header-title {
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .test-badge {
+    background: var(--yellow);
+    color: var(--dark);
+    font-size: 9px;
+    font-weight: 900;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.06em;
+  }
+  .test-body { padding: 14px 16px; }
+  .test-steps { counter-reset: step; list-style: none; }
+  .test-steps li {
+    counter-increment: step;
+    padding: 4px 0 4px 26px;
+    position: relative;
+    font-size: 11.5px;
+    line-height: 1.5;
+    border-bottom: 1px dashed var(--border);
+  }
+  .test-steps li:last-child { border-bottom: none; }
+  .test-steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 17px;
+    height: 17px;
+    background: var(--yellow);
+    color: var(--dark);
+    font-size: 9px;
+    font-weight: 900;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sql-block {
+    background: var(--dark);
+    color: #93C5FD;
+    font-family: 'Courier New', monospace;
+    font-size: 10.5px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    margin: 6px 0;
+    line-height: 1.6;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .sql-block .kw  { color: var(--yellow); }
+  .sql-block .val { color: #86EFAC; }
+  .sql-block .cmt { color: #64748B; }
+  .expected {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #ECFDF5;
+    border: 1px solid #A7F3D0;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 11px;
+    color: var(--success);
+    font-weight: 600;
+    margin-top: 6px;
+  }
+  .expected::before { content: '✓'; font-weight: 900; }
+
+  /* ── Notes / callout ── */
+  .callout {
+    background: var(--yellow-light);
+    border: 1.5px solid #FDE68A;
+    border-left: 4px solid var(--yellow);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 11.5px;
+    margin: 10px 0;
+    line-height: 1.5;
+  }
+  .callout strong { color: var(--dark); }
+
+  /* ── Footer ── */
+  .doc-footer {
+    margin: 40px -24px 0;
+    background: var(--dark);
+    color: rgba(255,255,255,0.4);
+    padding: 14px 40px;
+    font-size: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    letter-spacing: 0.04em;
+  }
+  .doc-footer strong { color: var(--yellow); }
+
+  @media print {
+    body { padding: 0 16px 24px; max-width: 100%; font-size: 11px; }
+    .section { margin-top: 24px; }
+    .step-body { grid-template-columns: 1fr 1fr 1fr; }
+    .cancel-grid { grid-template-columns: 1fr 1fr; }
+    .doc-footer { margin: 24px -16px 0; }
+    .flow-step-label { font-size: 10px; }
+    .sql-block { font-size: 9.5px; }
+  }
+</style>
+
+<div class="print-tip">📄 Ctrl + P → Save as PDF để xuất file</div>
+
+<!-- Header -->
+<div class="doc-header">
+  <div class="doc-header-inner">
+    <div class="logo">
+      <span class="logo-uni">Uni</span><span class="logo-move">Move</span>
+    </div>
+    <div class="doc-title">Luồng Đặt Chuyến<br>— Tài liệu nghiệp vụ</div>
+    <div class="doc-meta">
+      <div>Phiên bản <span>1.1</span></div>
+      <div>Ngày <span>22/06/2026</span></div>
+      <div>Hai vai trò <span>Customer · Provider</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- 1. TỔNG QUAN LUỒNG -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">
+    <span class="section-title-num">01</span>
+    <h2>Tổng quan luồng</h2>
+  </div>
+
+  <div class="flow-timeline">
+    <div class="flow-step">
+      <div class="flow-step-num">01</div>
+      <div class="flow-step-label">Tạo đơn hàng</div>
+      <div class="flow-step-role role-customer">Customer</div>
+      <div><span class="status-badge s-pending">pending</span></div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">02</div>
+      <div class="flow-step-label">Báo giá</div>
+      <div class="flow-step-role role-provider">Provider</div>
+      <div><span class="status-badge s-pending">pending</span></div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">03</div>
+      <div class="flow-step-label">Chọn báo giá</div>
+      <div class="flow-step-role role-customer">Customer</div>
+      <div><span class="status-badge s-matched">matched</span></div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">04</div>
+      <div class="flow-step-label">Đặt cọc</div>
+      <div class="flow-step-role role-customer">Customer</div>
+      <div><span class="status-badge s-accepted">accepted</span></div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">05</div>
+      <div class="flow-step-label">Thực hiện chuyến</div>
+      <div class="flow-step-role role-provider">Provider</div>
+      <div><span class="status-badge s-picking">picking_up</span></div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">06</div>
+      <div class="flow-step-label">Hoàn thành</div>
+      <div class="flow-step-role role-system">Cả hai</div>
+      <div><span class="status-badge s-completed">completed</span></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Đặt trước ≥ 24h:</strong> Sau khi đặt cọc thành công, đơn vào trạng thái <code>scheduled</code> thay vì <code>accepted</code>. Background job tự chuyển sang <code>accepted</code> khi đến ngày thực hiện.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- 2. CHI TIẾT TỪNG BƯỚC -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">
+    <span class="section-title-num">02</span>
+    <h2>Chi tiết từng bước</h2>
+  </div>
+
+  <!-- Bước 1 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-header-left">
+        <div class="step-circle">01</div>
+        <div>
+          <div class="step-title">Tạo đơn hàng</div>
+          <div class="step-subtitle">Customer điền form, hệ thống tính hạn đặt cọc</div>
+        </div>
+      </div>
+      <span class="status-badge s-pending">pending</span>
+    </div>
+    <div class="step-body">
+      <div class="step-col col-customer">
+        <div class="step-col-title">Customer làm gì</div>
+        <ul class="action-list">
+          <li class="highlight">Vào /dat-chuyen → nhập địa chỉ lấy & giao</li>
+          <li>Chọn loại xe, mô tả hàng hoá</li>
+          <li>Chọn ngày & giờ pickup từ slot picker</li>
+          <li>Xác nhận và gửi đơn</li>
+        </ul>
+      </div>
+      <div class="step-col col-provider">
+        <div class="step-col-title">Provider nhận gì</div>
+        <ul class="action-list">
+          <li>Notification: "Có đơn mới tại Đà Nẵng"</li>
+          <li>Đơn xuất hiện trong trang Đơn hàng</li>
+          <li>Xem địa chỉ, giờ pickup, mô tả hàng</li>
+        </ul>
+      </div>
+      <div class="step-col col-system">
+        <div class="step-col-title">Hệ thống làm gì</div>
+        <ul class="action-list">
+          <li class="system">Set <code>status = 'pending'</code></li>
+          <li class="system">Tính và set <code>order_expires_at</code> (xem bảng §4)</li>
+          <li class="system">Gửi notification tất cả provider Đà Nẵng</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bước 2 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-header-left">
+        <div class="step-circle">02</div>
+        <div>
+          <div class="step-title">Provider báo giá</div>
+          <div class="step-subtitle">Provider gửi đề xuất giá, customer nhận thông báo</div>
+        </div>
+      </div>
+      <span class="status-badge s-pending">pending</span>
+    </div>
+    <div class="step-body">
+      <div class="step-col col-customer">
+        <div class="step-col-title">Customer nhận gì</div>
+        <ul class="action-list">
+          <li>Notification: "Nhà xe đã báo giá"</li>
+          <li>Xem danh sách báo giá trong đơn</li>
+          <li>So sánh giá + ghi chú của từng nhà xe</li>
+        </ul>
+      </div>
+      <div class="step-col col-provider">
+        <div class="step-col-title">Provider làm gì</div>
+        <ul class="action-list">
+          <li class="highlight">Vào Đơn hàng → xem đơn pending</li>
+          <li>Nhập giá + ghi chú → Gửi báo giá</li>
+          <li>Có thể đề xuất giờ pickup khác nếu cần</li>
+        </ul>
+      </div>
+      <div class="step-col col-system">
+        <div class="step-col-title">Hệ thống làm gì</div>
+        <ul class="action-list">
+          <li class="system">Lưu quote vào bảng <code>order_quotes</code></li>
+          <li class="system">Push notification đến customer</li>
+          <li class="system">Status đơn vẫn <code>pending</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bước 3 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-header-left">
+        <div class="step-circle">03</div>
+        <div>
+          <div class="step-title">Customer chọn báo giá</div>
+          <div class="step-subtitle">Chốt nhà xe — lock tạm 15 phút chờ cọc (mọi loại đơn)</div>
+        </div>
+      </div>
+      <span class="status-badge s-matched">matched</span>
+    </div>
+    <div class="step-body">
+      <div class="step-col col-customer">
+        <div class="step-col-title">Customer làm gì</div>
+        <ul class="action-list">
+          <li class="highlight">Xem báo giá → nhấn "Chọn nhà xe này"</li>
+          <li>Được chuyển sang trang thanh toán đặt cọc</li>
+          <li>Có <strong>15 phút</strong> để hoàn tất thanh toán</li>
+        </ul>
+      </div>
+      <div class="step-col col-provider">
+        <div class="step-col-title">Provider nhận gì</div>
+        <ul class="action-list">
+          <li>Notification: "Khách đã chọn bạn!"</li>
+          <li>Bị lock tạm 15 phút — chờ customer cọc</li>
+          <li>Nếu customer không cọc trong 15 phút → lock tự hết, provider tự do</li>
+          <li>Provider <strong>vẫn có thể báo giá</strong> đơn khác cùng giờ trong lúc chờ</li>
+        </ul>
+      </div>
+      <div class="step-col col-system">
+        <div class="step-col-title">Hệ thống làm gì</div>
+        <ul class="action-list">
+          <li class="system">Set <code>status = 'matched'</code></li>
+          <li class="system">Set <code>provider_id</code></li>
+          <li class="system"><code>lock_expires_at = now + 15m</code> (mọi đơn, kể cả đặt trước)</li>
+          <li class="system">Tính lại <code>order_expires_at</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bước 4 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-header-left">
+        <div class="step-circle">04</div>
+        <div>
+          <div class="step-title">Đặt cọc</div>
+          <div class="step-subtitle">Thanh toán qua PayOS — chốt đơn chính thức</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:5px">
+        <span class="status-badge s-accepted">accepted</span>
+        <span style="font-size:10px;color:var(--muted);align-self:center">hoặc</span>
+        <span class="status-badge s-scheduled">scheduled</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-col col-customer">
+        <div class="step-col-title">Customer làm gì</div>
+        <ul class="action-list">
+          <li class="highlight">Thanh toán đặt cọc qua PayOS (QR / thẻ)</li>
+          <li>Nhận xác nhận thanh toán</li>
+          <li>Đơn chuyển sang trạng thái xác nhận</li>
+        </ul>
+      </div>
+      <div class="step-col col-provider">
+        <div class="step-col-title">Provider nhận gì</div>
+        <ul class="action-list">
+          <li>Notification: "Khách đã đặt cọc!"</li>
+          <li>Đơn xuất hiện trong lịch tại /tai-xe/lich</li>
+          <li>Có thể bắt đầu chuẩn bị xe</li>
+        </ul>
+      </div>
+      <div class="step-col col-system">
+        <div class="step-col-title">Hệ thống làm gì</div>
+        <ul class="action-list">
+          <li class="system">Pickup ≤24h → <code>status = 'accepted'</code></li>
+          <li class="system">Pickup &gt;24h → <code>status = 'scheduled'</code></li>
+          <li class="system">Xoá <code>lock_expires_at = null</code></li>
+          <li class="system">Set <code>deposit_paid = true</code></li>
+          <li class="system">Set <code>slot_locked_until = pickup_time + 30 phút</code></li>
+          <li class="system"><strong>First deposit wins:</strong> cancel đơn matched khác cùng provider trùng khung giờ → notify customer bị ảnh hưởng</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bước 5 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-header-left">
+        <div class="step-circle">05</div>
+        <div>
+          <div class="step-title">Thực hiện chuyến</div>
+          <div class="step-subtitle">Provider cập nhật từng bước — Customer theo dõi realtime</div>
+        </div>
+      </div>
+      <span class="status-badge s-picking">picking_up → completed</span>
+    </div>
+    <div class="step-body">
+      <div class="step-col col-customer">
+        <div class="step-col-title">Customer theo dõi</div>
+        <ul class="action-list">
+          <li>Trang đơn hàng tự reload sau <strong>15 giây</strong></li>
+          <li>Thanh tiến trình cập nhật không cần F5</li>
+          <li>Còn 30 phút đến giờ hẹn: nhận notification nhắc nhở từ hệ thống</li>
+          <li>Còn 15 phút mà provider chưa bấm "Đang đến lấy" → banner cam tự hiện → nhấn để huỷ có hoàn tiền</li>
+        </ul>
+      </div>
+      <div class="step-col col-provider">
+        <div class="step-col-title">Provider cập nhật</div>
+        <ul class="action-list">
+          <li class="highlight">"Đang đến lấy hàng" → <code>picking_up</code></li>
+          <li>"Đã lấy hàng" → <code>in_progress</code></li>
+          <li>"Đang giao" → <code>delivering</code></li>
+          <li>"Hoàn thành" → <code>completed</code></li>
+        </ul>
+      </div>
+      <div class="step-col col-system">
+        <div class="step-col-title">Hệ thống làm gì</div>
+        <ul class="action-list">
+          <li class="system">Ghi <code>order_status_history</code></li>
+          <li class="system">Push notification mỗi bước chuyển</li>
+          <li class="system">Customer polling 15s tự fetch lại</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bước 6 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-header-left">
+        <div class="step-circle">06</div>
+        <div>
+          <div class="step-title">Hoàn thành & Đánh giá</div>
+          <div class="step-subtitle">Customer review, thanh toán phần còn lại</div>
+        </div>
+      </div>
+      <span class="status-badge s-completed">completed</span>
+    </div>
+    <div class="step-body">
+      <div class="step-col col-customer">
+        <div class="step-col-title">Customer làm gì</div>
+        <ul class="action-list">
+          <li class="highlight">Đánh giá nhà xe 1–5 sao + nhận xét</li>
+          <li>Thanh toán phần còn lại (nếu có)</li>
+        </ul>
+      </div>
+      <div class="step-col col-provider">
+        <div class="step-col-title">Provider nhận gì</div>
+        <ul class="action-list">
+          <li>Nhận 90% tổng giá trị đơn</li>
+          <li>Điểm đánh giá được cập nhật</li>
+        </ul>
+      </div>
+      <div class="step-col col-system">
+        <div class="step-col-title">Hệ thống làm gì</div>
+        <ul class="action-list">
+          <li class="system">Set <code>completed_at = now</code></li>
+          <li class="system">Giải phóng thanh toán cho provider</li>
+          <li class="system">Cập nhật rating provider</li>
+          <li class="system">Xoá <code>slot_locked_until = null</code> → provider tự do nhận đơn</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- 3. KỊCH BẢN TỰ HỦY -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">
+    <span class="section-title-num">03</span>
+    <h2>Kịch bản tự hủy & xử lý ngoại lệ</h2>
+  </div>
+
+  <div class="cancel-grid">
+    <!-- 3A -->
+    <div class="cancel-card">
+      <div class="cancel-card-header" style="background:#FFFBEB;color:#92400E">
+        <span style="font-size:16px">⏱</span>
+        Pending hết hạn — chưa chọn nhà xe
+      </div>
+      <div class="cancel-card-body">
+        <div class="cancel-row">
+          <span class="cancel-label">Trigger</span>
+          <span class="cancel-val"><code>status='pending'</code> + <code>order_expires_at &lt; NOW()</code></span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Job</span>
+          <span class="cancel-val">Background job mỗi 2 phút</span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Kết quả</span>
+          <span class="cancel-val"><span class="status-badge s-cancelled">cancelled</span></span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Lý do</span>
+          <span class="cancel-val" style="font-style:italic">"Tự động hủy — không có nhà xe được chọn trước giờ chuyến"</span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Notify</span>
+          <span class="cancel-val">Customer</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3B -->
+    <div class="cancel-card">
+      <div class="cancel-card-header" style="background:#EFF6FF;color:#1E40AF">
+        <span style="font-size:16px">💳</span>
+        Matched hết hạn — chọn nhưng không cọc
+      </div>
+      <div class="cancel-card-body">
+        <div class="cancel-row">
+          <span class="cancel-label">Trigger</span>
+          <span class="cancel-val"><code>status='matched'</code> + <code>order_expires_at &lt; NOW()</code></span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Job</span>
+          <span class="cancel-val">Background job mỗi 2 phút</span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Kết quả</span>
+          <span class="cancel-val"><span class="status-badge s-cancelled">cancelled</span> + unlock provider</span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Lý do</span>
+          <span class="cancel-val" style="font-style:italic">"Tự động hủy — khách không đặt cọc trước giờ chuyến"</span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Notify</span>
+          <span class="cancel-val">Customer + Provider</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3C -->
+    <div class="cancel-card">
+      <div class="cancel-card-header" style="background:#FFF7ED;color:#9A3412">
+        <span style="font-size:16px">🔕</span>
+        Provider chưa lên đường trước giờ hẹn
+      </div>
+      <div class="cancel-card-body">
+        <div class="cancel-row">
+          <span class="cancel-label">T-30</span>
+          <span class="cancel-val">Job gửi notification nhắc provider: "Còn 30 phút đến giờ chuyến!"</span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Trigger</span>
+          <span class="cancel-val"><code>status='accepted'</code> + <code>now &gt;= scheduled_pickup_time − 15 phút</code> + chưa <code>picking_up</code></span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Cách huỷ</span>
+          <span class="cancel-val">Banner cam tự hiện (frontend polling 15s) — customer nhấn xác nhận</span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Kết quả</span>
+          <span class="cancel-val"><span class="status-badge s-cancelled">cancelled</span> + tạo record trong <code>refunds</code></span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Lý do</span>
+          <span class="cancel-val" style="font-style:italic">"Khách hủy — nhà xe không phản hồi"</span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Notify</span>
+          <span class="cancel-val">Provider bị thông báo</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D -->
+    <div class="cancel-card">
+      <div class="cancel-card-header" style="background:#ECFEFF;color:#155E75">
+        <span style="font-size:16px">📅</span>
+        Đơn scheduled → active khi đến ngày
+      </div>
+      <div class="cancel-card-body">
+        <div class="cancel-row">
+          <span class="cancel-label">Trigger</span>
+          <span class="cancel-val"><code>status='scheduled'</code> + <code>scheduled_pickup_time &lt;= NOW()</code></span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Job</span>
+          <span class="cancel-val">Background job mỗi 2 phút</span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Kết quả</span>
+          <span class="cancel-val"><span class="status-badge s-accepted">accepted</span> — bắt đầu thực hiện</span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Lý do</span>
+          <span class="cancel-val">Đơn đặt trước ≥ 24h tự chuyển sang thực hiện</span>
+        </div>
+        <div class="cancel-row">
+          <span class="cancel-label">Notify</span>
+          <span class="cancel-val">Provider "Đã đến ngày thực hiện chuyến"</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- 4. BẢNG TÍNH ORDER_EXPIRES_AT -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">
+    <span class="section-title-num">04</span>
+    <h2>Công thức tính <code style="font-size:13px">order_expires_at</code></h2>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Giờ pickup còn lại</th>
+        <th>order_expires_at</th>
+        <th>Ví dụ (đặt lúc 9h sáng)</th>
+        <th>Lý do</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag">≤ 3h</span></td>
+        <td><code>now + 30 phút</code></td>
+        <td>Pickup 11h → hết hạn 9:30h</td>
+        <td>Đơn gấp, customer cần quyết định ngay</td>
+      </tr>
+      <tr>
+        <td><span class="tag">≤ 24h</span></td>
+        <td><code>pickup_time − 2h</code></td>
+        <td>Pickup 15h → hết hạn 13h</td>
+        <td>Còn thời gian chuẩn bị nhưng không treo lâu</td>
+      </tr>
+      <tr>
+        <td><span class="tag">&gt; 24h</span></td>
+        <td><code>pickup_time − 24h</code></td>
+        <td>Pickup ngày mai 9h → hết hạn hôm nay 9h</td>
+        <td>Đặt trước → deadline cọc 1 ngày trước</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout" style="margin-top:10px">
+    <strong>Lưu ý:</strong> Thời gian được tính tại hai thời điểm — lúc <strong>tạo đơn</strong> (status: pending) và lúc <strong>chọn báo giá</strong> (status: matched). Nếu provider đề xuất giờ pickup khác, <code>order_expires_at</code> được tính lại theo giờ mới.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- 5. HƯỚNG DẪN TEST -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">
+    <span class="section-title-num">05</span>
+    <h2>Hướng dẫn test</h2>
+  </div>
+
+  <div class="callout">
+    <strong>Chuẩn bị:</strong> Cần 2 tài khoản (1 customer + 1 provider đã xác minh). Chạy <code>npm run dev:be+web</code> từ thư mục gốc. Backend: port 5000, Frontend: port 3001. Form cho phép chọn giờ pickup cách hiện tại <strong>tối thiểu 1 giờ</strong>.
+  </div>
+
+  <!-- Test 1 -->
+  <div class="test-card">
+    <div class="test-header">
+      <div class="test-header-title">
+        <span class="test-badge">TEST 1</span>
+        Luồng chính — Đặt & thực hiện thành công
+      </div>
+      <span style="font-size:10px;color:rgba(255,255,255,0.5)">~15 phút</span>
+    </div>
+    <div class="test-body">
+      <ol class="test-steps">
+        <li><strong>Customer:</strong> Đăng nhập → /dat-chuyen → điền địa chỉ, chọn slot sáng hôm sau</li>
+        <li><strong>Provider:</strong> Vào Đơn hàng → thấy đơn mới → nhấn "Báo giá" → nhập giá → gửi</li>
+        <li><strong>Customer:</strong> Vào đơn → thấy báo giá → nhấn "Chọn nhà xe này"</li>
+        <li>Kiểm tra DB: <code>status='matched'</code>, <code>lock_expires_at</code> được set (nếu đơn trong ngày)</li>
+        <li><strong>Customer:</strong> Hoàn tất đặt cọc qua PayOS test</li>
+        <li>Kiểm tra DB: <code>status='accepted'</code> hoặc <code>'scheduled'</code>, <code>deposit_paid=true</code></li>
+        <li><strong>Provider:</strong> Vào đơn → nhấn lần lượt "Đang đến lấy" → "Đã lấy" → "Hoàn thành"</li>
+        <li><strong>Customer:</strong> Mở tab đơn hàng, không F5 — status phải tự cập nhật trong ≤15 giây</li>
+      </ol>
+      <div class="expected">status cuối = completed · deposit_paid = true · provider nhận notification mỗi bước</div>
+    </div>
+  </div>
+
+  <!-- Test 2 -->
+  <div class="test-card">
+    <div class="test-header">
+      <div class="test-header-title">
+        <span class="test-badge">TEST 2</span>
+        Auto-cancel — Pending không có ai chọn
+      </div>
+      <span style="font-size:10px;color:rgba(255,255,255,0.5)">~2 phút</span>
+    </div>
+    <div class="test-body">
+      <ol class="test-steps">
+        <li><strong>Customer:</strong> Tạo đơn mới (không cần provider báo giá)</li>
+        <li>Lấy order_number từ trang đơn hàng, chạy SQL sau trong Supabase:</li>
+      </ol>
+      <div class="sql-block"><span class="kw">UPDATE</span> orders
+<span class="kw">SET</span> order_expires_at = <span class="kw">NOW</span>() - <span class="kw">INTERVAL</span> <span class="val">'1 minute'</span>
+<span class="kw">WHERE</span> order_number = <span class="val">'UNI-XXXXXXXX-XXXX'</span>
+  <span class="kw">AND</span> status = <span class="val">'pending'</span>;</div>
+      <ol class="test-steps" style="counter-reset:step 2">
+        <li>Đợi tối đa <strong>2 phút</strong> → F5 trang đơn</li>
+      </ol>
+      <div class="expected">status = cancelled · cancellation_reason = "Tự động hủy — không có nhà xe được chọn trước giờ chuyến"</div>
+    </div>
+  </div>
+
+  <!-- Test 3 -->
+  <div class="test-card">
+    <div class="test-header">
+      <div class="test-header-title">
+        <span class="test-badge">TEST 3</span>
+        Auto-cancel — Chọn nhà xe nhưng không cọc
+      </div>
+      <span style="font-size:10px;color:rgba(255,255,255,0.5)">~2 phút</span>
+    </div>
+    <div class="test-body">
+      <ol class="test-steps">
+        <li>Làm đến bước 3 (customer chọn báo giá) — dừng lại, không thanh toán</li>
+        <li>Kiểm tra DB: <code>status='matched'</code></li>
+        <li>Chạy SQL để giả lập hết hạn:</li>
+      </ol>
+      <div class="sql-block"><span class="kw">UPDATE</span> orders
+<span class="kw">SET</span> order_expires_at = <span class="kw">NOW</span>() - <span class="kw">INTERVAL</span> <span class="val">'1 minute'</span>
+<span class="kw">WHERE</span> order_number = <span class="val">'UNI-XXXXXXXX-XXXX'</span>
+  <span class="kw">AND</span> status = <span class="val">'matched'</span>;</div>
+      <ol class="test-steps" style="counter-reset:step 3">
+        <li>Đợi tối đa <strong>2 phút</strong></li>
+      </ol>
+      <div class="expected">status = cancelled · provider được unlock · cả 2 nhận notification</div>
+    </div>
+  </div>
+
+  <!-- Test 4 -->
+  <div class="test-card">
+    <div class="test-header">
+      <div class="test-header-title">
+        <span class="test-badge">TEST 4</span>
+        Customer huỷ — Provider chưa lên đường trước giờ hẹn 15 phút
+      </div>
+      <span style="font-size:10px;color:rgba(255,255,255,0.5)">manual</span>
+    </div>
+    <div class="test-body">
+      <ol class="test-steps">
+        <li>Làm đến bước 4 (đặt cọc thành công) — <code>status='accepted'</code></li>
+        <li>Giả lập đơn còn 10 phút đến giờ hẹn (trigger banner T-15) bằng SQL:</li>
+      </ol>
+      <div class="sql-block"><span class="kw">UPDATE</span> orders
+<span class="kw">SET</span> scheduled_pickup_time = <span class="kw">NOW</span>() + <span class="kw">INTERVAL</span> <span class="val">'10 minutes'</span>
+<span class="kw">WHERE</span> order_number = <span class="val">'UNI-XXXXXXXX-XXXX'</span>
+  <span class="kw">AND</span> status = <span class="val">'accepted'</span>;</div>
+      <ol class="test-steps" style="counter-reset:step 2">
+        <li>Đợi ≤15 giây (polling) — banner cam "Nhà xe chưa lên đường?" tự xuất hiện</li>
+        <li>Nhấn vào banner → xác nhận huỷ</li>
+      </ol>
+      <div class="callout" style="margin:8px 0 0">
+        <strong>Test T-30 reminder:</strong> Set <code>scheduled_pickup_time = NOW() + INTERVAL '29 minutes'</code> → đợi job chạy (≤2 phút) → provider nhận push notification nhắc nhở.
+      </div>
+      <div class="expected">status = cancelled · record tạo trong bảng refunds · provider nhận notification</div>
+    </div>
+  </div>
+
+  <!-- Test 5 -->
+  <div class="test-card">
+    <div class="test-header">
+      <div class="test-header-title">
+        <span class="test-badge">TEST 5</span>
+        Đơn đặt trước — Scheduled tự chuyển Accepted
+      </div>
+      <span style="font-size:10px;color:rgba(255,255,255,0.5)">~2 phút</span>
+    </div>
+    <div class="test-body">
+      <ol class="test-steps">
+        <li>Tạo đơn với pickup time &gt;24h từ bây giờ → đặt cọc thành công</li>
+        <li>Kiểm tra DB: <code>status='scheduled'</code></li>
+        <li>Giả lập đến giờ thực hiện:</li>
+      </ol>
+      <div class="sql-block"><span class="kw">UPDATE</span> orders
+<span class="kw">SET</span> scheduled_pickup_time = <span class="kw">NOW</span>() - <span class="kw">INTERVAL</span> <span class="val">'1 minute'</span>
+<span class="kw">WHERE</span> order_number = <span class="val">'UNI-XXXXXXXX-XXXX'</span>
+  <span class="kw">AND</span> status = <span class="val">'scheduled'</span>;</div>
+      <ol class="test-steps" style="counter-reset:step 3">
+        <li>Đợi tối đa <strong>2 phút</strong></li>
+        <li>Kiểm tra trang /tai-xe/lich của provider — đơn vẫn hiện trong lịch tuần</li>
+      </ol>
+      <div class="expected">status = accepted · provider nhận notification "Đã đến ngày thực hiện chuyến"</div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="doc-footer">
+  <div><strong>UniMove</strong> — Tài liệu nghiệp vụ nội bộ</div>
+  <div>Backend: port 5000 · Frontend: port 3001 · DB: Supabase</div>
+  <div>v1.0 · 20/06/2026</div>
+</div>

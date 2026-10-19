@@ -1,0 +1,8 @@
+{
+  "name": "unimove_customer_app",
+  "private": true,
+  "scripts": {
+    "start": "flutter run",
+    "deps": "flutter pub get"
+  }
+}

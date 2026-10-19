@@ -1,0 +1,9 @@
+﻿Chỉ số,Giá trị
+Cách đọc file,Cột «Luồng người dùng & mô tả API» = người dùng làm gì → gọi API khi nào → xong thì sang bước nào
+Dòng đọc trước,"F1 (Pass đồ), F2 (Đặt chuyến)"
+Tổng API,66
+Tổng dòng (gồm header),69
+Đã có backend,17
+Chưa có,35
+Pass đồ mới,14
+Sửa mô tả,docs/scripts/customer_api_narratives.py rồi chạy generate_customer_api_csv.py

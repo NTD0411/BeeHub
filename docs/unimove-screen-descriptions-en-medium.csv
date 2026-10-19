@@ -1,0 +1,83 @@
+#,Feature,Screen,Description
+1,Authentication,Splash Screen,Displays UniMove branding while the app checks session state and routes the user to onboarding login or home.
+2,Authentication,Onboarding,Introduces UniMove services and guides first-time users through key platform capabilities before sign-in.
+3,Authentication,Login,Allows customers to sign in with email and password or Google OAuth.
+4,Authentication,Register,Allows new customers to create an account with email password full name and phone number.
+5,Authentication,Forgot Password,Lets users request a password reset link or OTP sent to their registered email.
+6,Authentication,Reset Password,Lets users enter OTP and set a new password after a forgot-password request.
+7,Home,Home Shell,Main bottom-navigation container with tabs for Home Payments Activity and Messages.
+8,Home,Home Tab,Shows quick actions banners featured providers recent orders and entry points for booking combo labor and Pass đồ.
+9,Home,Payments Tab,Lists payment history wallet balance and shortcuts to payment settings and saved methods.
+10,Home,Activity Tab,Shows active and recent orders with status badges and navigation to tracking or order detail.
+11,Home,Messages Tab,Lists order and marketplace conversations with unread indicators.
+12,Profile,Profile,Displays customer account summary avatar contact info and links to edit profile change password and order history.
+13,Profile,Edit Profile,Lets customers update personal details student ID university phone and avatar.
+14,Profile,Change Password,Lets authenticated customers change password by entering current and new password.
+15,Profile,Order History,Lists past and current transport orders with filters and links to tracking or review.
+16,Move Booking,Choose Location,Lets customers enter or select pickup and delivery addresses on the map with recent-place suggestions.
+17,Move Booking,Move Dorm Details,Collects move context such as dorm details item list floors and elevator availability.
+18,Move Booking,Move Schedule,Lets customers select pickup date and time for the transport booking.
+19,Move Booking,Service Packages,Displays combo packages (Economy Standard Premium) with bundled transport and labor pricing.
+20,Move Booking,Choose Partner,Lists verified transport providers with filters for price rating and distance for standard bookings.
+21,Move Booking,Reference Prices,Shows reference pricing guide to help customers understand expected move costs before booking.
+22,Move Booking,Insurance Selection,Lets customers choose cargo insurance plan before checkout.
+23,Move Booking,Payment,Shows order summary price breakdown promotion code entry and PayOS deposit payment.
+24,Quotation Flow,Quote Progress,Tracks quotation-based booking status from submission through provider responses.
+25,Quotation Flow,Provider Quote Detail,Displays a single provider quote with price breakdown and accept or reject actions.
+26,Quotation Flow,Quote Move Schedule,Lets customers set pickup schedule after a provider quote is accepted.
+27,Labor Service,Labor Service Entry,Entry screen to book standalone loading/unloading labor service.
+28,Labor Service,Labor Order Picker,Lets customers select an existing move order to attach labor service to.
+29,Labor Service,Labor Configure,Configures labor details such as number of helpers hours and floor access.
+30,Labor Service,Labor Providers,Lists labor providers available for the configured labor request.
+31,Order Management,Order Tracking,Shows live order status timeline map with provider location and ETA during active transport.
+32,Order Management,Review Trip,Lets customers rate the provider and submit a written review after order completion.
+33,Payments,Financial Settings,Central payment settings screen with links to payment methods and transaction preferences.
+34,Payments,Payment Methods,Lists saved payment methods such as card Momo and PayOS-linked options.
+35,Payments,Add Payment Method,Lets customers choose a payment method type to add to their account.
+36,Payments,Add Card,Lets customers enter card details to save a payment method.
+37,Payments,Link Payment Method,Guides customers through linking an external wallet or PayOS payment method.
+38,Payments,Payment Detail,Shows detail of a single payment transaction including amount status and PayOS reference.
+39,Notifications,Notification Detail,Displays full content of a system or order notification and marks it as read.
+40,Pass đồ Marketplace,Marketplace Home,Student marketplace with Explore Favorites and My Listings tabs for browsing and managing Pass đồ items.
+41,Pass đồ Marketplace,Create Listing,Lets sellers post a used-item listing with photos category condition pickup area and price.
+42,Pass đồ Marketplace,Listing Fee Payment,Handles PayOS payment when a listing fee is required before the post goes public.
+43,Pass đồ Marketplace,Listing Detail,Shows item photos description price deal status and buyer/seller action buttons.
+44,Pass đồ Marketplace,Listing Chat,Supports negotiation chat between buyer and seller including price proposals and deal confirmation.
+45,Pass đồ Marketplace,Seller Profile,Displays seller reputation stats ratings and active listings on the marketplace.
+46,Pass đồ Marketplace,Pass Item Transport Options,Lets buyer choose delivery address and transport type (combo or standard) after deal confirmation.
+47,Provider Authentication,Splash Screen,Displays branding while checking provider session and routing to login or home.
+48,Provider Authentication,Onboarding,Introduces provider app features and verification requirements for new transport partners.
+49,Provider Authentication,Login,Allows providers to sign in with email password or Google OAuth.
+50,Provider Authentication,Register,Allows transport businesses to register a new provider account with business details.
+51,Provider Home,Provider Shell,Main bottom-navigation container with Dashboard Orders Earnings Messages and Profile tabs.
+52,Provider Home,Dashboard Tab,Shows today's orders earnings summary pending tasks and quick operational shortcuts.
+53,Provider Home,Orders Tab,Lists incoming and active orders with accept decline and detail actions.
+54,Provider Home,Earnings Tab,Summarizes revenue completed orders and links to earnings history and payout settings.
+55,Provider Home,Messages Tab,Lists conversations with customers on active orders.
+56,Provider Home,Profile Tab,Shows provider account business info verification status and profile management links.
+57,Provider Orders,Order Detail,Displays full order information customer contact addresses pricing and status action buttons.
+58,Provider Orders,Order Tracking,Provider-side map screen for updating location and monitoring route during active transport.
+59,Provider Verification,Documents,Upload and manage verification documents such as ID license vehicle registration and insurance.
+60,Provider Operations,Schedule,View and update provider availability schedule for accepting new orders.
+61,Provider Earnings,Earnings History,Lists historical earnings transactions and completed order payouts.
+62,Provider Earnings,Payout Settings,Configure bank account details for receiving earned revenue withdrawals.
+63,Provider Profile,Reviews,Displays customer ratings and reviews received with option to respond.
+64,Provider Profile,Public Profile,Read-only public provider profile viewable by customers.
+65,Provider Notifications,Notifications List,Lists system and order notifications with unread count.
+66,Provider Notifications,Notification Detail,Shows full notification content and related order context.
+67,Admin Dashboard,Admin Login,Administrator authentication screen for the Next.js admin web dashboard.
+68,Admin Dashboard,Dashboard Overview,Displays KPI cards revenue charts order status distribution and latest orders table.
+69,Admin Dashboard,User Management,Lists and manages customer and provider accounts with search suspend and activate actions.
+70,Admin Dashboard,Provider Verification,Review queue for pending provider documents with approve and reject actions.
+71,Admin Dashboard,Order Management,Lists all platform orders with status filters search and navigation to order detail.
+72,Admin Dashboard,Order Detail,Shows full order information admin actions including force cancel and refund context.
+73,Admin Dashboard,Disputes and Refunds,Manages customer disputes and refund requests with evidence review and resolution actions.
+74,Admin Dashboard,Review Management,Moderates customer and marketplace reviews with hide unhide and flag actions.
+75,Admin Dashboard,Analytics,Displays revenue GMV order statistics provider performance and commission charts.
+76,Admin Dashboard,Notification Management,Create and publish system announcements and broadcast notifications.
+77,Admin Dashboard,Activity Logs,Audit trail of admin actions order status changes verifications and refund history.
+78,Admin Dashboard,Platform Settings,Configure platform parameters theme preferences and admin account settings.
+79,Admin Dashboard,Admin Profile,Administrator profile view and avatar management.
+80,Public Website,Landing Page,Public marketing page introducing UniMove services pricing and call-to-action for booking.
+81,Public Website,Sign In / Sign Up,Public web authentication entry that redirects users into the customer app registration flow.
+82,Public Website,FAQ and Contact,Information pages for frequently asked questions and customer support contact form.

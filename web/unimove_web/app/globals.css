@@ -1,0 +1,318 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================================
+   TAILWIND v4 THEME — UniMove Customer Design System
+   Pattern: @theme inline maps CSS vars → Tailwind utilities.
+   Static tokens use direct values; dark-mode-aware tokens
+   reference :root vars overridden in .dark {}.
+   ============================================================ */
+@theme inline {
+
+  /* ── TYPOGRAPHY ─────────────────────────────────────────── */
+  --font-sans: var(--font-jakarta), system-ui, sans-serif;
+  --font-mono: var(--font-mono-code), "Fira Code", monospace;
+
+  /* ── COLORS: dark-mode-aware (reference :root vars) ──────── */
+  --color-background:        var(--bg);
+  --color-surface:           var(--surface);
+  --color-surface-2:         var(--surface-2);
+  --color-foreground:        var(--foreground);
+  --color-border:            var(--border);
+  --color-card:              var(--card);
+  --color-ring:              var(--ring);
+  --color-muted:             var(--muted-surface);
+  --color-muted-foreground:  var(--text-muted);
+
+  /* Keep legacy names for admin component backwards-compat */
+  --color-accent:            var(--accent);
+  --color-accent-secondary:  var(--accent-secondary);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* ── COLORS: brand & status (static — no dark override) ─── */
+  --color-primary:        #2563EB;
+  --color-primary-50:     #EFF6FF;
+  --color-primary-100:    #DBEAFE;
+  --color-primary-700:    #1D4ED8;
+  --color-primary-light:  #EFF6FF;
+  --color-primary-dark:   #1D4ED8;
+
+  /* ── Provider brand (royal blue — replaces green as provider primary) */
+  --color-brand:          #1A56DB;
+  --color-brand-hover:    #1648C0;
+  --color-brand-active:   #123A9E;
+  --color-brand-subtle:   #EFF4FE;
+  --color-brand-accent:   #FACC15;
+
+  /* ── UniMove brand yellow ─────────────────────────────── */
+  --color-brand-yellow:        #FFCC00;
+  --color-brand-yellow-dark:   #E6B800;
+  --color-brand-yellow-light:  #FFFBEB;
+  --color-success:        #16A34A;
+  --color-success-light:  #F0FDF4;
+  --color-warning:        #F59E0B;
+  --color-warning-light:  #FFFBEB;
+  --color-error:          #EF4444;
+  --color-error-light:    #FEF2F2;
+  --color-urgent:         #EF4444;
+  --color-verified:       #2563EB;
+
+  /* ── SHADOWS ────────────────────────────────────────────── */
+  --shadow-sm:       0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-card:     0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md:       0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-lg:       0 4px 16px rgba(0, 0, 0, 0.10);
+  --shadow-xl:       0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-sticky:   0 -2px 12px rgba(0, 0, 0, 0.08);
+  --shadow-elevated: 0 4px 24px rgba(37, 99, 235, 0.15);
+
+  /* ── BORDER RADIUS ──────────────────────────────────────── */
+  --radius-none:    0px;
+  --radius-sm:      4px;
+  --radius-md:      8px;
+  --radius-lg:      12px;
+  --radius-xl:      16px;
+  --radius-2xl:     20px;
+  --radius-3xl:     24px;
+  --radius-full:    9999px;
+  /* Semantic */
+  --radius-card:    16px;
+  --radius-card-lg: 20px;
+  --radius-button:  12px;
+  --radius-input:   12px;
+  --radius-badge:   6px;
+  --radius-sheet:   24px;
+  --radius-avatar:  9999px;
+
+  /* ── Z-INDEX ─────────────────────────────────────────────── */
+  --z-0:        0;
+  --z-10:       10;
+  --z-20:       20;
+  --z-30:       30;
+  --z-40:       40;
+  --z-50:       50;
+  /* Semantic */
+  --z-base:      0;
+  --z-raised:    10;
+  --z-dropdown:  20;
+  --z-sticky:    30;
+  --z-index-topnav: 50;
+  --z-topnav:    40;
+  --z-overlay:   40;
+  --z-bottomnav: 50;
+  --z-modal:     50;
+  --z-toast:     60;
+
+  /* ── ANIMATIONS ─────────────────────────────────────────── */
+  --animate-spin-slow:  spin 60s linear infinite;
+  --animate-float:      float 5s ease-in-out infinite;
+  --animate-slide-up:   slide-up 0.3s cubic-bezier(0.0, 0.0, 0.2, 1) forwards;
+  --animate-slide-down: slide-down 0.3s cubic-bezier(0.0, 0.0, 0.2, 1) forwards;
+  --animate-fade-in:    fade-in 0.2s ease-out forwards;
+  --animate-scale-in:   scale-in 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  --animate-skeleton:   skeleton-pulse 1.4s ease-in-out infinite;
+
+  /* ── LAYOUT DIMENSIONS ──────────────────────────────────── */
+  --height-bottomnav:    64px;
+  --height-topnav:       56px;
+  --height-header:       56px;
+  --width-container:     1200px;
+  --width-sidebar-admin: 240px;
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes meshFloat1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-24px, 16px); }
+}
+@keyframes meshFloat2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(20px, -12px); }
+}
+@keyframes meshFloat3 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-12px, -20px); }
+}
+.animate-mesh-1 { animation: meshFloat1 12s ease-in-out infinite; }
+.animate-mesh-2 { animation: meshFloat2 15s ease-in-out infinite; }
+.animate-mesh-3 { animation: meshFloat3 18s ease-in-out infinite; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-down {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(12px); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+/* ============================================================
+   CSS CUSTOM PROPERTIES — Light Mode
+   ============================================================ */
+:root {
+  /* Backgrounds */
+  --bg:        #F5F6FA;
+  --surface:   #FFFFFF;
+  --surface-2: #EEEEF5;
+  --card:      #FFFFFF;
+
+  /* Text */
+  --foreground:        #0F172A;
+  --text-muted:        #475569;
+  --text-placeholder:  #94A3B8;
+
+  /* Border & focus ring */
+  --border: #E2E8F0;
+  --ring:   #4F46E5;
+
+  /* Muted (admin compat) */
+  --muted-surface: #F1F5F9;
+  --muted:         #64748B;
+
+  /* Accent (admin compat — maps to primary in customer UI) */
+  --accent:            #4F46E5;
+  --accent-secondary:  #6366F1;
+  --accent-foreground: #FFFFFF;
+
+  /* Primary */
+  --primary:       #4F46E5;
+  --primary-light: #6366F1;
+  --primary-dark:  #4338CA;
+  --primary-tint:  rgba(79, 70, 229, 0.08);
+
+  /* Status */
+  --success:      #16A34A;
+  --success-tint: #F0FDF4;
+  --warning:      #F59E0B;
+  --warning-tint: #FFFBEB;
+  --error:        #EF4444;
+  --error-tint:   #FEF2F2;
+
+  /* Provider UI — brand royal blue (green chỉ còn dùng cho semantic success) */
+  --provider:       #1A56DB;
+  --provider-light: #1648C0;
+  --provider-tint:  #EFF4FE;
+
+  /* Navigation */
+  --nav-bg:     rgba(255, 255, 255, 0.92);
+  --glass-bg:   rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(37, 99, 235, 0.12);
+  --glass-shadow: 0 8px 32px rgba(37, 99, 235, 0.08);
+  --nav-border: #E2E8F0;
+
+  /* Admin compat */
+  --background:    #F8FAFC;
+  --sidebar-width: 240px;
+  --header-height: 56px;
+}
+
+/* ============================================================
+   CSS CUSTOM PROPERTIES — Dark Mode
+   ============================================================ */
+.dark {
+  --bg:        #0F172A;
+  --surface:   #1E293B;
+  --surface-2: #1E293B;
+  --card:      #1E293B;
+
+  --foreground:       #F1F5F9;
+  --text-muted:       #94A3B8;
+  --text-placeholder: #475569;
+
+  --border: #334155;
+  --ring:   #3B82F6;
+
+  --muted-surface: #1E293B;
+  --muted:         #94A3B8;
+
+  --accent:            #3B82F6;
+  --accent-secondary:  #60A5FA;
+  --accent-foreground: #FFFFFF;
+
+  --primary:       #3B82F6;
+  --primary-light: #60A5FA;
+  --primary-dark:  #2563EB;
+  --primary-tint:  rgba(59, 130, 246, 0.12);
+
+  --nav-bg:     rgba(15, 23, 42, 0.95);
+  --nav-border: #334155;
+
+  --background: #0F172A;
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-jakarta), var(--font-sans), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Thin scrollbar — desktop only */
+  @media (min-width: 1024px) {
+    ::-webkit-scrollbar       { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+  }
+
+  /* Safe-area bottom padding helper (iOS notch) */
+  .pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom), 16px);
+  }
+}
+
+/* ============================================================
+   ACCESSIBILITY — Respect reduced-motion preference
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-spin-slow,
+  .animate-slide-up,
+  .animate-slide-down,
+  .animate-fade-in,
+  .animate-scale-in,
+  .animate-skeleton {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,49 @@
+# Environment & secrets (.env.example is committed as template)
+.env
+.env.local
+.env.*.local
+backend/.env
+web/admin_dashboard/.env.local
+!.env.example
+!backend/.env.example
+!web/admin_dashboard/.env.example
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Development & Testing files
+test-*.js
+*-test.js
+create-sample-data.js
+test-all-*.js
+
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.iml
+.idea/
+.vscode/
+
+# Android
+**/android/.gradle/
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+
+# iOS
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+
+# Web
+**/web/.dart_tool/
+
+# OS
+.DS_Store
+Thumbs.db
+
+.cursor/

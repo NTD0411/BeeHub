@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+/* ── Light theme (default) ──────────────────────────────────────────────── */
+:root {
+  --primary: #004ac6;
+  --primary-light: #2563eb;
+  --primary-dark: #003a9e;
+  --primary-tint: #dbeafe;
+
+  --bg: #f0f4ff;
+  --card: #ffffff;
+  --surface: #f8fafc;
+  --border: #e2e8f0;
+
+  --text: #141b2b;
+  --text-secondary: #0f172a;
+  --muted: #64748b;
+
+  --success: #16a34a;
+  --success-tint: #dcfce7;
+  --error: #ef4444;
+  --error-tint: #fee2e2;
+  --warning: #d97706;
+  --warning-tint: #fef3c7;
+
+  --gradient-from: #1d4ed8;
+  --gradient-to: #3b82f6;
+
+  --nav-bg: #ffffff;
+  --nav-border: #e2e8f0;
+  --nav-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(0, 74, 198, 0.12);
+  --glass-shadow: 0 8px 32px rgba(0, 74, 198, 0.08);
+
+  --glow-primary: #3b82f6;
+  --glow-secondary: #8b5cf6;
+  --glow-accent: #06b6d4;
+}
+
+/* ── Dark theme ─────────────────────────────────────────────────────────── */
+.dark {
+  --primary: #3b82f6;
+  --primary-light: #38bdf8;
+  --primary-dark: #1d4ed8;
+  --primary-tint: #1e3a5f;
+
+  --bg: #070b14;
+  --card: #1e293b;
+  --surface: #111827;
+  --border: #2d3a4f;
+
+  --text: #f1f5f9;
+  --text-secondary: #f8fafc;
+  --muted: #94a3b8;
+
+  --success: #22c55e;
+  --success-tint: #14532d;
+  --error: #ef4444;
+  --error-tint: #450a0a;
+  --warning: #f59e0b;
+  --warning-tint: #451a03;
+
+  --gradient-from: #1d4ed8;
+  --gradient-to: #3b82f6;
+
+  --nav-bg: #111827;
+  --nav-border: #1e293b;
+  --nav-shadow: 0 -4px 16px rgba(0,0,0,0.4);
+
+  --glass-bg: rgba(30, 41, 59, 0.75);
+  --glass-border: rgba(59, 130, 246, 0.18);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+
+  --glow-primary: #2563eb;
+  --glow-secondary: #7c3aed;
+  --glow-accent: #0891b2;
+}
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+@keyframes meshFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-30px, 20px) scale(1.05); }
+}
+@keyframes meshFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(25px, -15px) scale(1.08); }
+}
+@keyframes meshFloat3 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-15px, -25px); }
+}
+
+.animate-mesh-1 { animation: meshFloat1 12s ease-in-out infinite; }
+.animate-mesh-2 { animation: meshFloat2 15s ease-in-out infinite; }
+.animate-mesh-3 { animation: meshFloat3 18s ease-in-out infinite; }
+
+.animate-fade-in    { animation: fadeIn 0.3s ease forwards; }
+.animate-slide-up   { animation: slideUp 0.4s ease forwards; }
+.animate-spin       { animation: spin 1s linear infinite; }
+.animate-pulse      { animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+
+.stagger-1  { animation-delay: 0.05s; }
+.stagger-2  { animation-delay: 0.10s; }
+.stagger-3  { animation-delay: 0.15s; }
+.stagger-4  { animation-delay: 0.20s; }
+
+/* ── Shimmer skeleton ────────────────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--border) 25%, var(--surface) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* ── Gradient text ───────────────────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--gradient-from), var(--gradient-to));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Gradient button ─────────────────────────────────────────────────────── */
+.btn-gradient {
+  background: linear-gradient(135deg, var(--gradient-from), var(--gradient-to));
+  color: white;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.btn-gradient:hover   { opacity: 0.9; }
+.btn-gradient:active  { transform: scale(0.98); }
+
+/* ── Glass card ─────────────────────────────────────────────────────────── */
+.glass-card {
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ── Bottom nav padding ──────────────────────────────────────────────────── */
+.pb-nav { padding-bottom: 76px; }

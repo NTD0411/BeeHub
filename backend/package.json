@@ -1,0 +1,52 @@
+{
+  "name": "unimove-backend",
+  "version": "1.0.0",
+  "description": "UniMove Node.js REST API — Express + Supabase",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon",
+    "dev:be": "node --watch --watch-path=./src src/server.js",
+    "test": "node test-connection.js",
+    "test:connection": "node test-connection.js",
+    "create-admin": "node create-admin.js",
+    "seed:admin": "node seed-admin-data.js",
+    "seed:e2e": "node seed-e2e-test-accounts.js",
+    "seed:reviews": "node seed-demo-reviews.js",
+    "seed:fake-reviews": "node seed-fake-reviews.js",
+    "migrate:quotes": "node scripts/apply-migration.js supabase/migrations/20240129000000_order_quotes_bidding.sql",
+    "migrate:deposit-trigger": "node scripts/apply-migration.js supabase/migrations/20240130000000_fix_deposit_payment_trigger.sql",
+    "fix:payment": "node scripts/fix-stuck-deposit-payment.js",
+    "migrate:listing-fee": "node scripts/apply-migration.js supabase/migrations/20240131000000_marketplace_listing_fee_payments.sql"
+  },
+  "keywords": [
+    "express",
+    "supabase",
+    "unimove",
+    "nodejs"
+  ],
+  "author": "UniMove Team",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.21.2",
+    "google-auth-library": "^9.15.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^2.1.1",
+    "node-cron": "^4.4.1",
+    "node-fetch": "^2.7.0",
+    "nodemailer": "^8.0.10",
+    "unimove-monorepo": "file:..",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14",
+    "pg": "^8.21.0"
+  }
+}

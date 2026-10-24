@@ -80,7 +80,7 @@ export default function ProviderDashboardPage() {
 
   const acceptOrder = async (orderId: string) => {
     try {
-      const res = await providerOrdersApi.respondToOrder(orderId, { action: "accept" });
+      const res = await providerOrdersApi.respondToOrder(orderId, { response: "accepted" });
       if (res.success) {
         toast("Đã chấp nhận đơn hàng!", "success");
         fetchData();
@@ -90,7 +90,7 @@ export default function ProviderDashboardPage() {
 
   const rejectOrder = async (orderId: string) => {
     try {
-      await providerOrdersApi.respondToOrder(orderId, { action: "reject" });
+      await providerOrdersApi.respondToOrder(orderId, { response: "declined" });
       toast("Đã từ chối đơn", "info");
       fetchData();
     } catch { toast("Thử lại sau", "error"); }

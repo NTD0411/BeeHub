@@ -1,3 +1,5 @@
+const providersService = require('../services/providers.service');
+
 /**
  * providers.controller.js — Controller cho Provider API.
  *
@@ -20,6 +22,12 @@ async function browse(req, res, next) {
   }
 }
 
+async function getById(req, res, next) {
+  try {
+    const reviewsLimit = req.query.reviews_limit
+      ? parseInt(req.query.reviews_limit, 10)
+      : 5;
+    const data = await providersService.getProviderById(req.params.id, { reviewsLimit });
 /** GET /api/providers/:id — Xem profile công khai của 1 nhà xe */
 async function getById(req, res, next) {
   try {
@@ -30,6 +38,9 @@ async function getById(req, res, next) {
   }
 }
 
+async function getEarnings(req, res, next) {
+  try {
+    const data = await providersService.getEarnings(req.user.id, req.query.period || 'week');
 /** GET /api/providers/me — Xem profile provider hiện tại (Feature #39) */
 async function getMe(req, res, next) {
   try {
@@ -40,6 +51,9 @@ async function getMe(req, res, next) {
   }
 }
 
+async function getSchedule(req, res, next) {
+  try {
+    const data = await providersService.getSchedule(req.user.id);
 /** GET /api/providers/me/documents — Xem danh sách giấy tờ đã upload (Feature #39) */
 async function getMyDocuments(req, res, next) {
   try {
@@ -50,6 +64,9 @@ async function getMyDocuments(req, res, next) {
   }
 }
 
+async function updateSchedule(req, res, next) {
+  try {
+    const data = await providersService.updateSchedule(req.user.id, req.body.slots);
 /** POST /api/providers/me/documents — Upload giấy tờ xác minh (Feature #38) */
 async function uploadDocuments(req, res, next) {
   try {
@@ -63,6 +80,9 @@ async function uploadDocuments(req, res, next) {
   }
 }
 
+async function uploadDocuments(req, res, next) {
+  try {
+    const data = await providersService.uploadProviderDocuments(req.user.id, req.files || {});
 /** POST /api/providers/me/request-verification — Yêu cầu xét duyệt lại (Feature #39) */
 async function requestVerification(req, res, next) {
   try {
@@ -73,6 +93,9 @@ async function requestVerification(req, res, next) {
   }
 }
 
+async function getMyDocuments(req, res, next) {
+  try {
+    const data = await providersService.getMyDocuments(req.user.id);
 /** GET /api/providers/me/dashboard — Xem dashboard (Feature #40) */
 async function getDashboard(req, res, next) {
   try {
@@ -83,6 +106,9 @@ async function getDashboard(req, res, next) {
   }
 }
 
+async function getQuotedOrders(req, res, next) {
+  try {
+    const data = await providersService.getQuotedOrders(req.user.id);
 /** GET /api/providers/me/earnings — Xem thu nhập (Feature #40) */
 async function getEarnings(req, res, next) {
   try {
@@ -94,6 +120,9 @@ async function getEarnings(req, res, next) {
   }
 }
 
+async function requestVerification(req, res, next) {
+  try {
+    const data = await providersService.requestVerification(req.user.id);
 /** GET /api/providers/me/schedule — Xem lịch làm việc */
 async function getSchedule(req, res, next) {
   try {
@@ -127,6 +156,13 @@ async function getQuotedOrders(req, res, next) {
 module.exports = {
   browse,
   getById,
+  getEarnings,
+  getSchedule,
+  updateSchedule,
+  uploadDocuments,
+  getMyDocuments,
+  getQuotedOrders,
+  requestVerification,
   getMe,
   getMyDocuments,
   uploadDocuments,

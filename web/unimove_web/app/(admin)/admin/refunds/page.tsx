@@ -202,7 +202,11 @@ export default function RefundsPage() {
                           {r.requester?.full_name ?? r.requested_by_profile?.full_name ?? "—"}
                         </div>
                         <div className="text-xs" style={{ color: "var(--muted)" }}>
-                          {r.requester?.role === "customer" ? "Khách hàng" : r.requester?.role === "provider" ? "Tài xế" : "—"}
+                          {(r as any).customer_payment_method ? (
+                            <span className="font-medium text-blue-600">🏦 {(r as any).customer_payment_method}</span>
+                          ) : (
+                            r.requester?.role === "customer" ? "Khách hàng (Hoàn về Ví)" : r.requester?.role === "provider" ? "Tài xế" : "Hoàn về Ví"
+                          )}
                         </div>
                       </td>
                       <td className="px-4 py-3 font-semibold" style={{ color: "var(--text)" }}>

@@ -20,9 +20,9 @@ const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET || 'VbCe8dGdXxul
 const CLOUDINARY_UPLOAD_PRESET = process.env.CLOUDINARY_UPLOAD_PRESET || 'unimove_preset';
 
 // PayOS — Merchant API v2: https://api-merchant.payos.vn/v2
-const PAYOS_CLIENT_ID = process.env.PAYOS_CLIENT_ID || '';
-const PAYOS_API_KEY = process.env.PAYOS_API_KEY || '';
-const PAYOS_CHECKSUM_KEY = process.env.PAYOS_CHECKSUM_KEY || '';
+const PAYOS_CLIENT_ID = process.env.PAYOS_CLIENT_ID || '8b359884-e7fb-4744-9d92-04b605b7963d';
+const PAYOS_API_KEY = process.env.PAYOS_API_KEY || '2828b4c4-0ffc-4983-a238-eeb4864727d8';
+const PAYOS_CHECKSUM_KEY = process.env.PAYOS_CHECKSUM_KEY || '59f60619cc31e0c54f4e58f0d5f6888cff3313ea3ffd396d060dd56b76c7c7ff';
 const PAYOS_API_URL = process.env.PAYOS_API_URL || 'https://api-merchant.payos.vn/v2';
 
 // Application URLs — APP_URL = frontend web; API_URL = backend (PayOS return callback)
@@ -42,7 +42,7 @@ const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY || '';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 
 // Node API
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Email configuration (Gmail for password reset OTP)

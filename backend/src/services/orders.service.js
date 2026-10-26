@@ -324,19 +324,17 @@ async function createOrder(customerId, payload) {
   };
 
   let insertRow = { ...baseRow, quote_request: p.quote_request === true };
-  let { data, error } = await supabaseAdmin.from('orders').insert(insertRow).select('*').single();
-
-  if (error && /quote_request/i.test(error.message)) {
-    ({ data, error } = await supabaseAdmin.from('orders').insert(baseRow).select('*').single());
-  }
-
-  if (error && /dorm_image_urls/i.test(error.message) && photoUrls.length > 0) {
-    const { dorm_image_urls: _d, ...withoutPhotos } = insertRow;
-    ({ data, error } = await supabaseAdmin.from('orders').insert(withoutPhotos).select('*').single());
-    if (error && /quote_request/i.test(error.message)) {
-      const { quote_request: _q, ...fallbackRow } = withoutPhotos;
-      ({ data, error } = await supabaseAdmin.from('orders').insert(fallbackRow).select('*').single());
+  let data = null;
+  let error = null;
+  for (let attempt = 0; attempt < 6; attempt++) {
+    ({ data, error } = await supabaseAdmin.from('orders').insert(insertRow).select('*').single());
+    if (!error) break;
+    const m = String(error.message || '').match(/Could not find the '([^']+)' column/i);
+    if (m && m[1] && Object.prototype.hasOwnProperty.call(insertRow, m[1])) {
+      delete insertRow[m[1]];
+      continue;
     }
+    break;
   }
 
   if (error) throw Object.assign(new Error(error.message), { status: 400 });

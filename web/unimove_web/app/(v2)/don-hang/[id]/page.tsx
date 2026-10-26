@@ -858,16 +858,6 @@ export default function DonHangDetailPage() {
                     Đặt cọc ngay →
                   </Button>
                 </div>
-                {process.env.NODE_ENV === "development" && (
-                  <button
-                    type="button"
-                    onClick={devSkipPayment}
-                    disabled={acting}
-                    className="w-full h-8 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-xl hover:bg-amber-100 transition-colors disabled:opacity-50"
-                  >
-                    🧪 Dev: Bỏ qua PayOS (giả lập thành công)
-                  </button>
-                )}
               </Container>
             </div>
           )}

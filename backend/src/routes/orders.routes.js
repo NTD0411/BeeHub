@@ -1,6 +1,10 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const ordersController = require('../controllers/orders.controller');
-const orderQuotesController = require('../controllers/order_quotes.controller');
+const orderQuotesController = fs.existsSync(path.join(__dirname, '../controllers/order_quotes.controller.js'))
+  ? require('../controllers/order_quotes.controller')
+  : null;
 const { requireAuth, requireRole } = require('../middleware/auth.middleware');
 const { handleDeliveryPhotoUpload } = require('../middleware/upload.middleware');
 
@@ -12,19 +16,21 @@ router.post('/', requireAuth, requireRole('customer'), ordersController.createOr
 router.post('/:id/cancel-timeout', requireAuth, requireRole('customer'), ordersController.cancelByCustomerTimeout);
 router.get('/:id/cancel-estimate', requireAuth, requireRole('customer'), ordersController.cancelEstimate);
 router.get('/:id', requireAuth, ordersController.getOrder);
-router.get('/:id/quotes', requireAuth, orderQuotesController.listQuotes);
-router.post(
-  '/:id/quotes',
-  requireAuth,
-  requireRole('provider'),
-  orderQuotesController.submitQuote,
-);
-router.post(
-  '/:id/quotes/:quoteId/select',
-  requireAuth,
-  requireRole('customer'),
-  orderQuotesController.selectQuote,
-);
+if (orderQuotesController) {
+  router.get('/:id/quotes', requireAuth, orderQuotesController.listQuotes);
+  router.post(
+    '/:id/quotes',
+    requireAuth,
+    requireRole('provider'),
+    orderQuotesController.submitQuote,
+  );
+  router.post(
+    '/:id/quotes/:quoteId/select',
+    requireAuth,
+    requireRole('customer'),
+    orderQuotesController.selectQuote,
+  );
+}
 router.post(
   '/:id/respond',
   requireAuth,

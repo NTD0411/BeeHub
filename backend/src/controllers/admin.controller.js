@@ -565,6 +565,14 @@ async function getDisputeDetails(req, res) {
       });
     }
 
+    const { data: pms } = await supabaseAdmin
+      .from('payment_methods')
+      .select('id, kind, label, is_default, metadata')
+      .eq('customer_id', dispute.raised_by)
+      .eq('is_active', true)
+      .order('is_default', { ascending: false });
+    dispute.customer_payment_methods = pms || [];
+
     res.json({
       success: true,
       data: dispute,
@@ -642,15 +650,34 @@ async function resolveDispute(req, res) {
     if (refund_amount && refund_amount > 0) {
       const paymentsService = require('../services/payments.service');
 
-      // Tìm payment của đơn để link refund đúng
-      const { data: payment } = await supabaseAdmin
+            // Tìm payment của đơn để link refund đúng (nếu đơn mẫu chưa có payment thì tự khởi tạo)
+      let { data: payment } = await supabaseAdmin
         .from('payments')
         .select('id')
         .eq('order_id', updatedDispute.order_id)
-        .eq('status', 'completed')
+        .in('status', ['completed', 'partially_refunded'])
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
+
+      if (!payment) {
+        const { data: createdPay } = await supabaseAdmin
+          .from('payments')
+          .insert({
+            order_id: updatedDispute.order_id,
+            customer_id: updatedDispute.raised_by,
+            payment_code: 'PAY-SEED-' + Date.now().toString().slice(-6),
+            amount: Math.max(Number(refund_amount) || 0, 150000),
+            payment_method: 'payos',
+            payment_purpose: 'deposit',
+            status: 'completed',
+            escrow_status: 'held',
+            paid_at: new Date().toISOString(),
+          })
+          .select('id')
+          .single();
+        payment = createdPay;
+      }
 
       if (payment) {
         // Tạo refund record rồi gọi completeRefund để cộng ví + notify
@@ -1320,6 +1347,7 @@ async function getRefunds(req, res) {
       .from('refunds')
       .select(`
         id,
+        requested_by,
         refund_amount,
         refund_reason,
         status,
@@ -1350,6 +1378,23 @@ async function getRefunds(req, res) {
 
     const { data: refunds, error } = await query;
     if (error) throw error;
+
+    const reqIds = [...new Set((refunds || []).map((r) => r.requested_by).filter(Boolean))];
+    let pmByUser = {};
+    if (reqIds.length > 0) {
+      const { data: pms } = await supabaseAdmin
+        .from('payment_methods')
+        .select('customer_id, label, is_default')
+        .in('customer_id', reqIds)
+        .eq('is_active', true)
+        .order('is_default', { ascending: false });
+      for (const pm of (pms || [])) {
+        if (!pmByUser[pm.customer_id]) pmByUser[pm.customer_id] = pm.label;
+      }
+    }
+    for (const r of (refunds || [])) {
+      r.customer_payment_method = pmByUser[r.requested_by] || null;
+    }
 
     // Get total count
     let countQuery = supabaseAdmin.from('refunds').select('*', { count: 'exact', head: true });

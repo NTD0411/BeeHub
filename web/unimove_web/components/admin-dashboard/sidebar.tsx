@@ -17,6 +17,7 @@ import {
   Activity,
   RotateCcw,
   Wallet,
+  Database,
   Settings,
   Truck,
   ChevronDown,
@@ -123,6 +124,11 @@ function buildNavItems(pendingVerifications?: number): NavItem[] {
       label: "Nhật ký hoạt động",
       href: "/admin/activity-logs",
       icon: History,
+    },
+    {
+      label: "Dữ liệu hệ thống",
+      href: "/admin/database",
+      icon: Database,
     },
     {
       label: "Cài đặt",

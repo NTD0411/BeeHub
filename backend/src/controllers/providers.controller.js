@@ -1,11 +1,4 @@
 const providersService = require('../services/providers.service');
-
-/**
- * providers.controller.js — Controller cho Provider API.
- *
- * Routes mount tại /api/providers (xem providers.routes.js).
- */
-const providersService = require('../services/providers.service');
 const { httpError } = require('../services/auth.helpers');
 
 /** GET /api/providers/browse — Tìm kiếm danh sách nhà xe công khai */
@@ -22,26 +15,20 @@ async function browse(req, res, next) {
   }
 }
 
+/** GET /api/providers/:id — Xem profile công khai của một nhà xe */
 async function getById(req, res, next) {
   try {
     const reviewsLimit = req.query.reviews_limit
       ? parseInt(req.query.reviews_limit, 10)
       : 5;
     const data = await providersService.getProviderById(req.params.id, { reviewsLimit });
-/** GET /api/providers/:id — Xem profile công khai của 1 nhà xe */
-async function getById(req, res, next) {
-  try {
-    const data = await providersService.getProviderById(req.params.id);
     res.json({ success: true, data });
   } catch (error) {
     next(error);
   }
 }
 
-async function getEarnings(req, res, next) {
-  try {
-    const data = await providersService.getEarnings(req.user.id, req.query.period || 'week');
-/** GET /api/providers/me — Xem profile provider hiện tại (Feature #39) */
+/** GET /api/providers/me — Xem profile provider hiện tại */
 async function getMe(req, res, next) {
   try {
     const data = await providersService.getMyProfile(req.user.id);
@@ -51,10 +38,7 @@ async function getMe(req, res, next) {
   }
 }
 
-async function getSchedule(req, res, next) {
-  try {
-    const data = await providersService.getSchedule(req.user.id);
-/** GET /api/providers/me/documents — Xem danh sách giấy tờ đã upload (Feature #39) */
+/** GET /api/providers/me/documents — Xem danh sách giấy tờ đã tải lên */
 async function getMyDocuments(req, res, next) {
   try {
     const data = await providersService.getMyDocuments(req.user.id);
@@ -64,10 +48,7 @@ async function getMyDocuments(req, res, next) {
   }
 }
 
-async function updateSchedule(req, res, next) {
-  try {
-    const data = await providersService.updateSchedule(req.user.id, req.body.slots);
-/** POST /api/providers/me/documents — Upload giấy tờ xác minh (Feature #38) */
+/** POST /api/providers/me/documents — Tải giấy tờ xác minh lên */
 async function uploadDocuments(req, res, next) {
   try {
     if (!req.files || Object.keys(req.files).length === 0) {
@@ -80,10 +61,7 @@ async function uploadDocuments(req, res, next) {
   }
 }
 
-async function uploadDocuments(req, res, next) {
-  try {
-    const data = await providersService.uploadProviderDocuments(req.user.id, req.files || {});
-/** POST /api/providers/me/request-verification — Yêu cầu xét duyệt lại (Feature #39) */
+/** POST /api/providers/me/request-verification — Gửi yêu cầu xét duyệt */
 async function requestVerification(req, res, next) {
   try {
     const data = await providersService.requestVerification(req.user.id);
@@ -93,10 +71,7 @@ async function requestVerification(req, res, next) {
   }
 }
 
-async function getMyDocuments(req, res, next) {
-  try {
-    const data = await providersService.getMyDocuments(req.user.id);
-/** GET /api/providers/me/dashboard — Xem dashboard (Feature #40) */
+/** GET /api/providers/me/dashboard — Xem dashboard */
 async function getDashboard(req, res, next) {
   try {
     const data = await providersService.getDashboard(req.user.id);
@@ -106,23 +81,16 @@ async function getDashboard(req, res, next) {
   }
 }
 
-async function getQuotedOrders(req, res, next) {
-  try {
-    const data = await providersService.getQuotedOrders(req.user.id);
-/** GET /api/providers/me/earnings — Xem thu nhập (Feature #40) */
+/** GET /api/providers/me/earnings — Xem thu nhập */
 async function getEarnings(req, res, next) {
   try {
-    const period = req.query.period || 'month'; // week | month | year
-    const data = await providersService.getEarnings(req.user.id, period);
+    const data = await providersService.getEarnings(req.user.id, req.query.period || 'month');
     res.json({ success: true, data });
   } catch (error) {
     next(error);
   }
 }
 
-async function requestVerification(req, res, next) {
-  try {
-    const data = await providersService.requestVerification(req.user.id);
 /** GET /api/providers/me/schedule — Xem lịch làm việc */
 async function getSchedule(req, res, next) {
   try {
@@ -156,13 +124,6 @@ async function getQuotedOrders(req, res, next) {
 module.exports = {
   browse,
   getById,
-  getEarnings,
-  getSchedule,
-  updateSchedule,
-  uploadDocuments,
-  getMyDocuments,
-  getQuotedOrders,
-  requestVerification,
   getMe,
   getMyDocuments,
   uploadDocuments,

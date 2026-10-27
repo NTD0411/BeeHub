@@ -13,6 +13,22 @@ API Admin cho phép quản trị viên đăng nhập và truy cập các chức 
 
 ## Endpoints
 
+### Database Browser (read-only)
+
+Các endpoint tra cứu database chỉ dành cho admin, chỉ đọc các bảng trong schema `public`.
+Các cột có tên liên quan đến mật khẩu, secret, token, credential, API/access key,
+private key, authorization hoặc OTP được ẩn giá trị.
+
+- **GET** `/api/admin/data/tables` — danh sách bảng.
+- **GET** `/api/admin/data/tables/:table/schema` — kiểu dữ liệu, nullable, default,
+  khóa chính (PK) và khóa ngoại (FK) của từng cột.
+- **GET** `/api/admin/data/tables/:table/rows` — dữ liệu phân trang.
+
+Tham số truy vấn của endpoint rows: `page` (mặc định `1`), `pageSize` (`10`, `25`,
+`50` hoặc `100`), `search`, `sortBy`, `sortOrder` (`asc`/`desc`), `filterColumn`,
+`filterValue`, và `filterMode` (`contains`/`exact`). Từ khóa tìm kiếm và lọc không
+áp dụng lên các cột nhạy cảm.
+
 ### 1. Admin Login
 
 **POST** `/api/admin/auth/login`

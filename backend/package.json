@@ -42,11 +42,11 @@
     "node-cron": "^4.4.1",
     "node-fetch": "^2.7.0",
     "nodemailer": "^8.0.10",
+    "pg": "^8.21.0",
     "unimove-monorepo": "file:..",
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14",
-    "pg": "^8.21.0"
+    "nodemon": "^3.1.14"
   }
 }

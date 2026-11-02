@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Test Google Auth</title>
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; }
+    pre { background: #f4f4f4; padding: 16px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 6px; border: none; background: #4285F4; color: white; margin: 8px 4px; }
+    button:hover { background: #357ae8; }
+    .success { color: green; }
+    .error { color: red; }
+    label { font-weight: bold; }
+    input { width: 100%; padding: 8px; margin: 6px 0 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+    .section { margin-bottom: 24px; border: 1px solid #ddd; padding: 16px; border-radius: 8px; }
+    h3 { margin-top: 0; }
+  </style>
+</head>
+<body>
+  <h2>🔐 UniMove — Test Google Auth</h2>
+
+  <div class="section">
+    <h3>Bước 1: Đăng nhập Google</h3>
+    <p>Nhập Google Client ID của bạn rồi click Sign In:</p>
+    <label>Google Client ID:</label>
+    <input type="text" id="clientId" placeholder="xxxx.apps.googleusercontent.com" />
+    <button onclick="loadGoogleSDK()">Load Google SDK & Sign In</button>
+    <div id="googleBtn" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="section">
+    <h3>Bước 2: id_token nhận được</h3>
+    <pre id="tokenOutput">Chưa có token...</pre>
+    <button onclick="copyToken()">📋 Copy id_token</button>
+  </div>
+
+  <div class="section">
+    <h3>Bước 3: Gọi POST /api/auth/google</h3>
+    <label>Backend URL:</label>
+    <input type="text" id="backendUrl" value="http://localhost:3000/api/auth/google" />
+    <button onclick="callBackend()">🚀 Gửi lên Backend</button>
+    <h4>Response:</h4>
+    <pre id="responseOutput">Chưa có response...</pre>
+  </div>
+
+  <script>
+    let idToken = null;
+
+    function loadGoogleSDK() {
+      const clientId = document.getElementById('clientId').value.trim();
+      if (!clientId) {
+        alert('Vui lòng nhập Google Client ID');
+        return;
+      }
+
+      // Load Google Identity Services SDK
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.onload = () => initGoogle(clientId);
+      document.head.appendChild(script);
+    }
+
+    function initGoogle(clientId) {
+      google.accounts.id.initialize({
+        client_id: clientId,
+        callback: handleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById('googleBtn'),
+        { theme: 'outline', size: 'large', text: 'signin_with' }
+      );
+
+      google.accounts.id.prompt();
+    }
+
+    function handleCredentialResponse(response) {
+      idToken = response.credential;
+      document.getElementById('tokenOutput').textContent = idToken;
+      document.getElementById('tokenOutput').className = 'success';
+    }
+
+    function copyToken() {
+      if (!idToken) { alert('Chưa có token'); return; }
+      navigator.clipboard.writeText(idToken);
+      alert('Đã copy id_token!');
+    }
+
+    async function callBackend() {
+      if (!idToken) {
+        alert('Chưa có id_token. Hãy đăng nhập Google trước.');
+        return;
+      }
+
+      const url = document.getElementById('backendUrl').value.trim();
+      const output = document.getElementById('responseOutput');
+      output.textContent = 'Đang gọi...';
+      output.className = '';
+
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_token: idToken }),
+        });
+
+        const data = await res.json();
+        output.textContent = JSON.stringify(data, null, 2);
+        output.className = res.ok ? 'success' : 'error';
+      } catch (err) {
+        output.textContent = 'Fetch error: ' + err.message;
+        output.className = 'error';
+      }
+    }
+  </script>
+</body>
+</html>

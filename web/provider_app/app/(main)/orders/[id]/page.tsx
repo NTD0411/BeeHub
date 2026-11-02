@@ -26,6 +26,7 @@ interface OrderDetail {
   pickup_notes?: string;
   scheduled_pickup_time?: string;
   number_of_helpers?: number;
+  num_helpers?: number;
   special_notes?: string;
   estimated_price?: number;
   final_price?: number;

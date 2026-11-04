@@ -18,6 +18,9 @@ interface ProviderDocument {
 }
 
 const DOC_TYPE_LABEL: Record<string, string> = {
+  id_card_front:         "CCCD / Căn cước (mặt trước)",
+  id_card_back:          "CCCD / Căn cước (mặt sau)",
+  license:               "Giấy phép lái xe",
   cccd_front:           "CCCD / Căn cước (mặt trước)",
   cccd_back:            "CCCD / Căn cước (mặt sau)",
   driver_license:       "Giấy phép lái xe",
@@ -181,24 +184,36 @@ function SkeletonCard() {
 
 export default function DocumentsPage() {
   const [docs, setDocs]       = useState<ProviderDocument[]>([]);
+  const [verificationStatus, setVerificationStatus] = useState("incomplete");
+  const [verificationNotes, setVerificationNotes] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState<string | null>(null);
   const [requesting, setRequesting] = useState(false);
   const [requestSuccess, setRequestSuccess] = useState(false);
   const [requestError, setRequestError] = useState<string | null>(null);
 
-  const loadDocs = () => {
+  const loadDocs = async () => {
     setLoading(true);
-    providerApi.getDocuments()
-      .then(r => {
-        if (r.success && Array.isArray(r.data)) setDocs(r.data as ProviderDocument[]);
-        else setError("Không tải được giấy tờ.");
-      })
-      .catch(() => setError("Lỗi kết nối. Vui lòng thử lại."))
-      .finally(() => setLoading(false));
+    try {
+      const [docsRes, verificationRes] = await Promise.all([
+        providerApi.getDocuments(),
+        providerApi.getVerification(),
+      ]);
+      if (docsRes.success && Array.isArray(docsRes.data)) setDocs(docsRes.data as ProviderDocument[]);
+      else setError("Không tải được giấy tờ.");
+      if (verificationRes.success && verificationRes.data) {
+        const verification = verificationRes.data as { status?: string; verification_status?: string; verification_notes?: string | null };
+        setVerificationStatus(verification.verification_status ?? verification.status ?? "incomplete");
+        setVerificationNotes(verification.verification_notes ?? null);
+      }
+    } catch {
+      setError("Lỗi kết nối. Vui lòng thử lại.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => { loadDocs(); }, []);
+  useEffect(() => { void loadDocs(); }, []);
 
   const handleReupload = async (docType: string, file: File) => {
     const fieldKey = DOC_TYPE_TO_FIELD[docType] ?? docType;
@@ -207,7 +222,7 @@ export default function DocumentsPage() {
     setRequestSuccess(false);
     setRequestError(null);
     // Reload để cập nhật ảnh mới
-    setTimeout(() => loadDocs(), 800);
+    window.setTimeout(() => { void loadDocs(); }, 300);
   };
 
   const handleRequestVerification = async () => {
@@ -217,7 +232,8 @@ export default function DocumentsPage() {
       const res = await providerApi.requestVerification();
       if (res.success) {
         setRequestSuccess(true);
-        loadDocs();
+        setVerificationStatus("pending");
+        void loadDocs();
       } else {
         setRequestError((res as { message?: string }).message || "Yêu cầu thất bại");
       }
@@ -230,11 +246,15 @@ export default function DocumentsPage() {
 
   const verified   = docs.filter(d => d.is_verified).length;
   const total      = docs.length;
-  const allVerified = total > 0 && verified === total;
+  const allVerified = verificationStatus === "approved" || total > 0 && verified === total;
   const hasRejected = docs.some(d => !d.is_verified && d.notes?.toLowerCase().includes("reject"));
-  const isPending   = !allVerified && !hasRejected && total > 0;
-  // Cho phép yêu cầu xác minh lại khi: có docs, không phải tất cả verified, chưa đang pending, chưa request thành công
-  const canRequestReVerify = total > 0 && !allVerified && !isPending && !requestSuccess;
+  const isPending = verificationStatus === "pending";
+  const hasLegacyIdCard = docs.some(d => d.document_type === "id_card");
+  const documentTypes = new Set(docs.map(d => d.document_type));
+  const hasRequiredDocuments = (documentTypes.has("id_card_front") && documentTypes.has("id_card_back") || hasLegacyIdCard)
+    && documentTypes.has("license")
+    && documentTypes.has("vehicle_registration");
+  const canRequestReVerify = hasRequiredDocuments && !allVerified && !isPending && !requestSuccess;
 
   const sorted = [...docs].sort((a, b) => {
     const ai = DOC_TYPE_ORDER.indexOf(a.document_type);
@@ -273,23 +293,27 @@ export default function DocumentsPage() {
         }`}>
           {allVerified
             ? <CheckCircle size={20} className="text-green-600 shrink-0" />
-            : hasRejected
+            : verificationStatus === "rejected" || hasRejected
             ? <XCircle size={20} className="text-red-600 shrink-0" />
             : <AlertCircle size={20} className="text-orange-600 shrink-0" />}
           <div>
             <p className={`text-sm font-bold ${allVerified ? "text-green-700" : hasRejected ? "text-red-700" : "text-orange-700"}`}>
               {allVerified
                 ? "Tất cả giấy tờ đã được xác minh"
-                : hasRejected
+              : verificationStatus === "rejected" || hasRejected
                 ? "Một số giấy tờ bị từ chối — hãy upload lại"
-                : `Còn ${total - verified} giấy tờ đang chờ xác minh`}
+              : isPending
+                ? "Hồ sơ đang chờ quản trị viên xét duyệt"
+                : `Đã nộp ${total} loại giấy tờ`}
             </p>
             <p className={`text-xs ${allVerified ? "text-green-600" : hasRejected ? "text-red-600" : "text-orange-600"}`}>
               {allVerified
                 ? "Tài khoản của bạn đang hoạt động bình thường."
-                : hasRejected
+              : verificationStatus === "rejected" || hasRejected
                 ? "Nhấn 'Upload lại' trên từng giấy tờ bị từ chối."
-                : "Admin sẽ xét duyệt trong 1-2 ngày làm việc."}
+              : isPending
+                ? verificationNotes || "Bạn sẽ nhận thông báo khi có kết quả xét duyệt."
+                : "Hoàn tất giấy tờ bắt buộc rồi gửi hồ sơ để bắt đầu xét duyệt."}
             </p>
           </div>
         </div>

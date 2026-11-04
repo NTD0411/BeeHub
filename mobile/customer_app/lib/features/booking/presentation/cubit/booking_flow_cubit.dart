@@ -456,6 +456,8 @@ class BookingFlowCubit extends Cubit<BookingFlowState> {
 
   void selectPartner(String id) => emit(state.copyWith(selectedPartnerId: id));
 
+  void setSharedMove(bool enabled) => emit(state.copyWith(isSharedMove: enabled));
+
   void selectLaborProvider(String id) => emit(state.copyWith(selectedLaborProviderId: id));
 
   void selectPayment(PaymentMethod method) => emit(state.copyWith(paymentMethod: method));

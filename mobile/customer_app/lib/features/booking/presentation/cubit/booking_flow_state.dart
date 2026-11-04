@@ -16,6 +16,7 @@ class BookingFlowState {
     this.resolvingDestination = false,
     this.selectedTier = ServiceTier.standard,
     this.selectedPartnerId,
+    this.isSharedMove = false,
     this.selectedLaborProviderId,
     this.paymentMethod = PaymentMethod.payos,
     this.discountCode = '',
@@ -87,6 +88,7 @@ class BookingFlowState {
   final bool resolvingDestination;
   final ServiceTier selectedTier;
   final String? selectedPartnerId;
+  final bool isSharedMove;
   final String? selectedLaborProviderId;
   final PaymentMethod paymentMethod;
   final String discountCode;
@@ -347,6 +349,18 @@ class BookingFlowState {
     return selectedPartner?.price ?? 0;
   }
 
+  int get sharedMoveTransportPrice => isComboBooking ? movePackagePrice : partnerTransportPrice;
+
+  bool get sharedMoveSelected =>
+      isSharedMove && !isQuoteBooking && !isLaborService && sharedMoveTransportPrice > 0;
+
+  int get sharedMoveDiscount {
+    if (!sharedMoveSelected) return 0;
+    final calculated = (sharedMoveTransportPrice * 0.4).round();
+    final eligibleTotal = (subtotal - discount).clamp(0, subtotal).toInt();
+    return calculated < eligibleTotal ? calculated : eligibleTotal;
+  }
+
   int get quoteSurchargeTotal => quoteSurcharges.fold(0, (sum, s) => sum + s.amount);
 
   int get quoteQuotedTotal => quoteBasePrice + quoteSurchargeTotal;
@@ -364,7 +378,7 @@ class BookingFlowState {
 
   int get serviceFee => 0;
 
-  int get total => subtotal - discount + serviceFee;
+  int get total => (subtotal - discount - sharedMoveDiscount + serviceFee).clamp(0, subtotal + serviceFee).toInt();
 
   String get scheduledPickupLabel {
     final dt = scheduledPickupAt;
@@ -398,6 +412,7 @@ class BookingFlowState {
     bool clearPlaceSuggestions = false,
     ServiceTier? selectedTier,
     String? selectedPartnerId,
+    bool? isSharedMove,
     String? selectedLaborProviderId,
     PaymentMethod? paymentMethod,
     String? discountCode,
@@ -468,6 +483,7 @@ class BookingFlowState {
       resolvingDestination: resolvingDestination ?? this.resolvingDestination,
       selectedTier: selectedTier ?? this.selectedTier,
       selectedPartnerId: selectedPartnerId ?? this.selectedPartnerId,
+      isSharedMove: isSharedMove ?? this.isSharedMove,
       selectedLaborProviderId: clearLaborProvider
           ? null
           : (selectedLaborProviderId ?? this.selectedLaborProviderId),

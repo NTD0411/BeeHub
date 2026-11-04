@@ -35,6 +35,8 @@ export default function ThanhToanPage() {
     comboLaborFee,
     insuranceFee,
     discountAmount,
+    isSharedMove,
+    sharedMoveDiscount,
   } = store;
 
   const [loading, setLoading] = useState(false);
@@ -151,6 +153,9 @@ export default function ThanhToanPage() {
           <div className="flex justify-between"><span className="text-gray-500">Gói vận chuyển</span><span>{formatVND(movePackagePrice())}</span></div>
           <div className="flex justify-between"><span className="text-gray-500">Khuân vác combo</span><span>{formatVND(comboLaborFee())}</span></div>
           <div className="flex justify-between"><span className="text-gray-500">Bảo hiểm</span><span>{formatVND(insuranceFee())}</span></div>
+          {isSharedMove && sharedMoveDiscount() > 0 && (
+            <div className="flex justify-between font-semibold text-green-700"><span>Ưu đãi vận chuyển chung (40%)</span><span>-{formatVND(sharedMoveDiscount())}</span></div>
+          )}
           {discountApplied && (
             <div className="flex justify-between text-green-600"><span>Giảm giá</span><span>-{formatVND(discountAmount())}</span></div>
           )}

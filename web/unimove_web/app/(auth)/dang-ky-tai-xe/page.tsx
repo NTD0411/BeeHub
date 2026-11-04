@@ -208,6 +208,15 @@ export default function DangKyTaiXePage() {
       (Object.keys(docs) as DocKey[]).forEach(k => { if (docs[k]) files[k] = docs[k]!; });
       if (vehicleFile) files.vehicle_photo = vehicleFile;
       await providerApi.uploadDocuments(files);
+      const verification = await providerApi.requestVerification();
+      if (!verification.success) throw new Error(verification.message || "Không gửi được hồ sơ xét duyệt");
+      const profile = await authApi.getMe();
+      if (profile.success && profile.data) {
+        const token = localStorage.getItem("unimove_token") ?? "";
+        const freshUser = { ...user!, ...(profile.data as AuthUser), verification_status: "pending" };
+        storeAuth(freshUser, token);
+        setUser(freshUser);
+      }
       setStep(4);
     } catch (e) { setError(e instanceof Error ? e.message : "Upload thất bại, thử lại sau"); }
     finally { setLoading(false); }

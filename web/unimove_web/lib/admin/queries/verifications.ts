@@ -13,7 +13,7 @@ export async function getPendingProviders({
   status?: VerificationStatus;
 }) {
   try {
-    const data = await serverGet<any>("/admin/providers/pending");
+    const data = await serverGet<any>(`/admin/providers/pending?status=${encodeURIComponent(status)}`);
     if (data.success) {
       return {
         data: data.data ?? [],

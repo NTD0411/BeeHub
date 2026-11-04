@@ -10,6 +10,7 @@ import { getStoredUser, storeUser, type ProviderUser } from "@/lib/auth";
 import { useToast } from "@/components/ui/toast";
 
 interface DocFile { file: File | null; preview: string | null; }
+interface SavedDocument { document_type: string; document_url: string; is_verified: boolean; notes?: string | null; }
 
 const DOC_TYPES = [
   { key: "cccd_front", label: "CCCD/CMND (mặt trước)", icon: FileText, required: true },
@@ -23,31 +24,46 @@ export default function DocumentsPage() {
   const { toast } = useToast();
   const [user, setUser] = useState<ProviderUser | null>(getStoredUser());
   const [profileLoading, setProfileLoading] = useState(true);
+  const [savedDocs, setSavedDocs] = useState<Record<string, SavedDocument>>({});
   const [docs, setDocs] = useState<Record<string, DocFile>>(
     Object.fromEntries(DOC_TYPES.map((d) => [d.key, { file: null, preview: null }]))
   );
   const [loading, setLoading] = useState(false);
   const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
-  // Luôn fetch profile mới nhất từ server để có verification_status và verification_notes
   useEffect(() => {
-    async function fetchProfile() {
+    async function fetchProviderState() {
       try {
-        const res = await providerProfileApi.getMe();
-        if (res.success && res.data) {
-          const freshUser = res.data as ProviderUser;
+        const [profileRes, docsRes, verificationRes] = await Promise.all([
+          providerProfileApi.getMe(),
+          providerProfileApi.getDocuments(),
+          providerProfileApi.getVerification(),
+        ]);
+        const verification = verificationRes.data as { status?: ProviderUser["verification_status"]; verification_notes?: string | null } | undefined;
+        if (profileRes.success && profileRes.data) {
+          const freshUser = {
+            ...(profileRes.data as ProviderUser),
+            verification_status: verification?.status ?? (profileRes.data as ProviderUser).verification_status,
+            verification_notes: verification?.verification_notes ?? (profileRes.data as ProviderUser).verification_notes,
+          };
           setUser(freshUser);
-          // Cập nhật localStorage để dashboard cũng phản ánh đúng
           const token = localStorage.getItem("provider_token");
           if (token) storeUser(freshUser, token);
         }
+        const loadedDocs = Array.isArray(docsRes.data) ? docsRes.data as SavedDocument[] : [];
+        const byType = Object.fromEntries(loadedDocs.map((doc) => [doc.document_type, doc]));
+        setSavedDocs(byType);
+        setDocs((previous) => Object.fromEntries(DOC_TYPES.map(({ key }) => [
+          key,
+          previous[key]?.file ? previous[key] : { file: null, preview: byType[key]?.document_url ?? null },
+        ])));
       } catch {
-        // Fallback về localStorage nếu lỗi mạng
+        // Keep the stored session if the network is temporarily unavailable.
       } finally {
         setProfileLoading(false);
       }
     }
-    fetchProfile();
+    fetchProviderState();
   }, []);
 
   const handleFileChange = (key: string, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +75,7 @@ export default function DocumentsPage() {
 
   const handleSubmit = async () => {
     const required = DOC_TYPES.filter((d) => d.required);
-    const missing = required.filter((d) => !docs[d.key].file);
+    const missing = required.filter((d) => !docs[d.key].file && !savedDocs[d.key]);
     if (missing.length > 0) {
       toast(`Vui lòng upload: ${missing.map((d) => d.label).join(", ")}`, "error");
       return;
@@ -68,22 +84,30 @@ export default function DocumentsPage() {
     try {
       const files: Record<string, File> = {};
       Object.entries(docs).forEach(([key, val]) => { if (val.file) files[key] = val.file; });
-      await providerProfileApi.uploadDocuments(files);
-      toast("Upload giấy tờ thành công! Chờ admin xét duyệt.", "success");
-      // Fetch lại profile để cập nhật trạng thái
-      const res = await providerProfileApi.getMe();
+      if (Object.keys(files).length) await providerProfileApi.uploadDocuments(files);
+      const request = await providerProfileApi.requestVerification();
+      if (!request.success) throw new Error(request.message || "Không gửi được hồ sơ xét duyệt");
+      toast("Đã gửi hồ sơ xác minh. Chờ quản trị viên xét duyệt.", "success");
+      const [res, docsRes] = await Promise.all([
+        providerProfileApi.getMe(),
+        providerProfileApi.getDocuments(),
+      ]);
       if (res.success && res.data) {
-        const freshUser = res.data as ProviderUser;
+        const freshUser = { ...(res.data as ProviderUser), verification_status: "pending" as const };
         setUser(freshUser);
         const token = localStorage.getItem("provider_token");
         if (token) storeUser(freshUser, token);
       }
+      const loadedDocs = Array.isArray(docsRes.data) ? docsRes.data as SavedDocument[] : [];
+      const byType = Object.fromEntries(loadedDocs.map((doc) => [doc.document_type, doc]));
+      setSavedDocs(byType);
+      setDocs(Object.fromEntries(DOC_TYPES.map(({ key }) => [key, { file: null, preview: byType[key]?.document_url ?? null }])));
     } catch (err) {
       toast(err instanceof Error ? err.message : "Upload thất bại", "error");
     } finally { setLoading(false); }
   };
 
-  const uploadedCount = Object.values(docs).filter((d) => d.file !== null).length;
+  const uploadedCount = DOC_TYPES.filter(({ key }) => Boolean(docs[key].file || savedDocs[key])).length;
 
   const verificationStatus = user?.verification_status;
   const isVerified = user?.is_verified;
@@ -91,7 +115,7 @@ export default function DocumentsPage() {
   const isRejected = verificationStatus === "rejected";
   const isPending = verificationStatus === "pending" && !isVerified;
   // Cho phép upload khi: bị reject (phải làm lại) hoặc chưa có trạng thái gì (mới đăng ký)
-  const canUpload = isRejected || (!isVerified && !isPending);
+  const canUpload = !isVerified && !isPending;
 
   if (profileLoading) {
     return (
@@ -220,7 +244,7 @@ export default function DocumentsPage() {
             <div className="space-y-3">
               {DOC_TYPES.map(({ key, label, icon: Icon, required }) => {
                 const doc = docs[key];
-                const isUploaded = !!doc.file;
+                const isUploaded = !!doc.file || !!savedDocs[key];
                 return (
                   <div key={key}>
                     <input
@@ -273,7 +297,7 @@ export default function DocumentsPage() {
 
             <Button variant="gradient" size="xl" className="w-full gap-2" loading={loading} onClick={handleSubmit}>
               <Upload size={20} />
-              {isRejected ? "Nộp lại giấy tờ xác minh" : "Gửi giấy tờ xác minh"}
+              {isRejected ? "Nộp lại giấy tờ xác minh" : "Gửi hồ sơ xét duyệt"}
             </Button>
           </>
         )}

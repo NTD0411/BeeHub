@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -39,6 +40,7 @@ class _DocumentsPageState extends ConsumerState<DocumentsPage> {
       String? documentNumber,
       DateTime? expiryDate,
       String previewLabel,
+      XFile file,
     })>(
       context: context,
       isScrollControlled: true,
@@ -52,16 +54,26 @@ class _DocumentsPageState extends ConsumerState<DocumentsPage> {
     if (result == null || !mounted) return;
 
     final repo = ref.read(providerDocumentsRepositoryProvider);
-    await repo.uploadDocument(
-      type: record.type,
-      documentNumber: result.documentNumber,
-      expiryDate: result.expiryDate,
-      previewLabel: result.previewLabel,
-    );
+    try {
+      await repo.uploadDocument(
+        type: record.type,
+        file: result.file,
+        documentNumber: result.documentNumber,
+        expiryDate: result.expiryDate,
+        previewLabel: result.previewLabel,
+      );
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Không tải được giấy tờ: $error')),
+        );
+      }
+      return;
+    }
     ref.invalidate(providerVerificationProvider);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Đã gửi giấy tờ — chờ admin duyệt')),
+      const SnackBar(content: Text('Đã tải lên giấy tờ. Gửi hồ sơ để bắt đầu xét duyệt.')),
       );
     }
   }
@@ -245,7 +257,7 @@ class _DocumentsPageState extends ConsumerState<DocumentsPage> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${state.approvedRequiredCount} giấy tờ bắt buộc đã duyệt',
+                                    '${state.uploadedRequiredCount}/${state.requiredCount} giấy tờ bắt buộc đã tải lên',
                   style: theme.textTheme.small.copyWith(color: Colors.white70),
                 ),
               ],
@@ -424,6 +436,7 @@ class _DocumentTile extends StatelessWidget {
       builder: (_, theme) {
         final (Color chipBg, Color chipFg) = switch (record.status) {
           DocumentReviewStatus.approved => (c.success.withValues(alpha: 0.12), c.success),
+          DocumentReviewStatus.uploaded => (c.primary.withValues(alpha: 0.1), c.primaryLight),
           DocumentReviewStatus.pending => (Colors.orange.withValues(alpha: 0.12), Colors.orange.shade800),
           DocumentReviewStatus.rejected => (AppColors.error.withValues(alpha: 0.12), AppColors.error),
           DocumentReviewStatus.notUploaded => (c.iconBgTertiary, c.onSurfaceMuted),
@@ -431,12 +444,14 @@ class _DocumentTile extends StatelessWidget {
 
         final actionLabel = switch (record.status) {
           DocumentReviewStatus.notUploaded => 'Tải lên',
+          DocumentReviewStatus.uploaded => 'Thay đổi',
           DocumentReviewStatus.rejected => 'Nộp lại',
           DocumentReviewStatus.pending => 'Đã gửi',
           DocumentReviewStatus.approved => 'Đã duyệt',
         };
 
         final canTap = record.status == DocumentReviewStatus.notUploaded ||
+            record.status == DocumentReviewStatus.uploaded ||
             record.status == DocumentReviewStatus.rejected;
 
         return Padding(

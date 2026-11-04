@@ -3,6 +3,10 @@ import { tierVehicleSize, ALLEY_LABELS, CARGO_LABELS, SCHEDULE_SLOT_HOURS } from
 
 type FlowState = ReturnType<typeof useBookingFlowStore.getState>;
 
+function isPersistableProviderId(value: string | null) {
+  return value != null && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
 function normalizeAscii(s: string) {
   return s
     .toLowerCase()
@@ -143,6 +147,12 @@ export function buildOrderPayload(
     floor_price: 0,
     service_fee: 0,
     total_price: opts.totalPrice,
+    promotion_discount_amount: state.discountAmount(),
+    ...(state.isSharedMove && state.isComboBooking ? {
+      is_group_order: true,
+      shared_move_transport_price: state.movePackagePrice(),
+      total_before_shared_move_discount: opts.totalPrice + state.sharedMoveDiscount(),
+    } : { is_group_order: false }),
     number_of_rooms: 1,
     requires_helpers: helpers > 0,
     number_of_helpers: helpers,
@@ -150,7 +160,7 @@ export function buildOrderPayload(
     ...(state.scheduledPickupAt
       ? { scheduled_pickup_time: new Date(state.scheduledPickupAt).toISOString() }
       : {}),
-    ...(state.selectedPartnerId ? { provider_id: state.selectedPartnerId } : {}),
+    ...(isPersistableProviderId(state.selectedPartnerId) ? { provider_id: state.selectedPartnerId } : {}),
     ...(photoUrls ? { dorm_image_urls: photoUrls, description: `Ảnh mô tả: ${photoUrls.length} tấm` } : {}),
   };
 }

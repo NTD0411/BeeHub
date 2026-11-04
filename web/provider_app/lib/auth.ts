@@ -13,8 +13,9 @@ export interface ProviderUser {
   vehicle_type?: string;
   rating?: number;
   is_verified?: boolean;
+  is_available?: boolean;
   status?: string;
-  verification_status?: "pending" | "approved" | "rejected";
+  verification_status?: "incomplete" | "pending" | "approved" | "rejected";
   verification_notes?: string;
 }
 

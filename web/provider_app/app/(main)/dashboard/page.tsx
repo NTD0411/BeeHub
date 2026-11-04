@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { providerOrdersApi, providerNotificationsApi, providerProfileApi } from "@/lib/api";
+import { providerOrdersApi, providerProfileApi } from "@/lib/api";
 import { getStoredUser, storeUser, type ProviderUser } from "@/lib/auth";
 import { formatVND, getOrderStatusLabel, getOrderStatusColor, timeAgo } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
@@ -29,7 +29,7 @@ interface Order {
 export default function ProviderDashboardPage() {
   const { toast } = useToast();
   const [user, setUser] = useState<ProviderUser | null>(getStoredUser());
-  const [isOnline, setIsOnline] = useState(false);
+  const [isOnline, setIsOnline] = useState(Boolean(getStoredUser()?.is_available));
   const [pendingOrders, setPendingOrders] = useState<Order[]>([]);
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -38,27 +38,21 @@ export default function ProviderDashboardPage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [pendingRes, activeRes, notifRes, profileRes] = await Promise.allSettled([
-        providerOrdersApi.getOrders({ status: "pending" }),
-        providerOrdersApi.getOrders({ status: "accepted,picking_up,in_progress" }),
-        providerNotificationsApi.getUnreadCount(),
-        providerProfileApi.getMe(),
-      ]);
-      if (pendingRes.status === "fulfilled" && pendingRes.value.success) {
-        const d = pendingRes.value.data as { orders?: Order[] };
-        setPendingOrders((d?.orders ?? []).slice(0, 5));
-      }
-      if (activeRes.status === "fulfilled" && activeRes.value.success) {
-        const d = activeRes.value.data as { orders?: Order[] };
-        setActiveOrders((d?.orders ?? []).slice(0, 3));
-      }
-      if (notifRes.status === "fulfilled" && notifRes.value.success) {
-        const d = notifRes.value.data as { count?: number };
-        setUnreadCount(d?.count ?? 0);
-      }
-      if (profileRes.status === "fulfilled" && profileRes.value.success && profileRes.value.data) {
-        const freshUser = profileRes.value.data as ProviderUser;
+      const dashboardRes = await providerProfileApi.getDashboard();
+      if (dashboardRes.success && dashboardRes.data) {
+        const dashboard = dashboardRes.data as {
+          profile?: ProviderUser;
+          pending_orders?: Order[];
+          active_orders?: Order[];
+          unread_notifications?: number;
+        };
+        setPendingOrders((dashboard.pending_orders ?? []).slice(0, 5));
+        setActiveOrders((dashboard.active_orders ?? []).slice(0, 3));
+        setUnreadCount(dashboard.unread_notifications ?? 0);
+        const freshUser = dashboard.profile;
+        if (!freshUser) return;
         setUser(freshUser);
+        setIsOnline(Boolean(freshUser.is_available));
         const token = localStorage.getItem("provider_token");
         if (token) storeUser(freshUser, token);
       }
@@ -69,13 +63,25 @@ export default function ProviderDashboardPage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
-  const toggleOnline = () => {
+  const toggleOnline = async () => {
     if (!user?.is_verified) {
       toast("Bạn cần hoàn tất xác minh tài khoản trước", "error");
       return;
     }
-    setIsOnline(!isOnline);
-    toast(isOnline ? "Đã chuyển sang Offline" : "Bạn đang Online - Sẵn sàng nhận đơn!", isOnline ? "info" : "success");
+    try {
+      const next = !isOnline;
+      const res = await providerProfileApi.setAvailability(next);
+      if (!res.success) throw new Error(res.message || "Không cập nhật được trạng thái");
+      setIsOnline(next);
+      const freshUser = { ...user, is_available: next };
+      setUser(freshUser);
+      const token = localStorage.getItem("provider_token");
+      if (token) storeUser(freshUser, token);
+      toast(next ? "Bạn đang Online - Sẵn sàng nhận đơn!" : "Đã chuyển sang Offline", next ? "success" : "info");
+      if (next) fetchData();
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Không cập nhật được trạng thái", "error");
+    }
   };
 
   const acceptOrder = async (orderId: string) => {

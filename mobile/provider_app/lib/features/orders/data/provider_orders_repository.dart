@@ -45,7 +45,7 @@ class ProviderOrdersRepository {
       MockProviderData.updateStatus(orderId, 'in_progress');
       return;
     }
-    await _api.guard(() => _api.patch('/orders/$orderId/accept'));
+    await respond(orderId: orderId, response: 'accepted');
   }
 
   Future<void> start(String orderId) async {
@@ -63,12 +63,7 @@ class ProviderOrdersRepository {
       MockProviderData.updateStatus(orderId, 'declined');
       return;
     }
-    await _api.guard(
-      () => _api.patch(
-        '/orders/$orderId/decline',
-        body: reason != null && reason.isNotEmpty ? {'reason': reason} : null,
-      ),
-    );
+    await respond(orderId: orderId, response: 'declined', declineReason: reason);
   }
 
   Future<void> complete(String orderId) async {

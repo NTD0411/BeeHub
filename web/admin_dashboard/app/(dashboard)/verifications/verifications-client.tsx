@@ -30,6 +30,8 @@ const TABS: { value: VerificationStatus; label: string }[] = [
 ];
 
 const DOC_TYPE_LABELS: Record<string, string> = {
+  id_card_front: "CCCD / Căn cước (mặt trước)",
+  id_card_back: "CCCD / Căn cước (mặt sau)",
   license: "Bằng lái xe",
   id_card: "Căn cước công dân",
   vehicle_registration: "Đăng ký xe",

@@ -68,7 +68,16 @@ async function findProfileByEmail(email) {
  * BE-001 — POST /api/auth/register
  */
 async function register(body) {
-  const { email, password, full_name, phone, role: roleInput, business_name } = body || {};
+  const {
+    email,
+    password,
+    full_name,
+    phone,
+    role: roleInput,
+    business_name,
+    vehicle_type,
+    vehicle_plate,
+  } = body || {};
   const role = roleInput === 'provider' ? 'provider' : 'customer';
 
   if (!email || !password || !full_name) {
@@ -156,11 +165,15 @@ async function register(body) {
         {
           id: userId,
           business_name: String(business_name).trim(),
-          vehicle_type: 'small_truck',
+          vehicle_type: vehicle_type ? String(vehicle_type).trim() : 'small_truck',
+          vehicle_plate: vehicle_plate ? String(vehicle_plate).trim() : null,
           base_price: 100000,
           price_per_km: 10000,
           price_per_floor: 15000,
           is_verified: false,
+          is_available: false,
+          verification_status: 'incomplete',
+          verification_notes: null,
         },
       ]);
       if (ppError) {
@@ -232,7 +245,7 @@ async function login(body) {
   if (profile.role === 'provider') {
     const { data: pp } = await supabaseAdmin
       .from('provider_profiles')
-      .select('business_name, is_verified, verification_status, rating')
+      .select('business_name, is_verified, verification_status, verification_notes, is_available, vehicle_type, vehicle_plate, rating')
       .eq('id', profile.id)
       .maybeSingle();
     const user = publicProfile(profile, pp || undefined);
@@ -268,7 +281,7 @@ async function getMe(userId) {
   if (row.role === 'provider') {
     const { data: pp } = await supabaseAdmin
       .from('provider_profiles')
-      .select('business_name, is_verified, verification_status, rating, total_reviews, total_orders, vehicle_type, compliance_score')
+      .select('business_name, is_verified, verification_status, verification_notes, is_available, rating, total_reviews, total_orders, vehicle_type, vehicle_plate, compliance_score')
       .eq('id', userId)
       .maybeSingle();
     return publicProfile(row, pp || undefined);

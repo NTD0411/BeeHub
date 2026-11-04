@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ordersApi, authApi } from "@/lib/api";
+import { ordersApi, authApi, providerApi } from "@/lib/api";
 import { getStoredUser, storeAuth, type AuthUser } from "@/lib/auth";
 import { formatVND, getOrderStatusLabel, getOrderStatusColor, timeAgo } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
@@ -36,6 +36,7 @@ export default function ProviderDashboardPage() {
   const [active,    setActive]    = useState<Order[]>([]);
   const [completed, setCompleted] = useState<Order[]>([]);
   const [loading,   setLoading]   = useState(true);
+  const [availabilityBusy, setAvailabilityBusy] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -77,10 +78,32 @@ export default function ProviderDashboardPage() {
 
   const totalEarnings = completed.reduce((s, o) => s + (o.estimated_price ?? 0), 0);
 
+  const toggleAvailability = async () => {
+    if (!user?.is_verified) {
+      toast("Hoàn tất xác minh giấy tờ trước khi bật nhận đơn.", "error");
+      return;
+    }
+    const next = !user.is_available;
+    setAvailabilityBusy(true);
+    try {
+      await providerApi.setAvailability(next);
+      const fresh = { ...user, is_available: next };
+      setUser(fresh);
+      const token = localStorage.getItem("unimove_token");
+      if (token) storeAuth(fresh, token);
+      toast(next ? "Đã bật nhận đơn mới." : "Đã tạm dừng nhận đơn.", "success");
+      await load();
+    } catch (e) {
+      toast(e instanceof Error ? e.message : "Không cập nhật được trạng thái nhận đơn.", "error");
+    } finally {
+      setAvailabilityBusy(false);
+    }
+  };
+
   const skip = async (id: string, e: React.MouseEvent) => {
     e.preventDefault();
     try {
-      await ordersApi.skip(id);
+      await ordersApi.respond(id, "reject");
       setPending(prev => prev.filter(o => o.id !== id));
       toast("Đã bỏ qua đơn này", "info");
     } catch { toast("Thử lại sau", "error"); }
@@ -99,6 +122,25 @@ export default function ProviderDashboardPage() {
             <ChevronRight size={16} className="text-yellow-500 shrink-0" />
           </div>
         </Link>
+      )}
+
+      {hydrated && user?.role === "provider" && (
+        <div className="flex flex-col gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-bold text-gray-900">Trạng thái nhận đơn</p>
+            <p className="text-sm text-gray-500">
+              {user.is_available ? "Đang bật — đơn mới sẽ hiển thị trên bảng điều khiển." : "Đang tắt — bạn sẽ không nhận đơn mới."}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={toggleAvailability}
+            disabled={availabilityBusy || !user.is_verified}
+            className={`rounded-full px-5 py-2.5 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${user.is_available ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}
+          >
+            {availabilityBusy ? "Đang cập nhật..." : user.is_available ? "Tắt nhận đơn" : "Bật nhận đơn"}
+          </button>
+        </div>
       )}
 
       {/* Stats */}

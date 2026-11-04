@@ -82,6 +82,13 @@ class _ChoosePartnerPageState extends State<ChoosePartnerPage> {
                 ),
               ),
               SizedBox(height: 12.h),
+              if (!state.isLaborService && !state.isQuoteBooking) ...[
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: _sharedMoveOption(context, state, c),
+                ),
+                SizedBox(height: 12.h),
+              ],
               Expanded(
                 child: state.loadingPartners
                     ? ListView.builder(
@@ -102,6 +109,45 @@ class _ChoosePartnerPageState extends State<ChoosePartnerPage> {
           ),
         );
       },
+    );
+  }
+
+  Widget _sharedMoveOption(BuildContext context, BookingFlowState state, UniMoveColors c) {
+    final transportPrice = state.sharedMoveTransportPrice;
+    final estimatedDiscount = transportPrice > 0 ? (transportPrice * 0.4).round() : 0;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+      decoration: BoxDecoration(
+        color: c.chipBg,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: c.primary.withValues(alpha: 0.18)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.route_outlined, color: c.primary, size: 22.sp),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Vận chuyển chung', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700, color: c.onSurface)),
+                SizedBox(height: 2.h),
+                Text(
+                  transportPrice > 0
+                      ? 'Phí xe ${_formatPrice(transportPrice)} · sau giảm 40% còn ${_formatPrice(transportPrice - estimatedDiscount)}'
+                      : 'Chọn nhà xe để xem giá vận chuyển chung',
+                  style: TextStyle(fontSize: 11.sp, color: c.onSurfaceMuted, height: 1.3),
+                ),
+              ],
+            ),
+          ),
+          Switch.adaptive(
+            value: state.isSharedMove,
+            activeThumbColor: c.primary,
+            onChanged: (value) => context.read<BookingFlowCubit>().setSharedMove(value),
+          ),
+        ],
+      ),
     );
   }
 

@@ -1,12 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../../core/theme/uni_move_colors.dart';
 import '../../../../core/widgets/shad_screen_scope.dart';
 import '../../domain/provider_document_models.dart';
 
-/// Nộp / cập nhật một loại giấy tờ (mock chọn ảnh).
+/// Chụp hoặc chọn ảnh thật để nộp / cập nhật giấy tờ.
 class DocumentUploadSheet extends StatefulWidget {
   const DocumentUploadSheet({super.key, required this.record});
 
@@ -19,7 +22,9 @@ class DocumentUploadSheet extends StatefulWidget {
 class _DocumentUploadSheetState extends State<DocumentUploadSheet> {
   final _number = TextEditingController();
   final _expiry = TextEditingController();
-  bool _picked = false;
+  final _picker = ImagePicker();
+  XFile? _image;
+  Uint8List? _previewBytes;
 
   bool get _needsMeta =>
       widget.record.type == ProviderDocumentType.license ||
@@ -34,7 +39,7 @@ class _DocumentUploadSheetState extends State<DocumentUploadSheet> {
       final d = widget.record.expiryDate!;
       _expiry.text = '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
     }
-    _picked = widget.record.previewLabel != null;
+    _image = null;
   }
 
   @override
@@ -54,15 +59,27 @@ class _DocumentUploadSheetState extends State<DocumentUploadSheet> {
     return DateTime(y, m, d);
   }
 
-  void _mockPick(String source) {
-    setState(() => _picked = true);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Đã chọn ảnh từ $source (demo)')),
-    );
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final image = await _picker.pickImage(source: source, imageQuality: 85, maxWidth: 2048);
+      if (image == null) return;
+      final bytes = await image.readAsBytes();
+      if (!mounted) return;
+      setState(() {
+        _image = image;
+        _previewBytes = bytes;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Không đọc được ảnh giấy tờ: $error')),
+      );
+    }
   }
 
   void _submit() {
-    if (!_picked) {
+    final image = _image;
+    if (image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Vui lòng tải ảnh giấy tờ')),
       );
@@ -77,7 +94,8 @@ class _DocumentUploadSheetState extends State<DocumentUploadSheet> {
     Navigator.pop(context, (
       documentNumber: _number.text.trim().isEmpty ? null : _number.text.trim(),
       expiryDate: _parseExpiry(),
-      previewLabel: '${widget.record.type.id}_${DateTime.now().millisecondsSinceEpoch}.jpg',
+      previewLabel: image.name,
+      file: image,
     ));
   }
 
@@ -124,7 +142,7 @@ class _DocumentUploadSheetState extends State<DocumentUploadSheet> {
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () => _mockPick('máy ảnh'),
+                      onPressed: () => _pickImage(ImageSource.camera),
                       icon: Icon(LucideIcons.camera, size: 18, color: c.primaryLight),
                       label: const Text('Chụp ảnh'),
                       style: OutlinedButton.styleFrom(
@@ -137,7 +155,7 @@ class _DocumentUploadSheetState extends State<DocumentUploadSheet> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () => _mockPick('thư viện'),
+                      onPressed: () => _pickImage(ImageSource.gallery),
                       icon: Icon(LucideIcons.image, size: 18, color: c.primaryLight),
                       label: const Text('Thư viện'),
                       style: OutlinedButton.styleFrom(
@@ -155,12 +173,15 @@ class _DocumentUploadSheetState extends State<DocumentUploadSheet> {
                 decoration: BoxDecoration(
                   color: c.iconBgTertiary,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: _picked ? c.success.withValues(alpha: 0.5) : c.glassBorder,
-                  ),
+                  border: Border.all(color: _image != null ? c.success.withValues(alpha: 0.5) : c.glassBorder),
                 ),
                 child: Center(
-                  child: _picked
+                  child: _previewBytes != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(11),
+                          child: Image.memory(_previewBytes!, width: double.infinity, height: 120, fit: BoxFit.contain),
+                        )
+                      : _image != null
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

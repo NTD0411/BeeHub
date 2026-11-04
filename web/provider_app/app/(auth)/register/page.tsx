@@ -19,7 +19,7 @@ const VEHICLE_TYPES = [
 export default function ProviderRegisterPage() {
   const [form, setForm] = useState({
     full_name: "", email: "", phone: "", password: "",
-    business_name: "", vehicle_type: "van",
+    business_name: "", vehicle_type: "van", vehicle_plate: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +32,7 @@ export default function ProviderRegisterPage() {
       if (!res.success || !res.data) { setError((res as { message?: string }).message || "Đăng ký thất bại"); return; }
       const { accessToken, user } = res.data as { accessToken: string; user: ProviderUser };
       storeUser(user, accessToken);
-      window.location.href = "/dashboard";
+      window.location.href = "/documents";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Lỗi kết nối");
     } finally { setLoading(false); }
@@ -64,7 +64,7 @@ export default function ProviderRegisterPage() {
             </div>
             <div className="space-y-1.5">
               <label className="text-sm font-medium" style={{ color: "var(--text)" }}>Tên doanh nghiệp / biệt danh</label>
-              <Input placeholder="Nhà xe Văn A" value={form.business_name}
+              <Input required placeholder="Nhà xe Văn A" value={form.business_name}
                 onChange={(e) => setForm((p) => ({ ...p, business_name: e.target.value }))} startAdornment={<Building size={15} />} />
             </div>
             <div className="space-y-1.5">
@@ -86,8 +86,13 @@ export default function ProviderRegisterPage() {
               </select>
             </div>
             <div className="space-y-1.5">
+              <label className="text-sm font-medium" style={{ color: "var(--text)" }}>Biển số xe (có thể bổ sung sau)</label>
+              <Input placeholder="Ví dụ: 43A-123.45" value={form.vehicle_plate}
+                onChange={(e) => setForm((p) => ({ ...p, vehicle_plate: e.target.value }))} />
+            </div>
+            <div className="space-y-1.5">
               <label className="text-sm font-medium" style={{ color: "var(--text)" }}>Mật khẩu</label>
-              <Input type="password" required minLength={6} placeholder="Ít nhất 6 ký tự" value={form.password}
+              <Input type="password" required minLength={8} placeholder="Ít nhất 8 ký tự" value={form.password}
                 onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} startAdornment={<Lock size={15} />} />
             </div>
             <button type="submit" disabled={loading}

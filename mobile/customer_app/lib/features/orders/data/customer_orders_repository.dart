@@ -223,6 +223,12 @@ class CustomerOrdersRepository {
       'floor_price': state.floorFee,
       'service_fee': state.serviceFee,
       'total_price': totalPrice,
+      'promotion_discount_amount': state.discount,
+      'is_group_order': state.sharedMoveSelected,
+      if (state.sharedMoveSelected) ...{
+        'shared_move_transport_price': state.sharedMoveTransportPrice,
+        'total_before_shared_move_discount': totalPrice + state.sharedMoveDiscount,
+      },
       'number_of_rooms': 1,
       'requires_helpers': helpers > 0,
       'number_of_helpers': helpers,

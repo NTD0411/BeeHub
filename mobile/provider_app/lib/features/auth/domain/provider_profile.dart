@@ -6,6 +6,9 @@ class ProviderProfile {
     required this.role,
     this.businessName,
     this.isVerified = false,
+    this.isAvailable = false,
+    this.verificationStatus = 'incomplete',
+    this.verificationNotes,
     this.rating = 0,
     this.phone,
     this.address,
@@ -25,6 +28,9 @@ class ProviderProfile {
   final String role;
   final String? businessName;
   final bool isVerified;
+  final bool isAvailable;
+  final String verificationStatus;
+  final String? verificationNotes;
   final double rating;
   final String? phone;
   final String? address;
@@ -50,6 +56,9 @@ class ProviderProfile {
       role: json['role'] as String? ?? 'provider',
       businessName: json['business_name'] as String?,
       isVerified: json['is_verified'] as bool? ?? false,
+      isAvailable: json['is_available'] as bool? ?? false,
+      verificationStatus: json['verification_status'] as String? ?? 'incomplete',
+      verificationNotes: json['verification_notes'] as String?,
       rating: (json['rating'] as num?)?.toDouble() ?? 0,
       phone: json['phone'] as String?,
       address: json['address'] as String?,

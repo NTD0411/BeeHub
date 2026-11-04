@@ -72,6 +72,10 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       setState(() => _error = 'Vui lòng nhập họ và tên.');
       return;
     }
+    if (_businessCtrl.text.trim().isEmpty) {
+      setState(() => _error = 'Vui lòng nhập tên doanh nghiệp hoặc nhà xe.');
+      return;
+    }
     if (!email.contains('@') || !email.contains('.')) {
       setState(() => _error = 'Email không hợp lệ.');
       return;
@@ -111,7 +115,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       );
       await Future<void>.delayed(const Duration(milliseconds: 400));
       if (!mounted) return;
-      context.go('/driver-registration');
+      context.go('/documents');
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } on ApiException catch (e) {

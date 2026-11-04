@@ -24,7 +24,7 @@ class ProviderDashboardPage extends ConsumerStatefulWidget {
 }
 
 class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
-  bool _online = true;
+  bool _availabilityBusy = false;
   Timer? _ordersPoll;
 
   @override
@@ -112,7 +112,14 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
                       _kycBanner(theme, c, verification?.kycStatus.label ?? 'Chưa xác thực'),
                     ],
                     const SizedBox(height: 16),
-                    _onlineCard(theme, c, canGoOnline: canGoOnline),
+                    _onlineCard(
+                      theme,
+                      c,
+                      canGoOnline: canGoOnline,
+                      isOnline: profile?.isAvailable ?? false,
+                      busy: _availabilityBusy,
+                      onChanged: _setAvailability,
+                    ),
                     const SizedBox(height: 16),
                     _earningsHero(theme, c, earnings, completed.length),
                     const SizedBox(height: 12),
@@ -294,8 +301,35 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
   }
 
   // ---------- Online toggle ----------
-  Widget _onlineCard(ShadThemeData theme, UniMoveColors c, {required bool canGoOnline}) {
-    final effectiveOnline = canGoOnline && _online;
+  Future<void> _setAvailability(bool value) async {
+    setState(() => _availabilityBusy = true);
+    try {
+      await ref.read(authRepositoryProvider).setAvailability(value);
+      ref.invalidate(providerProfileProvider);
+      ref.invalidate(providerOrdersListProvider);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(value ? 'Đã bật nhận đơn' : 'Đã tạm dừng nhận đơn')),
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Không cập nhật được trạng thái: $error')));
+      }
+    } finally {
+      if (mounted) setState(() => _availabilityBusy = false);
+    }
+  }
+
+  Widget _onlineCard(
+    ShadThemeData theme,
+    UniMoveColors c, {
+    required bool canGoOnline,
+    required bool isOnline,
+    required bool busy,
+    required ValueChanged<bool> onChanged,
+  }) {
+    final effectiveOnline = canGoOnline && isOnline;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -334,13 +368,10 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
           Switch.adaptive(
             value: effectiveOnline,
             activeThumbColor: c.primary,
-            onChanged: canGoOnline
-                ? (v) {
-                    setState(() => _online = v);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(v ? 'Đã bật nhận đơn' : 'Đã tạm nghỉ')),
-                    );
-                  }
+            onChanged: busy
+                ? null
+                : canGoOnline
+                ? onChanged
                 : (_) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Hoàn tất xác thực giấy tờ để bật nhận đơn')),

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Package, Truck } from "lucide-react";
 import {
@@ -12,15 +13,18 @@ import { useBookingFlowStore } from "@/lib/stores/useBookingFlowStore";
 import { useBookingModeGuard } from "@/lib/booking/use-booking-mode-guard";
 import { SERVICE_PACKAGES, packagePriceAtLabor, type ServicePackage } from "@/lib/booking/constants";
 import { formatVND, cn } from "@/lib/utils";
+import { sharedMoveApi } from "@/lib/api";
 
 function ComboEstimateSidebar({
   pkg,
   laborCount,
   total,
+  sharedMoveDiscount,
 }: {
   pkg: ServicePackage;
   laborCount: number;
   total: number;
+  sharedMoveDiscount: number;
 }) {
   const laborFee = laborCount * pkg.extraLaborComboPrice;
 
@@ -43,6 +47,12 @@ function ComboEstimateSidebar({
             <span className="text-gray-500">{laborCount} người khuân</span>
             <span className="font-semibold text-gray-900">{formatVND(laborFee)}</span>
           </div>
+          {sharedMoveDiscount > 0 && (
+            <div className="flex items-center justify-between gap-2 font-semibold text-green-700">
+              <span>Vận chuyển chung</span>
+              <span>-{formatVND(sharedMoveDiscount)}</span>
+            </div>
+          )}
         </div>
         <div className="mt-4 border-t border-gray-100 pt-4">
           <div className="flex items-end justify-between gap-2">
@@ -108,6 +118,53 @@ function LaborPicker({
         <span className="text-[#0047FF]">{formatVND(packagePriceAtLabor(pkg, laborCount))}</span>
       </p>
     </div>
+  );
+}
+
+function SharedMoveOption({
+  enabled,
+  transportPrice,
+  subtotal,
+  fallbackDiscount,
+  onChange,
+}: {
+  enabled: boolean;
+  transportPrice: number;
+  subtotal: number;
+  fallbackDiscount: number;
+  onChange: (value: boolean) => void;
+}) {
+  const [discount, setDiscount] = useState(fallbackDiscount);
+
+  useEffect(() => {
+    let active = true;
+    sharedMoveApi.estimate(transportPrice, subtotal)
+      .then((response) => {
+        const estimate = response.data as { discount_amount?: number } | undefined;
+        if (active && response.success && typeof estimate?.discount_amount === "number") {
+          setDiscount(estimate.discount_amount);
+        }
+      })
+      .catch(() => { if (active) setDiscount(fallbackDiscount); });
+    return () => { active = false; };
+  }, [transportPrice, subtotal, fallbackDiscount]);
+
+  return (
+    <label className="flex cursor-pointer gap-3 rounded-2xl border border-blue-100 bg-blue-50/70 p-4">
+      <input
+        type="checkbox"
+        checked={enabled}
+        onChange={(event) => onChange(event.target.checked)}
+        className="mt-1 h-4 w-4 accent-[#0047FF]"
+      />
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-bold text-gray-900">Chọn vận chuyển chung</span>
+        <span className="mt-1 block text-xs leading-relaxed text-gray-600">
+          Ghép chuyến phù hợp để tiết kiệm 40% phí xe. Chi phí vận chuyển sau giảm: {formatVND(Math.max(0, transportPrice - discount))}.
+        </span>
+        <span className="mt-1 block text-xs font-bold text-green-700">Tiết kiệm {formatVND(discount)}</span>
+      </span>
+    </label>
   );
 }
 
@@ -190,12 +247,20 @@ export default function GoiDichVuPage() {
   const {
     selectedTier,
     selectedComboLaborCount,
+    isSharedMove,
     setSelectedTier,
     setComboLaborCount,
+    setSharedMove,
+    movePackagePrice,
+    comboLaborFee,
+    insuranceFee,
+    discountAmount,
+    sharedMoveDiscount,
   } = useBookingFlowStore();
 
   const pkg = SERVICE_PACKAGES.find((p) => p.tier === selectedTier)!;
-  const estimateTotal = packagePriceAtLabor(pkg, selectedComboLaborCount);
+  const estimateTotal = movePackagePrice() + comboLaborFee() + insuranceFee() - discountAmount() - sharedMoveDiscount();
+  const preSharedSubtotal = movePackagePrice() + comboLaborFee() + insuranceFee() - discountAmount();
 
   return (
     <BookingWizardLayout
@@ -213,11 +278,19 @@ export default function GoiDichVuPage() {
           pkg={pkg}
           laborCount={selectedComboLaborCount}
           total={estimateTotal}
+          sharedMoveDiscount={sharedMoveDiscount()}
         />
       }
     >
       <RoutePointsCard pickup={pickup} destination={destination} />
       <BookingInsuranceBanner />
+      <SharedMoveOption
+        enabled={isSharedMove}
+        transportPrice={pkg.transportBasePrice}
+        subtotal={preSharedSubtotal}
+        fallbackDiscount={Math.min(Math.round(pkg.transportBasePrice * 0.4), Math.max(0, preSharedSubtotal))}
+        onChange={setSharedMove}
+      />
 
       <div>
         <div className="mb-3 flex items-center gap-2.5">

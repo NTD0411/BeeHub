@@ -242,10 +242,10 @@ export const ordersApi = {
       response: action === "accept" ? "accepted" : "declined",
       decline_reason: notes || undefined,
     }),
-  skip: (id: string) => patch(`/orders/${id}/skip`, {}),
+  skip: (id: string) => post(`/orders/${id}/respond`, { response: "declined" }),
   cancel: (id: string, reason?: string) => patch(`/orders/${id}/cancel`, { reason }),
   getCancelEstimate: (id: string) => get(`/orders/${id}/cancel-estimate`),
-  accept: (id: string) => patch(`/orders/${id}/accept`),
+  accept: (id: string) => post(`/orders/${id}/respond`, { response: "accepted" }),
   start: (id: string) => patch(`/orders/${id}/start`),
   complete: (id: string) => patch(`/orders/${id}/complete`),
   decline: (id: string, reason?: string) => patch(`/orders/${id}/decline`, { reason }),
@@ -278,6 +278,9 @@ export const providerApi = {
   getSchedule: () => get("/providers/me/schedule"),
   updateSchedule: (slots: Record<string, unknown>[]) => patch("/providers/me/schedule", { slots }),
   getDocuments: () => get("/providers/me/documents"),
+  getVerification: () => get("/providers/me/verification"),
+  getDashboard: () => get("/providers/me/dashboard"),
+  setAvailability: (is_available: boolean) => patch("/providers/me/availability", { is_available }),
   uploadDocuments: (files: Record<string, File>) => {
     const fd = new FormData();
     Object.entries(files).forEach(([k, v]) => fd.append(k, v));
@@ -288,6 +291,11 @@ export const providerApi = {
     return upload("/customers/me/avatar", fd);
   },
   requestVerification: () => post("/providers/me/request-verification"),
+};
+
+export const sharedMoveApi = {
+  estimate: (transportPrice: number, subtotal: number) =>
+    get("/shared-move/price", { transport_price: transportPrice, subtotal }),
 };
 
 /* ── Chat attachments ── */

@@ -15,7 +15,8 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 final providerProfileProvider = FutureProvider<ProviderProfile?>((ref) async {
   if (!await AuthTokenStorage.instance.hasSession()) return null;
   if (await AuthTokenStorage.instance.isMockSession()) {
-    return ProviderProfile.fromJson(MockProviderData.userJson);
+    final user = await AuthTokenStorage.instance.loadUser();
+    return ProviderProfile.fromJson(user ?? MockProviderData.userJson);
   }
   return ref.watch(authRepositoryProvider).fetchProfile();
 });
@@ -59,6 +60,9 @@ class AuthRepository {
     required String fullName,
     required String businessName,
   }) async {
+    if (businessName.trim().isEmpty) {
+      throw const AuthException('Vui lòng nhập tên doanh nghiệp hoặc nhà xe.');
+    }
     if (password.length < 8) {
       throw const AuthException('Mật khẩu tối thiểu 8 ký tự.');
     }
@@ -75,6 +79,21 @@ class AuthRepository {
 
     await _persistAuth(envelope);
     authSessionNotifier.notifyAuthChanged();
+  }
+
+  Future<void> setAvailability(bool isAvailable) async {
+    if (await _storage.isMockSession()) {
+      final user = await _storage.loadUser() ?? Map<String, dynamic>.from(MockProviderData.userJson);
+      await _storage.save(
+        accessToken: AuthTokenStorage.mockToken,
+        user: {...user, 'is_available': isAvailable},
+      );
+      return;
+    }
+    await _api.guard(() => _api.patch(
+          '/providers/me/availability',
+          body: {'is_available': isAvailable},
+        ));
   }
 
   Future<void> signOut() async {

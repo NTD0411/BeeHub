@@ -48,6 +48,9 @@ function publicProfile(row, providerProfile) {
     base.total_reviews = providerProfile.total_reviews ?? 0;
     base.total_orders = providerProfile.total_orders ?? 0;
     base.vehicle_type = providerProfile.vehicle_type ?? null;
+    base.vehicle_plate = providerProfile.vehicle_plate ?? null;
+    base.is_available = providerProfile.is_available ?? false;
+    base.verification_notes = providerProfile.verification_notes ?? null;
     base.compliance_score = providerProfile.compliance_score ?? 20;
   }
   if (row.ward) base.ward = row.ward;

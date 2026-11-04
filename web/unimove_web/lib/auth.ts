@@ -19,7 +19,9 @@ export interface AuthUser {
   vehicle_type?: string;
   rating?: number;
   is_verified?: boolean;
+  is_available?: boolean;
   verification_status?: string | null;
+  verification_notes?: string | null;
   total_orders?: number;
   total_reviews?: number;
   compliance_score?: number;

@@ -1,11 +1,18 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/auth/auth_token_storage.dart';
+import '../../../core/network/api_client.dart';
 import '../domain/provider_document_models.dart';
 
 class ProviderDocumentsRepository {
+  ProviderDocumentsRepository({ApiClient? api}) : _api = api ?? ApiClient.instance;
+
   static const _storageKey = 'provider_documents_kyc_v2';
+  final ApiClient _api;
 
   /// Provider demo đã nộp và được duyệt đủ giấy tờ.
   static ProviderVerificationState fullyVerifiedDemoState() {
@@ -40,6 +47,59 @@ class ProviderDocumentsRepository {
   Future<void> seedVerifiedDemoProvider() => save(fullyVerifiedDemoState());
 
   Future<ProviderVerificationState> load() async {
+    if (!await AuthTokenStorage.instance.isMockSession()) {
+      final envelope = await _api.guard(() => _api.get('/providers/me/verification'));
+      final data = Map<String, dynamic>.from(envelope['data'] as Map);
+      final rawDocuments = (data['documents'] as List?) ?? const [];
+      final docsByType = <String, Map<String, dynamic>>{
+        for (final raw in rawDocuments)
+          if (raw is Map) (raw['document_type'] as String? ?? ''): Map<String, dynamic>.from(raw),
+      };
+      final legacyIdCard = docsByType['id_card'];
+      if (legacyIdCard != null) {
+        docsByType.putIfAbsent('id_card_front', () => legacyIdCard);
+        docsByType.putIfAbsent('id_card_back', () => legacyIdCard);
+      }
+
+      final statusValue = data['verification_status'] as String? ?? data['status'] as String? ?? 'incomplete';
+      final kycStatus = switch (statusValue) {
+        'approved' => ProviderKycStatus.approved,
+        'pending' => ProviderKycStatus.pendingReview,
+        'rejected' => ProviderKycStatus.rejected,
+        _ => ProviderKycStatus.incomplete,
+      };
+      final documents = ProviderDocumentType.values.map((type) {
+        final raw = docsByType[type.id];
+        if (raw == null) return ProviderDocumentRecord(type: type, status: DocumentReviewStatus.notUploaded);
+        final note = raw['notes'] as String?;
+        final isVerified = raw['is_verified'] as bool? ?? false;
+        final reviewStatus = isVerified
+            ? DocumentReviewStatus.approved
+            : (kycStatus == ProviderKycStatus.rejected || (note?.isNotEmpty ?? false))
+                ? DocumentReviewStatus.rejected
+                : kycStatus == ProviderKycStatus.pendingReview
+                    ? DocumentReviewStatus.pending
+                    : DocumentReviewStatus.uploaded;
+        final url = raw['document_url'] as String?;
+        return ProviderDocumentRecord(
+          type: type,
+          status: reviewStatus,
+          documentNumber: raw['document_number'] as String?,
+          expiryDate: raw['expiry_date'] != null ? DateTime.tryParse(raw['expiry_date'] as String) : null,
+          uploadedAt: raw['created_at'] != null ? DateTime.tryParse(raw['created_at'] as String) : null,
+          rejectionReason: note ?? (kycStatus == ProviderKycStatus.rejected ? data['verification_notes'] as String? : null),
+          previewLabel: raw['file_name'] as String? ?? url?.split('/').last,
+          documentUrl: url,
+        );
+      }).toList();
+
+      return ProviderVerificationState(
+        documents: documents,
+        kycStatus: kycStatus,
+        reviewNote: data['verification_notes'] as String?,
+      );
+    }
+
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getString(_storageKey);
     if (raw == null || raw.isEmpty) return _defaultState();
@@ -75,10 +135,24 @@ class ProviderDocumentsRepository {
 
   Future<ProviderVerificationState> uploadDocument({
     required ProviderDocumentType type,
+    required XFile file,
     String? documentNumber,
     DateTime? expiryDate,
     String previewLabel = 'Đã chọn ảnh',
   }) async {
+    if (!await AuthTokenStorage.instance.isMockSession()) {
+      final bytes = await file.readAsBytes();
+      final form = FormData.fromMap({
+        'file': MultipartFile.fromBytes(bytes, filename: file.name),
+        'document_type': type.id,
+        if (documentNumber != null && documentNumber.trim().isNotEmpty)
+          'document_number': documentNumber.trim(),
+        if (expiryDate != null) 'expiry_date': expiryDate.toIso8601String().split('T').first,
+      });
+      await _api.guard(() => _api.postMultipart('/providers/me/documents', form));
+      return load();
+    }
+
     final state = await load();
     final updated = state.documents.map((d) {
       if (d.type != type) return d;
@@ -89,6 +163,7 @@ class ProviderDocumentsRepository {
         uploadedAt: DateTime.now(),
         rejectionReason: null,
         previewLabel: previewLabel,
+        documentUrl: null,
       );
     }).toList();
 
@@ -101,6 +176,10 @@ class ProviderDocumentsRepository {
     final state = await load();
     if (!state.allRequiredUploaded) {
       throw StateError('Chưa đủ giấy tờ bắt buộc');
+    }
+    if (!await AuthTokenStorage.instance.isMockSession()) {
+      await _api.guard(() => _api.post('/providers/me/request-verification'));
+      return load();
     }
     final newState = state.copyWith(
       kycStatus: ProviderKycStatus.pendingReview,

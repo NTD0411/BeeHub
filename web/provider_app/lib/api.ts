@@ -93,7 +93,7 @@ class ApiClient {
 export const apiClient = new ApiClient(API_BASE_URL);
 
 export const providerAuthApi = {
-  register: (body: { email: string; password: string; full_name: string; phone?: string; business_name?: string }) =>
+  register: (body: { email: string; password: string; full_name: string; phone?: string; business_name: string; vehicle_type?: string; vehicle_plate?: string }) =>
     apiClient.post("/auth/register", { ...body, role: "provider" }),
   login: (body: { email: string; password: string }) => apiClient.post("/auth/login", body),
   forgotPassword: (email: string) => apiClient.post("/auth/forgot-password", { email }),
@@ -129,6 +129,11 @@ export const providerQuotesApi = {
 export const providerProfileApi = {
   getMe: () => apiClient.get("/auth/me"),
   updateMe: (body: Record<string, unknown>) => apiClient.patch("/auth/me", body),
+  getDashboard: () => apiClient.get("/providers/me/dashboard"),
+  getDocuments: () => apiClient.get("/providers/me/documents"),
+  getVerification: () => apiClient.get("/providers/me/verification"),
+  requestVerification: () => apiClient.post("/providers/me/request-verification"),
+  setAvailability: (is_available: boolean) => apiClient.patch("/providers/me/availability", { is_available }),
   uploadAvatar: (file: File) => {
     const fd = new FormData();
     fd.append("avatar", file);

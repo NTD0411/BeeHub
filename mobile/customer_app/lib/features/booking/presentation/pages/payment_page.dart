@@ -452,6 +452,8 @@ class _PaymentPageState extends State<PaymentPage> {
                     ],
                     if (state.discountApplied)
                       _priceRow('Khuyến mãi', '-${_formatPrice(state.discount)}', c, highlight: true),
+                    if (state.sharedMoveSelected && state.sharedMoveDiscount > 0)
+                      _priceRow('Ưu đãi vận chuyển chung (40%)', '-${_formatPrice(state.sharedMoveDiscount)}', c, highlight: true),
                     _priceRow('Phí dịch vụ', _formatPrice(state.serviceFee), c),
                     Divider(height: 24.h, color: c.border),
                     Row(

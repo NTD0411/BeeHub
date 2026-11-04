@@ -52,6 +52,7 @@ interface BookingFlowState {
   selectedTier: ServiceTier;
   selectedComboLaborCount: number;
   selectedPartnerId: string | null;
+  isSharedMove: boolean;
   selectedInsurancePlanId: string;
   discountCode: string;
   discountApplied: boolean;
@@ -74,6 +75,7 @@ interface BookingFlowState {
   setSelectedTier: (t: ServiceTier) => void;
   setComboLaborCount: (n: number) => void;
   setSelectedPartnerId: (id: string | null) => void;
+  setSharedMove: (enabled: boolean) => void;
   setInsurancePlanId: (id: string) => void;
   setDiscountCode: (code: string) => void;
   applyDiscount: () => void;
@@ -90,6 +92,7 @@ interface BookingFlowState {
   comboLaborFee: () => number;
   insuranceFee: () => number;
   discountAmount: () => number;
+  sharedMoveDiscount: () => number;
   total: () => number;
 }
 
@@ -120,6 +123,7 @@ const INITIAL = {
   selectedTier: "standard" as ServiceTier,
   selectedComboLaborCount: 2,
   selectedPartnerId: null as string | null,
+  isSharedMove: false,
   selectedInsurancePlanId: "standard",
   discountCode: "",
   discountApplied: false,
@@ -159,6 +163,7 @@ export const useBookingFlowStore = create<BookingFlowState>((set, get) => ({
   },
   setComboLaborCount: (n) => set({ selectedComboLaborCount: n }),
   setSelectedPartnerId: (id) => set({ selectedPartnerId: id }),
+  setSharedMove: (enabled) => set({ isSharedMove: enabled }),
   setInsurancePlanId: (id) => set({ selectedInsurancePlanId: id }),
   setDiscountCode: (code) => set({ discountCode: code, discountApplied: false }),
   applyDiscount: () => {
@@ -235,10 +240,17 @@ export const useBookingFlowStore = create<BookingFlowState>((set, get) => ({
 
   discountAmount: () => (get().discountApplied ? 35_000 : 0),
 
+  sharedMoveDiscount: () => {
+    const s = get();
+    if (!s.isSharedMove || !s.isComboBooking) return 0;
+    const eligibleTotal = Math.max(0, s.movePackagePrice() + s.comboLaborFee() + s.insuranceFee() - s.discountAmount());
+    return Math.min(Math.round(s.movePackagePrice() * 0.4), eligibleTotal);
+  },
+
   total: () => {
     const s = get();
     if (s.isComboBooking) {
-      return s.movePackagePrice() + s.comboLaborFee() + s.insuranceFee() - s.discountAmount();
+      return Math.max(0, s.movePackagePrice() + s.comboLaborFee() + s.insuranceFee() - s.discountAmount() - s.sharedMoveDiscount());
     }
     return 0;
   },

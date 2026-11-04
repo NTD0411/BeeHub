@@ -4,7 +4,7 @@ enum ProviderDocumentType {
   idCardBack('id_card_back', 'CCCD / CMND — Mặt sau', true),
   license('license', 'Giấy phép lái xe', true),
   vehicleRegistration('vehicle_registration', 'Đăng ký phương tiện', true),
-  vehiclePhoto('vehicle_photo', 'Ảnh xe (ngoại thất)', true),
+  vehiclePhoto('vehicle_photo', 'Ảnh xe (ngoại thất)', false),
   insurance('insurance', 'Bảo hiểm vận chuyển', false),
   businessLicense('business_license', 'Giấy phép kinh doanh vận tải', false);
 
@@ -17,6 +17,7 @@ enum ProviderDocumentType {
 
 enum DocumentReviewStatus {
   notUploaded('Chưa nộp'),
+  uploaded('Đã tải lên'),
   pending('Chờ duyệt'),
   approved('Đã duyệt'),
   rejected('Từ chối');
@@ -44,6 +45,7 @@ class ProviderDocumentRecord {
     this.uploadedAt,
     this.rejectionReason,
     this.previewLabel,
+    this.documentUrl,
   });
 
   final ProviderDocumentType type;
@@ -53,6 +55,7 @@ class ProviderDocumentRecord {
   final DateTime? uploadedAt;
   final String? rejectionReason;
   final String? previewLabel;
+  final String? documentUrl;
 
   bool get isComplete => status == DocumentReviewStatus.approved;
 
@@ -64,6 +67,7 @@ class ProviderDocumentRecord {
         'uploaded_at': uploadedAt?.toIso8601String(),
         'rejection_reason': rejectionReason,
         'preview_label': previewLabel,
+        'document_url': documentUrl,
       };
 
   factory ProviderDocumentRecord.fromJson(Map<String, dynamic> json) {
@@ -75,6 +79,7 @@ class ProviderDocumentRecord {
       uploadedAt: json['uploaded_at'] != null ? DateTime.tryParse(json['uploaded_at'] as String) : null,
       rejectionReason: json['rejection_reason'] as String?,
       previewLabel: json['preview_label'] as String?,
+      documentUrl: json['document_url'] as String?,
     );
   }
 
@@ -85,6 +90,7 @@ class ProviderDocumentRecord {
     DateTime? uploadedAt,
     String? rejectionReason,
     String? previewLabel,
+    String? documentUrl,
   }) {
     return ProviderDocumentRecord(
       type: type,
@@ -94,6 +100,7 @@ class ProviderDocumentRecord {
       uploadedAt: uploadedAt ?? this.uploadedAt,
       rejectionReason: rejectionReason ?? this.rejectionReason,
       previewLabel: previewLabel ?? this.previewLabel,
+      documentUrl: documentUrl ?? this.documentUrl,
     );
   }
 }
@@ -119,9 +126,12 @@ class ProviderVerificationState {
 
   int get approvedRequiredCount => requiredDocs.where((d) => d.isComplete).length;
 
+  int get uploadedRequiredCount =>
+      requiredDocs.where((d) => d.status != DocumentReviewStatus.notUploaded).length;
+
   int get requiredCount => requiredDocs.length;
 
-  double get requiredProgress => requiredCount == 0 ? 0 : approvedRequiredCount / requiredCount;
+  double get requiredProgress => requiredCount == 0 ? 0 : uploadedRequiredCount / requiredCount;
 
   bool get allRequiredUploaded =>
       requiredDocs.every((d) => d.status != DocumentReviewStatus.notUploaded);

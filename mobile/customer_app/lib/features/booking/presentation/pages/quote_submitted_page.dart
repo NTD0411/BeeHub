@@ -18,7 +18,7 @@ class QuoteSubmittedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Scaffold(
       backgroundColor: c.background,
@@ -76,7 +76,7 @@ class QuoteSubmittedPage extends StatelessWidget {
               ),
             ],
             SizedBox(height: 24.h),
-            _stepCard(c, '1', 'Đội UniMove xem thông tin trọ', 'Trong vòng ~24 giờ làm việc'),
+            _stepCard(c, '1', 'Đội BeeHub xem thông tin trọ', 'Trong vòng ~24 giờ làm việc'),
             SizedBox(height: 10.h),
             _stepCard(c, '2', 'Nhận báo giá trên app', 'So sánh giá, đánh giá và bảng phụ phí'),
             SizedBox(height: 10.h),
@@ -97,7 +97,7 @@ class QuoteSubmittedPage extends StatelessWidget {
     );
   }
 
-  Widget _stepCard(UniMoveColors c, String step, String title, String subtitle) {
+  Widget _stepCard(BeeHubColors c, String step, String title, String subtitle) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(14.w),

@@ -16,5 +16,5 @@ Future<void> main() async {
     ApiClient.instance.setAccessToken(token);
   }
 
-  runApp(const ProviderScope(child: UniMoveProviderApp()));
+  runApp(const ProviderScope(child: BeeHubProviderApp()));
 }

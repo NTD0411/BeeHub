@@ -9,7 +9,7 @@ abstract final class MockProviderData {
     'email': 'partner@unimove.vn',
     'full_name': 'Nguyễn Văn Provider',
     'role': 'provider',
-    'business_name': 'UniMove Test Transport',
+    'business_name': 'BeeHub Test Transport',
     'is_verified': true,
     'verification_status': 'approved',
     'kyc_completed': true,
@@ -43,7 +43,7 @@ abstract final class MockProviderData {
     'c1000000-0000-4000-8000-000000000008': 'Nguyễn Bảo Châu',
   };
 
-  static String customerNameOf(String? id) => customerNames[id] ?? 'Khách UniMove';
+  static String customerNameOf(String? id) => customerNames[id] ?? 'Khách BeeHub';
 
   static String? chatThreadIdForOrder(String orderId) => 'order-$orderId';
 

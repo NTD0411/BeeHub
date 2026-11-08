@@ -83,7 +83,7 @@ class _ReviewTripPageState extends State<ReviewTripPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final theme = ShadTheme.of(context);
 
     if (_loadingOrder) {

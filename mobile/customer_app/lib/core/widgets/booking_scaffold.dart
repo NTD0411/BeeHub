@@ -22,7 +22,7 @@ class BookingScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Scaffold(
       backgroundColor: c.background,

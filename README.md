@@ -1,4 +1,4 @@
-# 🚚 UniMove - Platform Vận Chuyển Sinh Viên
+# 🚚 BeeHub - Platform Vận Chuyển Sinh Viên
 
 > Nền tảng kết nối sinh viên cần vận chuyển đồ với nhà cung cấp dịch vụ vận chuyển
 
@@ -6,7 +6,7 @@
 
 ## 📋 Tổng Quan Dự Án
 
-**UniMove** là một nền tảng marketplace kết nối:
+**BeeHub** là một nền tảng marketplace kết nối:
 - 🎓 **Khách hàng (Sinh viên)**: Cần vận chuyển đồ (chuyển nhà, mua bán đồ cũ...)
 - 🚗 **Nhà cung cấp (Provider)**: Có phương tiện vận chuyển (xe tải, xe bán tải...)
 - 👨‍💼 **Admin**: Quản lý hệ thống, duyệt nhà cung cấp, giải quyết khiếu nại
@@ -17,7 +17,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    UNIMOVE PLATFORM                      │
+│                    BEEHUB PLATFORM                       │
 ├─────────────────────────────────────────────────────────┤
 │                                                           │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
@@ -477,7 +477,7 @@ Password: Admin@123
 
 ## 📄 License
 
-MIT License - UniMove Project 2024
+MIT License - BeeHub Project 2024
 
 ---
 

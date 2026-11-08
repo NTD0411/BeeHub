@@ -111,7 +111,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     return ShadScreenScope(
       builder: (shadContext, theme) {
-        final c = UniMoveColors.of(shadContext);
+        final c = BeeHubColors.of(shadContext);
 
         return Scaffold(
           backgroundColor: Colors.transparent,
@@ -151,7 +151,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     child: const Icon(LucideIcons.truck, color: AppColors.onPrimary, size: 24),
                                   ),
                                   const SizedBox(width: 12),
-                                  const UniMoveLogoAccent(fontSize: 26),
+                                  const BeeHubLogoAccent(fontSize: 26),
                                   const Spacer(),
                                   ShadBadge.secondary(
                                     child: Row(
@@ -384,7 +384,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                       ),
                                       const SizedBox(height: 14),
                                       Text(
-                                        'Bằng việc tiếp tục, bạn đồng ý với Điều khoản đối tác và Chính sách bảo mật của UniMove.',
+                                        'Bằng việc tiếp tục, bạn đồng ý với Điều khoản đối tác và Chính sách bảo mật của BeeHub.',
                                         textAlign: TextAlign.center,
                                         style: theme.textTheme.small.copyWith(
                                           color: theme.colorScheme.mutedForeground.withValues(alpha: 0.85),

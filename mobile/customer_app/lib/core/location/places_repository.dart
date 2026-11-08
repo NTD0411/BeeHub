@@ -27,7 +27,7 @@ class PlacesRepository {
     BaseOptions(
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
-      headers: {'User-Agent': 'UniMoveCustomer/1.0 (places-fallback)'},
+      headers: {'User-Agent': 'BeeHubCustomer/1.0 (places-fallback)'},
     ),
   );
 

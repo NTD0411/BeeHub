@@ -10,17 +10,17 @@
 
 | STT | Tên Chức Năng (Feature) | Use Case ID | API Endpoint & Method | File Route / Controller / Service | Database / Schema |
 |:---:|:---|:---:|:---|:---|:---|
-| **7** | **Browse Transport Providers** | UC-07 | `GET /api/providers/browse` | [providers.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/providers.routes.js#L8)<br>[providers.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/providers.controller.js#L3-L14)<br>[providers.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L31-L59) | `provider_profiles`, `profiles` |
-| **8** | **Enter Pickup and Delivery Addresses** | UC-08 | `GET /api/maps/places/autocomplete`<br>`GET /api/maps/places/details`<br>`GET /api/maps/places/resolve`<br>`GET /api/customers/me/recent-places`<br>`GET /api/customers/me/booking-locations` | [maps.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/maps.routes.js#L7-L25), [customers.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/customers.routes.js#L12-L15)<br>[maps.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/maps.controller.js), [customers.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/customers.controller.js#L22-L58)<br>[maps.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/maps.service.js), [customers.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/customers.service.js#L385-L448) | `profiles.saved_recent_places`, `orders` (lịch sử địa chỉ) |
-| **9** | **Select Move Schedule and Dorm Details** | UC-09 | `POST /api/orders` | [orders.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11)<br>[orders.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/orders.controller.js#L24-L31)<br>[orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L89-L95) | `orders` (`scheduled_pickup_time`, `pickup_floor`, `delivery_floor`, `pickup_has_elevator`, `dorm_image_urls`) |
-| **10** | **Select Service Package** | UC-10 | `GET /api/providers/:id`<br>`POST /api/orders` | [providers.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/providers.routes.js#L32), [orders.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11)<br>[providers.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L86-L103) (`mapServicePackage`)<br>[orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L43-L60) (`mapVehicleSize`) | `service_packages` (Economy, Standard, Premium), `orders.service_type` |
-| **11** | **Enter Item and Move Details** | UC-11 | `POST /api/orders` | [orders.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11)<br>[orders.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/orders.controller.js#L24-L31)<br>[orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L91-L104) | `orders.items` (JSONB), `orders.vehicle_size`, `orders.quote_request`, `orders.pickup_notes` |
-| **12** | **Select Cargo Insurance** | UC-12 | `GET /api/providers/:id`<br>`POST /api/orders` | [providers.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L98) (`includes_insurance`)<br>[orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L109-L111) (`service_fee`) | `service_packages.includes_insurance`, `orders.service_fee` |
-| **13** | **Book Labor Service** | UC-13 | `POST /api/orders` | [orders.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11)<br>[orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L132) & [L319-L320](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L319-L320) | `orders.requires_helpers`, `orders.number_of_helpers`, `service_packages.helper_count` |
-| **14** | **View Estimated Price** | UC-14 | `POST /api/orders` | [orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L62-L73) (`defaultPricing`)<br>[providers.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L74-L76) (`base_price`, `price_per_km`, `price_per_floor`) | `platform_settings` (cọc 30%), `provider_profiles` |
-| **15** | **Create Transport Order** | UC-15 | `POST /api/orders` | [orders.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11)<br>[orders.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/orders.controller.js#L24-L31)<br>[orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L282-L345) (`createOrder`) | Bảng `orders`, trigger sinh mã `UNI-YYYYMMDD-XXXX`, tự động báo nhà xe khu vực |
-| **16** | **Accept Provider Quote** | UC-16 | `POST /api/orders/:id/quotes/:quoteId/select`<br>`GET /api/orders/:id/quotes` | [orders.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L15-L27)<br>[order_quotes.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/order_quotes.controller.js#L28-L39)<br>[order_quotes.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/order_quotes.service.js#L157-L246) (`selectQuote`) | `order_quotes` (status: `submitted`, `selected`, `expired`), `orders.lock_expires_at` (lock 15p cọc) |
-| **17** | **View Provider Detail** | UC-17 | `GET /api/providers/:id` | [providers.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/providers.routes.js#L32)<br>[providers.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/providers.controller.js#L16-L26)<br>[providers.service.js](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L196-L264) (`getProviderById`) | `provider_profiles`, `profiles`, `service_packages`, `reviews`, `provider_reviews_summary` |
+| **7** | **Browse Transport Providers** | UC-07 | `GET /api/providers/browse` | [providers.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/providers.routes.js#L8)<br>[providers.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/providers.controller.js#L3-L14)<br>[providers.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L31-L59) | `provider_profiles`, `profiles` |
+| **8** | **Enter Pickup and Delivery Addresses** | UC-08 | `GET /api/maps/places/autocomplete`<br>`GET /api/maps/places/details`<br>`GET /api/maps/places/resolve`<br>`GET /api/customers/me/recent-places`<br>`GET /api/customers/me/booking-locations` | [maps.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/maps.routes.js#L7-L25), [customers.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/customers.routes.js#L12-L15)<br>[maps.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/maps.controller.js), [customers.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/customers.controller.js#L22-L58)<br>[maps.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/maps.service.js), [customers.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/customers.service.js#L385-L448) | `profiles.saved_recent_places`, `orders` (lịch sử địa chỉ) |
+| **9** | **Select Move Schedule and Dorm Details** | UC-09 | `POST /api/orders` | [orders.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11)<br>[orders.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/orders.controller.js#L24-L31)<br>[orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L89-L95) | `orders` (`scheduled_pickup_time`, `pickup_floor`, `delivery_floor`, `pickup_has_elevator`, `dorm_image_urls`) |
+| **10** | **Select Service Package** | UC-10 | `GET /api/providers/:id`<br>`POST /api/orders` | [providers.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/providers.routes.js#L32), [orders.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11)<br>[providers.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L86-L103) (`mapServicePackage`)<br>[orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L43-L60) (`mapVehicleSize`) | `service_packages` (Economy, Standard, Premium), `orders.service_type` |
+| **11** | **Enter Item and Move Details** | UC-11 | `POST /api/orders` | [orders.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11)<br>[orders.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/orders.controller.js#L24-L31)<br>[orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L91-L104) | `orders.items` (JSONB), `orders.vehicle_size`, `orders.quote_request`, `orders.pickup_notes` |
+| **12** | **Select Cargo Insurance** | UC-12 | `GET /api/providers/:id`<br>`POST /api/orders` | [providers.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L98) (`includes_insurance`)<br>[orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L109-L111) (`service_fee`) | `service_packages.includes_insurance`, `orders.service_fee` |
+| **13** | **Book Labor Service** | UC-13 | `POST /api/orders` | [orders.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11)<br>[orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L132) & [L319-L320](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L319-L320) | `orders.requires_helpers`, `orders.number_of_helpers`, `service_packages.helper_count` |
+| **14** | **View Estimated Price** | UC-14 | `POST /api/orders` | [orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L62-L73) (`defaultPricing`)<br>[providers.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L74-L76) (`base_price`, `price_per_km`, `price_per_floor`) | `platform_settings` (cọc 30%), `provider_profiles` |
+| **15** | **Create Transport Order** | UC-15 | `POST /api/orders` | [orders.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11)<br>[orders.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/orders.controller.js#L24-L31)<br>[orders.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L282-L345) (`createOrder`) | Bảng `orders`, trigger sinh mã `UNI-YYYYMMDD-XXXX`, tự động báo nhà xe khu vực |
+| **16** | **Accept Provider Quote** | UC-16 | `POST /api/orders/:id/quotes/:quoteId/select`<br>`GET /api/orders/:id/quotes` | [orders.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L15-L27)<br>[order_quotes.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/order_quotes.controller.js#L28-L39)<br>[order_quotes.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/order_quotes.service.js#L157-L246) (`selectQuote`) | `order_quotes` (status: `submitted`, `selected`, `expired`), `orders.lock_expires_at` (lock 15p cọc) |
+| **17** | **View Provider Detail** | UC-17 | `GET /api/providers/:id` | [providers.routes.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/providers.routes.js#L32)<br>[providers.controller.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/providers.controller.js#L16-L26)<br>[providers.service.js](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L196-L264) (`getProviderById`) | `provider_profiles`, `profiles`, `service_packages`, `reviews`, `provider_reviews_summary` |
 
 ---
 
@@ -31,12 +31,12 @@
 ### 1. Browse Transport Providers (STT 7 — UC-07)
 **Nghiệp vụ:** Khách hàng duyệt danh sách các đối tác vận chuyển đã xác minh (`is_verified = true`) và đang sẵn sàng nhận chuyến (`is_available = true`), lọc theo thành phố/khu vực hoạt động và số sao đánh giá.
 
-- **File Route:** [`backend/src/routes/providers.routes.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/providers.routes.js#L8)
+- **File Route:** [`backend/src/routes/providers.routes.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/providers.routes.js#L8)
 ```javascript
 router.get('/browse', providersController.browse);
 ```
 
-- **File Controller:** [`backend/src/controllers/providers.controller.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/providers.controller.js#L3-L14)
+- **File Controller:** [`backend/src/controllers/providers.controller.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/providers.controller.js#L3-L14)
 ```javascript
 async function browse(req, res, next) {
   try {
@@ -52,7 +52,7 @@ async function browse(req, res, next) {
 }
 ```
 
-- **File Service:** [`backend/src/services/providers.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L31-L59)
+- **File Service:** [`backend/src/services/providers.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L31-L59)
 ```javascript
 async function browseProviders({ city, minRating, limit = 20 }) {
   let query = supabaseAdmin
@@ -91,8 +91,8 @@ async function browseProviders({ city, minRating, limit = 20 }) {
 **Nghiệp vụ:** Nhập điểm đón/giao, gợi ý địa chỉ tự động theo text (autocomplete) hoặc lấy từ danh sách địa điểm đã lưu/đã đi gần đây của khách hàng.
 
 - **File Routes:**
-  - Bản đồ & tìm địa điểm: [`backend/src/routes/maps.routes.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/maps.routes.js#L7-L24)
-  - Địa chỉ gần đây: [`backend/src/routes/customers.routes.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/customers.routes.js#L12-L15)
+  - Bản đồ & tìm địa điểm: [`backend/src/routes/maps.routes.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/maps.routes.js#L7-L24)
+  - Địa chỉ gần đây: [`backend/src/routes/customers.routes.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/customers.routes.js#L12-L15)
 
 ```javascript
 // maps.routes.js
@@ -106,7 +106,7 @@ router.post('/me/recent-places', requireAuth, requireRole('customer'), customers
 router.get('/me/booking-locations', requireAuth, requireRole('customer'), customersController.getBookingLocations);
 ```
 
-- **File Service (Maps Service & Address Parser):** [`backend/src/services/maps.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/maps.service.js#L516-L548)
+- **File Service (Maps Service & Address Parser):** [`backend/src/services/maps.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/maps.service.js#L516-L548)
 ```javascript
 async function autocomplete(input, sessionToken, biasOptions = {}) {
   // Ưu tiên Goong API (Việt Nam) -> Fallback Google Maps -> Fallback OpenStreetMap Nominatim
@@ -120,7 +120,7 @@ async function autocomplete(input, sessionToken, biasOptions = {}) {
 }
 ```
 
-- **File Service (Recent Places Customer):** [`backend/src/services/customers.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/customers.service.js#L385-L448)
+- **File Service (Recent Places Customer):** [`backend/src/services/customers.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/customers.service.js#L385-L448)
 ```javascript
 async function getBookingLocations(userId, limitParam) {
   const limit = Math.min(Math.max(parseInt(String(limitParam || 8), 10) || 8, 1), 20);
@@ -146,8 +146,8 @@ async function getBookingLocations(userId, limitParam) {
 ### 3. Select Move Schedule and Dorm Details (STT 9 — UC-09)
 **Nghiệp vụ:** Chọn ngày giờ dọn trọ (`scheduled_pickup_time`), thông tin số phòng KTX (`number_of_rooms`), số tầng, thang máy và ảnh chụp phòng trọ.
 
-- **File Route & Controller:** [`backend/src/routes/orders.routes.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11) và [`backend/src/controllers/orders.controller.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/orders.controller.js#L24-L31)
-- **File Service:** [`backend/src/services/orders.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L282-L325)
+- **File Route & Controller:** [`backend/src/routes/orders.routes.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11) và [`backend/src/controllers/orders.controller.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/orders.controller.js#L24-L31)
+- **File Service:** [`backend/src/services/orders.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L282-L325)
 ```javascript
 const photoUrls = Array.isArray(p.dorm_image_urls)
   ? p.dorm_image_urls.filter((u) => typeof u === 'string' && u.trim())
@@ -173,7 +173,7 @@ const baseRow = {
 ### 4. Select Service Package (STT 10 — UC-10)
 **Nghiệp vụ:** Chọn gói dịch vụ (Tiết kiệm / Tiêu chuẩn / Cao cấp) hoặc gói combo từ nhà xe.
 
-- **File Service (Gói dịch vụ):** [`backend/src/services/providers.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L86-L103)
+- **File Service (Gói dịch vụ):** [`backend/src/services/providers.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L86-L103)
 ```javascript
 function mapServicePackage(row) {
   return {
@@ -195,7 +195,7 @@ function mapServicePackage(row) {
 }
 ```
 
-- **File Service (Tự động xác định cỡ xe theo gói dịch vụ):** [`backend/src/services/orders.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L43-L60)
+- **File Service (Tự động xác định cỡ xe theo gói dịch vụ):** [`backend/src/services/orders.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L43-L60)
 ```javascript
 function mapVehicleSize(body) {
   const raw = body.vehicle_size ?? body.vehicle_type;
@@ -212,7 +212,7 @@ function mapVehicleSize(body) {
 ### 5. Enter Item and Move Details (STT 11 — UC-11)
 **Nghiệp vụ:** Kê khai danh sách đồ đạc dọn phòng, khối lượng, ghi chú vận chuyển hoặc chuyển sang chế độ yêu cầu báo giá (`quote_request = true`).
 
-- **File Service:** [`backend/src/services/orders.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L91-L104)
+- **File Service:** [`backend/src/services/orders.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L91-L104)
 ```javascript
 const notes = [body.description, body.special_notes, body.pickup_notes, body.note]
   .filter(Boolean)
@@ -235,21 +235,21 @@ if (quoteRequest) {
 **Nghiệp vụ:** Chọn bảo hiểm đồ đạc khi vận chuyển (được định cấu hình trong gói dịch vụ hoặc cộng vào phụ phí đơn hàng).
 
 - **Mã nguồn:**
-  - Trong `service_packages`: cột `includes_insurance` ([providers.service.js:L98](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L98)).
-  - Trong `orders.service.js`: Phí bảo hiểm bổ sung được cộng dồn vào `service_fee` và tính vào `total_price` ([orders.service.js:L109-L111](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L109-L111)).
+  - Trong `service_packages`: cột `includes_insurance` ([providers.service.js:L98](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L98)).
+  - Trong `orders.service.js`: Phí bảo hiểm bổ sung được cộng dồn vào `service_fee` và tính vào `total_price` ([orders.service.js:L109-L111](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L109-L111)).
 
 ---
 
 ### 7. Book Labor Service (STT 13 — UC-13)
 **Nghiệp vụ:** Đặt thêm người bốc xếp, khuân vác lên các tầng lầu phòng trọ.
 
-- **File Service:** [`backend/src/services/orders.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L132) & [L319-L320](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L319-L320)
+- **File Service:** [`backend/src/services/orders.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L132) & [L319-L320](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L319-L320)
 ```javascript
 number_of_helpers: body.number_of_helpers ?? body.num_helpers ?? 0,
 requires_helpers: p.requires_helpers ?? false,
 ```
 
-- **Định mức bốc vác trong gói dịch vụ:** [`backend/src/services/providers.service.js:L96`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L96)
+- **Định mức bốc vác trong gói dịch vụ:** [`backend/src/services/providers.service.js:L96`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L96)
 ```javascript
 helper_count: row.helper_count ?? 0,
 ```
@@ -259,7 +259,7 @@ helper_count: row.helper_count ?? 0,
 ### 8. View Estimated Price (STT 14 — UC-14)
 **Nghiệp vụ:** Bảng tính chi tiết cước xe cơ bản, cước khoảng cách km, phụ phí leo tầng (50.000đ/tầng), phí dịch vụ bốc xếp và tạm tính tiền cọc 30%.
 
-- **File Service:** [`backend/src/services/orders.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L62-L73)
+- **File Service:** [`backend/src/services/orders.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L62-L73)
 ```javascript
 function defaultPricing(serviceType, floorNumber) {
   const baseByType = { standard: 500000, express: 800000, premium: 1200000 };
@@ -280,8 +280,8 @@ function defaultPricing(serviceType, floorNumber) {
 ### 9. Create Transport Order (STT 15 — UC-15)
 **Nghiệp vụ:** Khách hàng bấm xác nhận tạo đơn hàng vận chuyển (lưu vào bảng `orders`, trạng thái khởi tạo `pending`, tự động phát thông báo đến nhà xe quanh khu vực).
 
-- **File Route & Controller:** `POST /api/orders` ([orders.routes.js:L11](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11), [orders.controller.js:L24-L31](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/orders.controller.js#L24-L31))
-- **File Service:** [`backend/src/services/orders.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L282-L345)
+- **File Route & Controller:** `POST /api/orders` ([orders.routes.js:L11](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L11), [orders.controller.js:L24-L31](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/orders.controller.js#L24-L31))
+- **File Service:** [`backend/src/services/orders.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/orders.service.js#L282-L345)
 ```javascript
 async function createOrder(customerId, payload) {
   const p = await normalizeCreatePayload(customerId, payload);
@@ -333,7 +333,7 @@ async function createOrder(customerId, payload) {
 ### 10. Accept Provider Quote (STT 16 — UC-16)
 **Nghiệp vụ:** Khách hàng chấp nhận báo giá từ danh sách báo giá của các nhà xe. Hệ thống gán nhà xe vào đơn, cập nhật trạng thái đơn thành `matched`, tạm khóa 15 phút để chờ khách cọc tiền (`lock_expires_at`), đồng thời thông báo cho nhà xe.
 
-- **File Route:** [`backend/src/routes/orders.routes.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L15-L27)
+- **File Route:** [`backend/src/routes/orders.routes.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/orders.routes.js#L15-L27)
 ```javascript
 router.get('/:id/quotes', requireAuth, orderQuotesController.listQuotes);
 router.post(
@@ -344,7 +344,7 @@ router.post(
 );
 ```
 
-- **File Controller:** [`backend/src/controllers/order_quotes.controller.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/order_quotes.controller.js#L28-L39)
+- **File Controller:** [`backend/src/controllers/order_quotes.controller.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/order_quotes.controller.js#L28-L39)
 ```javascript
 async function selectQuote(req, res, next) {
   try {
@@ -360,7 +360,7 @@ async function selectQuote(req, res, next) {
 }
 ```
 
-- **File Service:** [`backend/src/services/order_quotes.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/order_quotes.service.js#L157-L246)
+- **File Service:** [`backend/src/services/order_quotes.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/order_quotes.service.js#L157-L246)
 ```javascript
 async function selectQuote(orderId, quoteId, customerId) {
   const order = await getOrderOrThrow(orderId);
@@ -418,12 +418,12 @@ async function selectQuote(orderId, quoteId, customerId) {
 ### 11. View Provider Detail (STT 17 — UC-17)
 **Nghiệp vụ:** Xem hồ sơ chi tiết đối tác vận chuyển gồm: Thông tin phương tiện, các gói cước (`service_packages`), danh sách đánh giá khách hàng (`reviews`) và thống kê số sao (`provider_reviews_summary`).
 
-- **File Route:** [`backend/src/routes/providers.routes.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/providers.routes.js#L32)
+- **File Route:** [`backend/src/routes/providers.routes.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/routes/providers.routes.js#L32)
 ```javascript
 router.get('/:id', providersController.getById);
 ```
 
-- **File Controller:** [`backend/src/controllers/providers.controller.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/providers.controller.js#L16-L26)
+- **File Controller:** [`backend/src/controllers/providers.controller.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/controllers/providers.controller.js#L16-L26)
 ```javascript
 async function getById(req, res, next) {
   try {
@@ -438,7 +438,7 @@ async function getById(req, res, next) {
 }
 ```
 
-- **File Service:** [`backend/src/services/providers.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L196-L264)
+- **File Service:** [`backend/src/services/providers.service.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/services/providers.service.js#L196-L264)
 ```javascript
 async function getProviderById(providerId, { reviewsLimit = 5 } = {}) {
   const id = String(providerId || '').trim();
@@ -482,7 +482,7 @@ async function getProviderById(providerId, { reviewsLimit = 5 } = {}) {
 
 ## 🔄 Luồng Nghiệp Vụ End-to-End & Sơ Đồ Trạng Thái
 
-UniMove hỗ trợ **hai mô hình đặt chuyến chính** phục vụ sinh viên dọn trọ:
+BeeHub hỗ trợ **hai mô hình đặt chuyến chính** phục vụ sinh viên dọn trọ:
 
 ### 1. Luồng A: Đặt Chuyến Tiêu Chuẩn / Theo Gói (Standard Direct Booking Flow)
 
@@ -802,7 +802,7 @@ Khi bạn (hoặc một AI Subagent khác) làm việc trên codebase này, hãy
 1. **Luôn sử dụng `supabaseAdmin` cho các thao tác nội bộ Backend:**
    Các dịch vụ backend nằm tại `backend/src/services/` sử dụng `supabaseAdmin` (được khởi tạo với Service Role Key) để thực hiện các thao tác bypass RLS đối với các nghiệp vụ hệ thống (như chuyển trạng thái hàng loạt, gửi notification, ghi lịch sử).
 2. **Quy tắc vùng địa lý Đà Nẵng:**
-   Mọi kiểm tra địa chỉ bắt buộc sử dụng helper tại [`backend/src/utils/da_nang.js`](file:///c:/Users/Admin/Documents/PRM/BeeUniOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/utils/da_nang.js). Không tự viết lại hàm regex kiểm tra tên đường/quận huyện Đà Nẵng.
+   Mọi kiểm tra địa chỉ bắt buộc sử dụng helper tại [`backend/src/utils/da_nang.js`](file:///c:/Users/Admin/Documents/PRM/BeeHubOld/wdp301-rbl-project-wdp_se18d08_group-4/backend/src/utils/da_nang.js). Không tự viết lại hàm regex kiểm tra tên đường/quận huyện Đà Nẵng.
 3. **Tính toàn vẹn của cọc và thanh toán:**
    Đơn hàng sau khi được tạo (`pending`) hoặc sau khi chốt báo giá (`matched`) **chưa được xem là chính thức hoạt động** cho đến khi sinh viên thanh toán tiền cọc thành công thông qua Webhook PayOS (`/api/webhooks/payos`). Khi webhook báo thành công, đơn mới chuyển sang trạng thái sẵn sàng để nhà xe bắt đầu đi lấy hàng (`picking_up`).
 4. **Không xóa cứng (No Hard Delete):**

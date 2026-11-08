@@ -25,7 +25,7 @@ class FinancialSettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return PressableScale(
       onTap: onTap,

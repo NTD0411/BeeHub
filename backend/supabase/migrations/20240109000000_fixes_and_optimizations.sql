@@ -1,4 +1,4 @@
--- UniMove Database Schema - Fixes & Optimizations
+-- BeeHub Database Schema - Fixes & Optimizations
 -- Description: Fix foreign key references, add missing fields, and optimize for business flow
 -- Run this AFTER all previous migrations
 

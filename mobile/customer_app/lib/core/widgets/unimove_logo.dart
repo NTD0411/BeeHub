@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
 
-class UniMoveLogo extends StatelessWidget {
-  const UniMoveLogo({
+class BeeHubLogo extends StatelessWidget {
+  const BeeHubLogo({
     super.key,
     this.fontSize = 22,
     this.moveColor = AppColors.primary,
@@ -30,13 +30,13 @@ class UniMoveLogo extends StatelessWidget {
   }
 }
 
-class UniMoveLogoAccent extends StatelessWidget {
-  const UniMoveLogoAccent({super.key, this.fontSize = 32});
+class BeeHubLogoAccent extends StatelessWidget {
+  const BeeHubLogoAccent({super.key, this.fontSize = 32});
 
   final double fontSize;
 
   @override
   Widget build(BuildContext context) {
-    return UniMoveLogo(fontSize: fontSize, moveColor: AppColors.accent);
+    return BeeHubLogo(fontSize: fontSize, moveColor: AppColors.accent);
   }
 }

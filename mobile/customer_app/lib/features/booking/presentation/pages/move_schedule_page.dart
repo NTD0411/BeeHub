@@ -121,7 +121,7 @@ class _MoveSchedulePageState extends State<MoveSchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return BlocBuilder<BookingFlowCubit, BookingFlowState>(
       builder: (context, state) {
@@ -267,7 +267,7 @@ class _MoveSchedulePageState extends State<MoveSchedulePage> {
     );
   }
 
-  Widget _infoBanner(UniMoveColors c, BookingFlowState state) {
+  Widget _infoBanner(BeeHubColors c, BookingFlowState state) {
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
@@ -293,7 +293,7 @@ class _MoveSchedulePageState extends State<MoveSchedulePage> {
     );
   }
 
-  Widget _routeSummary(UniMoveColors c, BookingFlowState state) {
+  Widget _routeSummary(BeeHubColors c, BookingFlowState state) {
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(

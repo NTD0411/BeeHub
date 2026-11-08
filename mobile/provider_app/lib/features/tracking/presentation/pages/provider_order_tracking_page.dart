@@ -64,7 +64,7 @@ class _ProviderOrderTrackingPageState extends ConsumerState<ProviderOrderTrackin
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     if (_loading) {
       return Scaffold(
@@ -146,7 +146,7 @@ class _ProviderOrderTrackingPageState extends ConsumerState<ProviderOrderTrackin
   }
 
   Widget _routeRow(
-    UniMoveColors c,
+    BeeHubColors c,
     ShadThemeData theme,
     IconData icon,
     String label,
@@ -183,7 +183,7 @@ class _TrackingStepper extends StatelessWidget {
   const _TrackingStepper({required this.steps, required this.c});
 
   final List<TrackingStepItem> steps;
-  final UniMoveColors c;
+  final BeeHubColors c;
 
   @override
   Widget build(BuildContext context) {

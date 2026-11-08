@@ -30,7 +30,7 @@ class _SmoothCtaButtonState extends State<SmoothCtaButton> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final enabled = widget.onPressed != null && !widget.isLoading;
 
     return SizedBox(

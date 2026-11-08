@@ -59,7 +59,7 @@ class _MessagesTabPageState extends State<MessagesTabPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final theme = ShadTheme.of(context);
 
     if (_loading) {
@@ -120,7 +120,7 @@ class _MessagesTabPageState extends State<MessagesTabPage> {
     );
   }
 
-  Widget _sectionTitle(UniMoveColors c, String label) {
+  Widget _sectionTitle(BeeHubColors c, String label) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.w),
       child: Text(
@@ -135,7 +135,7 @@ class _MessagesTabPageState extends State<MessagesTabPage> {
     );
   }
 
-  Widget _chatEmptyHint(UniMoveColors c) {
+  Widget _chatEmptyHint(BeeHubColors c) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8.w),
       padding: EdgeInsets.all(16.w),
@@ -162,7 +162,7 @@ class _MessagesTabPageState extends State<MessagesTabPage> {
     );
   }
 
-  Widget _notificationEmptyHint(UniMoveColors c) {
+  Widget _notificationEmptyHint(BeeHubColors c) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 12.h),
       child: Text(
@@ -232,7 +232,7 @@ class _ChatInboxTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final conv = entry.conversation;
     final muted = !entry.isActive;
 
@@ -356,7 +356,7 @@ class _NotificationTile extends StatelessWidget {
     };
   }
 
-  Color _iconColor(AppNotificationType type, UniMoveColors c) => switch (type) {
+  Color _iconColor(AppNotificationType type, BeeHubColors c) => switch (type) {
         AppNotificationType.promotion => c.primaryLight,
         AppNotificationType.systemAnnouncement => c.primary,
         AppNotificationType.marketplaceMessage => c.primary,
@@ -369,11 +369,11 @@ class _NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final n = notification;
     final unread = !n.isRead;
     final isPromo = n.type == AppNotificationType.promotion;
-    final title = isPromo ? 'Ưu đãi UniMove' : n.title;
+    final title = isPromo ? 'Ưu đãi BeeHub' : n.title;
     final preview = isPromo ? (n.subtitle ?? n.preview) : n.preview;
     final iconColor = isPromo ? AppColors.accentOrange : _iconColor(n.type, c);
 

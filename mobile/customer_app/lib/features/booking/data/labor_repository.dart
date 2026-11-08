@@ -12,7 +12,7 @@ class LaborRepository {
         'Chỉ thêm sau khi đã có đơn vận chuyển',
         'Đội khuân vác do chính nhà xe cung cấp — phối hợp đồng bộ',
         'Minh bạch số người · giờ · phụ phí tầng',
-        'Cọc qua UniMove — giữ an toàn đến khi hoàn thành',
+        'Cọc qua BeeHub — giữ an toàn đến khi hoàn thành',
       ],
       minPrice: LaborPricing.perHelperPerHour,
     );
@@ -92,7 +92,7 @@ class LaborRepository {
       LaborProviderQuote(
         id: 'labor-p6',
         name: 'UniLift Partners',
-        teamLabel: 'Đối tác nội bộ UniMove',
+        teamLabel: 'Đối tác nội bộ BeeHub',
         rating: 4.85,
         reviewCount: 640,
         price: base + 35000,

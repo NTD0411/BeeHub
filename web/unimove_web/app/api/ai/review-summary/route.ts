@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
   const fiveStarCount = reviews.filter((r) => r.rating === 5).length;
   const lowRatingCount = reviews.filter((r) => r.rating <= 2).length;
 
-  const prompt = `Bạn là chuyên gia phân tích đánh giá khách hàng cho nền tảng vận chuyển chuyển trọ sinh viên UniMove (Đà Nẵng).
+  const prompt = `Bạn là chuyên gia phân tích đánh giá khách hàng cho nền tảng vận chuyển chuyển trọ sinh viên BeeHub (Đà Nẵng).
 
 === DỮ LIỆU ĐÁNH GIÁ ===
 - Tổng số đánh giá: ${reviews.length}

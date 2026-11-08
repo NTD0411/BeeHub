@@ -35,7 +35,7 @@ class _ChoosePartnerPageState extends State<ChoosePartnerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return BlocBuilder<BookingFlowCubit, BookingFlowState>(
       builder: (context, state) {
@@ -105,7 +105,7 @@ class _ChoosePartnerPageState extends State<ChoosePartnerPage> {
     );
   }
 
-  Widget _filterChips(UniMoveColors c) {
+  Widget _filterChips(BeeHubColors c) {
     const labels = ['Giá rẻ nhất', 'Đánh giá cao', 'Gần nhất'];
     return SizedBox(
       height: 40.h,
@@ -141,7 +141,7 @@ class _ChoosePartnerPageState extends State<ChoosePartnerPage> {
     );
   }
 
-  Widget _partnerCard(BuildContext context, BookingFlowState state, PartnerOffer p, UniMoveColors c) {
+  Widget _partnerCard(BuildContext context, BookingFlowState state, PartnerOffer p, BeeHubColors c) {
     return Padding(
       padding: EdgeInsets.only(bottom: 16.h),
       child: Material(
@@ -274,7 +274,7 @@ class _ChoosePartnerPageState extends State<ChoosePartnerPage> {
     );
   }
 
-  Widget _partnerShimmer(UniMoveColors c) {
+  Widget _partnerShimmer(BeeHubColors c) {
     return Padding(
       padding: EdgeInsets.only(bottom: 16.h),
       child: Shimmer.fromColors(
@@ -319,7 +319,7 @@ class _ChoosePartnerPageState extends State<ChoosePartnerPage> {
     return list;
   }
 
-  Future<void> _showReviewsSheet(BuildContext context, PartnerOffer p, UniMoveColors c) {
+  Future<void> _showReviewsSheet(BuildContext context, PartnerOffer p, BeeHubColors c) {
     return showProviderReviewsSheet(
       context,
       providerName: p.name,

@@ -71,13 +71,13 @@ function ModeChooser() {
     <div className="mx-auto w-full max-w-3xl px-4 py-10 lg:py-14">
       <div className="mb-10 text-center">
         <p className="text-xs font-bold uppercase tracking-widest text-[#0047FF]">
-          Đặt chuyến UniMove
+          Đặt chuyến BeeHub
         </p>
         <h1 className="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
           Chuyển trọ theo cách nào phù hợp với bạn?
         </h1>
         <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-gray-500">
-          Hai hình thức khác nhau — chọn một để UniMove đồng hành cùng bạn suốt hành trình.
+          Hai hình thức khác nhau — chọn một để BeeHub đồng hành cùng bạn suốt hành trình.
         </p>
       </div>
 

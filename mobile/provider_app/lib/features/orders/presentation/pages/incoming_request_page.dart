@@ -91,7 +91,7 @@ class _IncomingRequestPageState extends ConsumerState<IncomingRequestPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final order = _order;
 
     return ShadScreenScope(
@@ -126,7 +126,7 @@ class _IncomingRequestPageState extends ConsumerState<IncomingRequestPage> {
     );
   }
 
-  Widget _mapBackdrop(UniMoveColors c) {
+  Widget _mapBackdrop(BeeHubColors c) {
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -139,7 +139,7 @@ class _IncomingRequestPageState extends ConsumerState<IncomingRequestPage> {
     );
   }
 
-  Widget _offerCard(ShadThemeData theme, UniMoveColors c, ProviderOrder order) {
+  Widget _offerCard(ShadThemeData theme, BeeHubColors c, ProviderOrder order) {
     return Container(
       decoration: BoxDecoration(
         color: c.surface,
@@ -276,7 +276,7 @@ class _IncomingRequestPageState extends ConsumerState<IncomingRequestPage> {
     );
   }
 
-  Widget _routeCard(ShadThemeData theme, UniMoveColors c, ProviderOrder order) {
+  Widget _routeCard(ShadThemeData theme, BeeHubColors c, ProviderOrder order) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(color: c.surfaceHigh, borderRadius: BorderRadius.circular(16)),
@@ -296,7 +296,7 @@ class _IncomingRequestPageState extends ConsumerState<IncomingRequestPage> {
     );
   }
 
-  Widget _routeRow(ShadThemeData theme, UniMoveColors c, IconData icon, Color tint, String label, String value) {
+  Widget _routeRow(ShadThemeData theme, BeeHubColors c, IconData icon, Color tint, String label, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -317,7 +317,7 @@ class _IncomingRequestPageState extends ConsumerState<IncomingRequestPage> {
     );
   }
 
-  Widget _infoTile(ShadThemeData theme, UniMoveColors c, IconData icon, String label, String value) {
+  Widget _infoTile(ShadThemeData theme, BeeHubColors c, IconData icon, String label, String value) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(color: c.surfaceHigh, borderRadius: BorderRadius.circular(14)),
@@ -344,7 +344,7 @@ class _IncomingRequestPageState extends ConsumerState<IncomingRequestPage> {
     );
   }
 
-  Widget _itemsTile(ShadThemeData theme, UniMoveColors c, String text) {
+  Widget _itemsTile(ShadThemeData theme, BeeHubColors c, String text) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(color: c.surfaceHigh, borderRadius: BorderRadius.circular(14)),
@@ -371,7 +371,7 @@ class _IncomingRequestPageState extends ConsumerState<IncomingRequestPage> {
     );
   }
 
-  Widget _footerNote(ShadThemeData theme, UniMoveColors c) {
+  Widget _footerNote(ShadThemeData theme, BeeHubColors c) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 4, 24, 12),
       child: Row(

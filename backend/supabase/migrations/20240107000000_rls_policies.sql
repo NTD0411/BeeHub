@@ -1,4 +1,4 @@
--- UniMove Database Schema - Row Level Security (RLS) Policies
+-- BeeHub Database Schema - Row Level Security (RLS) Policies
 -- Description: Security policies to protect data access
 
 -- =====================================================

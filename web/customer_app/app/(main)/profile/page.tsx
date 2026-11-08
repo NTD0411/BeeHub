@@ -176,7 +176,7 @@ export default function ProfilePage() {
         </Button>
 
         <p className="text-center text-xs pb-2" style={{ color: "var(--muted)" }}>
-          UniMove v1.0.0 · Dành cho sinh viên
+          BeeHub v1.0.0 · Dành cho sinh viên
         </p>
       </div>
     </div>

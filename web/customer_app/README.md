@@ -1,6 +1,6 @@
-# UniMove Customer Web App
+# BeeHub Customer Web App
 
-Web app dành cho **khách hàng** sử dụng dịch vụ chuyển trọ UniMove.
+Web app dành cho **khách hàng** sử dụng dịch vụ chuyển trọ BeeHub.
 
 ## Các trang
 

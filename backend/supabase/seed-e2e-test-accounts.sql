@@ -95,7 +95,7 @@ BEGIN
     is_verified, is_available, verification_status, verified_at, service_area
   ) VALUES (
     'd4000001-0001-4001-8001-000000000001',
-    'UniMove Test Transport',
+    'BeeHub Test Transport',
     'medium_truck',
     '43A-12345',
     450000, 12000, 50000,

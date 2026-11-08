@@ -1,8 +1,8 @@
-# UniMove Admin Dashboard API
+# BeeHub Admin Dashboard API
 
 ## Tổng quan
 
-API Admin Dashboard cung cấp các endpoint để quản lý hệ thống UniMove, bao gồm:
+API Admin Dashboard cung cấp các endpoint để quản lý hệ thống BeeHub, bao gồm:
 - **Dashboard KPI**: Thống kê tổng quan với 9+ KPI quan trọng
 - **Provider Management**: Duyệt và quản lý nhà cung cấp
 - **Dispute Resolution**: Xử lý khiếu nại và tranh chấp
@@ -248,8 +248,8 @@ CREATE INDEX idx_disputes_status_created ON disputes(status, created_at DESC);
 ## 🚀 Testing với Postman
 
 ### Import Collection:
-1. `UniMove_Admin_API.postman_collection.json`
-2. `UniMove_Environment.postman_environment.json`
+1. `BeeHub_Admin_API.postman_collection.json`
+2. `BeeHub_Environment.postman_environment.json`
 
 ### Test Sequence:
 1. **Admin Login** → Lưu token
@@ -313,4 +313,4 @@ User raises dispute → Admin investigates → Resolution decision → Refund pr
 
 ---
 
-*UniMove Admin Dashboard API — WDP301 Group 4*
+*BeeHub Admin Dashboard API — WDP301 Group 4*

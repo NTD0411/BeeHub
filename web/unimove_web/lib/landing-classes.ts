@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-/* ─── UniMove brand landing classes ──────────────────────── */
+/* ─── BeeHub brand landing classes ──────────────────────── */
 export const brandBluePrimary   = "#2563EB";
 export const brandYellowPrimary = "#FFCC00";
 

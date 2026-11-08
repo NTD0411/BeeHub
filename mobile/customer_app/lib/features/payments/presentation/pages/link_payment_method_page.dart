@@ -40,7 +40,7 @@ class _LinkPaymentMethodPageState extends State<LinkPaymentMethodPage> {
 
   String get _description => switch (widget.kind) {
         PaymentMethodKind.momo =>
-          'Liên kết ví MoMo để thanh toán nhanh đơn chuyển trọ. UniMove không lưu mật khẩu MoMo của bạn.',
+          'Liên kết ví MoMo để thanh toán nhanh đơn chuyển trọ. BeeHub không lưu mật khẩu MoMo của bạn.',
         PaymentMethodKind.payos =>
           'Liên kết PayOS để thanh toán bằng QR ngân hàng hoặc thẻ nội địa khi đặt cọc và thanh toán đơn.',
         _ => '',
@@ -77,7 +77,7 @@ class _LinkPaymentMethodPageState extends State<LinkPaymentMethodPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Scaffold(
       backgroundColor: c.background,

@@ -58,7 +58,7 @@ function ComboEstimateSidebar({
       <div className="flex h-36 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50">
         <div className="flex flex-col items-center gap-2 text-gray-400">
           <Truck size={40} strokeWidth={1.25} />
-          <span className="text-[10px] font-medium uppercase tracking-wider">Đội xe UniMove</span>
+          <span className="text-[10px] font-medium uppercase tracking-wider">Đội xe BeeHub</span>
         </div>
       </div>
     </div>

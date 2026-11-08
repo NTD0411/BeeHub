@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildScrollContent(UniMoveColors c) {
+  Widget _buildScrollContent(BeeHubColors c) {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
       slivers: [
@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(width: 12),
               Flexible(
                 child: Text(
-                  'UniMove',
+                  'BeeHub',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -167,7 +167,7 @@ class _HomePageState extends State<HomePage> {
               FadeSlideIn(
                 delay: const Duration(milliseconds: 140),
                 child: Text(
-                  'So sánh báo giá nhà xe · Đặt cọc an toàn qua UniMove',
+                  'So sánh báo giá nhà xe · Đặt cọc an toàn qua BeeHub',
                   style: TextStyle(fontSize: 16, color: c.onSurfaceMuted),
                 ),
               ),
@@ -303,7 +303,7 @@ class _HomePageState extends State<HomePage> {
 class _SearchBar extends StatelessWidget {
   _SearchBar({required this.colors});
 
-  final UniMoveColors colors;
+  final BeeHubColors colors;
 
   @override
   Widget build(BuildContext context) {
@@ -325,7 +325,7 @@ class _SearchBar extends StatelessWidget {
 class _MainServiceCard extends StatelessWidget {
   _MainServiceCard({required this.colors, required this.onTap});
 
-  final UniMoveColors colors;
+  final BeeHubColors colors;
   final VoidCallback onTap;
 
   @override
@@ -424,7 +424,7 @@ class _SmallServiceCard extends StatelessWidget {
     this.onTap,
   });
 
-  final UniMoveColors colors;
+  final BeeHubColors colors;
   final IconData icon;
   final bool useSecondaryIconBg;
   final String title;
@@ -480,7 +480,7 @@ class _SmallServiceCard extends StatelessWidget {
 class _FlashSaleBanner extends StatelessWidget {
   _FlashSaleBanner({required this.colors});
 
-  final UniMoveColors colors;
+  final BeeHubColors colors;
 
   @override
   Widget build(BuildContext context) {
@@ -525,7 +525,7 @@ class _FlashSaleBanner extends StatelessWidget {
                         borderRadius: BorderRadius.circular(99),
                       ),
                       child: const Text(
-                        'UNIMOVE',
+                        'BEEHUB',
                         style: TextStyle(
                           color: AppColors.onPrimary,
                           fontSize: 11,
@@ -600,7 +600,7 @@ class _FlashSaleBanner extends StatelessWidget {
 class _RecentOrderCard extends StatefulWidget {
   const _RecentOrderCard({required this.colors});
 
-  final UniMoveColors colors;
+  final BeeHubColors colors;
 
   @override
   State<_RecentOrderCard> createState() => _RecentOrderCardState();
@@ -766,7 +766,7 @@ class _RouteTimeline extends StatelessWidget {
     required this.endLabel,
   });
 
-  final UniMoveColors colors;
+  final BeeHubColors colors;
   final String startLabel;
   final String endLabel;
 

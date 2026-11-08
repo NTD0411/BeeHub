@@ -1,8 +1,8 @@
-# UniMove Admin API Documentation
+# BeeHub Admin API Documentation
 
 ## Tổng quan
 
-API Admin cho phép quản trị viên đăng nhập và truy cập các chức năng quản lý hệ thống UniMove.
+API Admin cho phép quản trị viên đăng nhập và truy cập các chức năng quản lý hệ thống BeeHub.
 
 ## Authentication & Authorization
 
@@ -52,7 +52,7 @@ Tham số truy vấn của endpoint rows: `page` (mặc định `1`), `pageSize`
     "user": {
       "id": "uuid",
       "email": "admin@unimove.com",
-      "full_name": "UniMove Admin",
+      "full_name": "BeeHub Admin",
       "role": "admin",
       "avatar_url": null,
       "created_at": "2024-01-01T00:00:00Z"
@@ -100,7 +100,7 @@ Authorization: Bearer <access_token>
   "data": {
     "id": "uuid",
     "email": "admin@unimove.com",
-    "full_name": "UniMove Admin",
+    "full_name": "BeeHub Admin",
     "role": "admin",
     "avatar_url": null,
     "phone": null,
@@ -257,7 +257,7 @@ curl -X GET http://localhost:3000/api/admin/dashboard/stats \
 ### Admin User trong `profiles`:
 ```sql
 INSERT INTO profiles (id, email, full_name, role, status) VALUES
-('uuid', 'admin@unimove.com', 'UniMove Admin', 'admin', 'active');
+('uuid', 'admin@unimove.com', 'BeeHub Admin', 'admin', 'active');
 ```
 
 ### Required Tables:
@@ -292,4 +292,4 @@ Sau khi API admin hoạt động:
 
 ---
 
-*UniMove Admin API — WDP301 Group 4*
+*BeeHub Admin API — WDP301 Group 4*

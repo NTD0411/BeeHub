@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UniMove Admin",
-  description: "UniMove Admin Dashboard",
+  title: "BeeHub Admin",
+  description: "BeeHub Admin Dashboard",
 };
 
 /**

@@ -50,7 +50,7 @@ class _ProviderShellPageState extends ConsumerState<ProviderShellPage> {
       });
     }
 
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {

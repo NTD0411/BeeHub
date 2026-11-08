@@ -5,8 +5,8 @@ import 'shad_unimove_theme.dart';
 
 /// Màu semantic theo sáng/tối — dùng thay màu dark cố định.
 @immutable
-class UniMoveColors extends ThemeExtension<UniMoveColors> {
-  const UniMoveColors({
+class BeeHubColors extends ThemeExtension<BeeHubColors> {
+  const BeeHubColors({
     required this.background,
     required this.surface,
     required this.surfaceHigh,
@@ -52,7 +52,7 @@ class UniMoveColors extends ThemeExtension<UniMoveColors> {
   final Color iconBgTertiary;
   final Color navBarShadow;
 
-  static const dark = UniMoveColors(
+  static const dark = BeeHubColors(
     background: AppColors.background,
     surface: AppColors.surfaceCard,
     surfaceHigh: AppColors.surfaceCard,
@@ -65,10 +65,10 @@ class UniMoveColors extends ThemeExtension<UniMoveColors> {
     onPrimaryContainer: AppColors.onPrimaryContainer,
     border: AppColors.border,
     chipBg: Color(0xFF1E3A5F),
-    glassCard: UniMoveShadTheme.glassCard,
-    glassCardElevated: UniMoveShadTheme.glassCardElevated,
-    glassBorder: UniMoveShadTheme.glassBorder,
-    glassBorderStrong: UniMoveShadTheme.glassBorderStrong,
+    glassCard: BeeHubShadTheme.glassCard,
+    glassCardElevated: BeeHubShadTheme.glassCardElevated,
+    glassBorder: BeeHubShadTheme.glassBorder,
+    glassBorderStrong: BeeHubShadTheme.glassBorderStrong,
     accentGreen: Color(0xFF22C55E),
     success: AppColors.success,
     iconBgSecondary: AppColors.secondaryContainer,
@@ -76,7 +76,7 @@ class UniMoveColors extends ThemeExtension<UniMoveColors> {
     navBarShadow: Color(0x40000000),
   );
 
-  static const light = UniMoveColors(
+  static const light = BeeHubColors(
     background: Color(0xFFF0F4FF),
     surface: Color(0xFFFFFFFF),
     surfaceHigh: Color(0xFFF8FAFC),
@@ -100,15 +100,15 @@ class UniMoveColors extends ThemeExtension<UniMoveColors> {
     navBarShadow: Color(0x14000000),
   );
 
-  static UniMoveColors of(BuildContext context) {
-    return Theme.of(context).extension<UniMoveColors>() ?? dark;
+  static BeeHubColors of(BuildContext context) {
+    return Theme.of(context).extension<BeeHubColors>() ?? dark;
   }
 
   bool isLight(BuildContext context) =>
       Theme.of(context).brightness == Brightness.light;
 
   @override
-  UniMoveColors copyWith({
+  BeeHubColors copyWith({
     Color? background,
     Color? surface,
     Color? surfaceHigh,
@@ -131,7 +131,7 @@ class UniMoveColors extends ThemeExtension<UniMoveColors> {
     Color? iconBgTertiary,
     Color? navBarShadow,
   }) {
-    return UniMoveColors(
+    return BeeHubColors(
       background: background ?? this.background,
       surface: surface ?? this.surface,
       surfaceHigh: surfaceHigh ?? this.surfaceHigh,
@@ -157,8 +157,8 @@ class UniMoveColors extends ThemeExtension<UniMoveColors> {
   }
 
   @override
-  UniMoveColors lerp(ThemeExtension<UniMoveColors>? other, double t) {
-    if (other is! UniMoveColors) return this;
+  BeeHubColors lerp(ThemeExtension<BeeHubColors>? other, double t) {
+    if (other is! BeeHubColors) return this;
     return t < 0.5 ? this : other;
   }
 }

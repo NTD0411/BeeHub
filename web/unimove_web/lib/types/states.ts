@@ -1,5 +1,5 @@
 /* ============================================================
-   UniMove — Screen State Types
+   BeeHub — Screen State Types
 
    Covers: AsyncState, EmptyState, LoadingState,
            SuccessMessages, ErrorMessages

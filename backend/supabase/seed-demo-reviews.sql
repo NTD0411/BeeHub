@@ -1,5 +1,5 @@
 -- =============================================================================
--- SEED ĐÁNH GIÁ DEMO — nhà xe UniMove Test Transport & Hùng Move Express Test
+-- SEED ĐÁNH GIÁ DEMO — nhà xe BeeHub Test Transport & Hùng Move Express Test
 -- =============================================================================
 -- Chạy trên Supabase SQL Editor SAU:
 --   1. seed-e2e-test-accounts.sql
@@ -146,7 +146,7 @@ BEGIN
    370000, 40000, 52000, 0, 462000, 'completed', TRUE, 138600, now_ts - INTERVAL '20 days', now_ts - INTERVAL '19 days',
    TRUE, 2, 'Cuối kỳ', now_ts - INTERVAL '21 days', now_ts - INTERVAL '19 days');
 
-  -- ── Reviews cho UniMove Test Transport (prov1) ───────────────────────────
+  -- ── Reviews cho BeeHub Test Transport (prov1) ───────────────────────────
   INSERT INTO reviews (
     id, order_id, customer_id, provider_id,
     rating, service_quality_rating, punctuality_rating, professionalism_rating, value_for_money_rating,
@@ -157,7 +157,7 @@ BEGIN
    5, 5, 5, 5, 5, 'Rất hài lòng',
    'Tài xế nhiệt tình, bốc xếp cẩn thận, đúng giờ hẹn. Đồ đạc không bị trầy xước.',
    ARRAY['thân thiện', 'cẩn thận', 'đúng giờ'], TRUE, TRUE,
-   'Cảm ơn bạn đã tin tưởng UniMove Test Transport!', now_ts - INTERVAL '8 days',
+   'Cảm ơn bạn đã tin tưởng BeeHub Test Transport!', now_ts - INTERVAL '8 days',
    now_ts - INTERVAL '9 days', now_ts - INTERVAL '9 days'),
   ('a7000001-0001-4001-8001-000000000002', 'f6000001-0001-4001-8001-000000000002', c2, prov1,
    5, 5, 5, 4, 5, 'Giá tốt',
@@ -199,7 +199,7 @@ BEGIN
    NULL, NULL, now_ts - INTERVAL '1 day', now_ts - INTERVAL '1 day'),
   ('a7000001-0001-4001-8001-000000000009', 'f6000001-0001-4001-8001-000000000009', c9, prov1,
    5, 5, 5, 5, 4, 'Hài lòng',
-   'Rất hài lòng với UniMove Test Transport, đúng giờ và giá rõ ràng.',
+   'Rất hài lòng với BeeHub Test Transport, đúng giờ và giá rõ ràng.',
    ARRAY['đúng giờ', 'minh bạch'], TRUE, TRUE,
    'Hẹn gặp lại bạn!', now_ts - INTERVAL '14 days',
    now_ts - INTERVAL '14 days', now_ts - INTERVAL '14 days'),

@@ -16,7 +16,7 @@ const TEST_PROVIDERS = [
     email: 'provider@unimove.com',
     full_name: 'Nguyễn Văn Provider',
     phone: '0909111222',
-    business_name: 'UniMove Transport Demo',
+    business_name: 'BeeHub Transport Demo',
     vehicle_type: 'small_truck',
     vehicle_plate: '51A-99999',
     verification_status: 'approved',

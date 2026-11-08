@@ -45,7 +45,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return BlocListener<BookingFlowCubit, BookingFlowState>(
       listenWhen: (prev, curr) => prev.destination != curr.destination,
@@ -132,7 +132,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
     );
   }
 
-  Widget _quoteFlowHint(UniMoveColors c, QuoteFlowHint hint) {
+  Widget _quoteFlowHint(BeeHubColors c, QuoteFlowHint hint) {
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
@@ -171,7 +171,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
     );
   }
 
-  Widget _comboFlowHint(UniMoveColors c, String text) {
+  Widget _comboFlowHint(BeeHubColors c, String text) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
@@ -195,7 +195,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
     );
   }
 
-  Widget _passItemHint(UniMoveColors c) {
+  Widget _passItemHint(BeeHubColors c) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
@@ -219,7 +219,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
     );
   }
 
-  Widget _routeCard(BuildContext context, BookingFlowState state, UniMoveColors c) {
+  Widget _routeCard(BuildContext context, BookingFlowState state, BeeHubColors c) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -279,7 +279,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
     );
   }
 
-  Widget _suggestionTile(BuildContext context, PlaceSuggestion suggestion, UniMoveColors c) {
+  Widget _suggestionTile(BuildContext context, PlaceSuggestion suggestion, BeeHubColors c) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -335,7 +335,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
     bool isPickup = false,
     bool muted = false,
   }) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     return Row(
       children: [
         Container(
@@ -359,7 +359,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
     );
   }
 
-  Widget _recentHeader(UniMoveColors c) {
+  Widget _recentHeader(BeeHubColors c) {
     return Builder(
       builder: (context) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -377,7 +377,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
     );
   }
 
-  Widget _placeTile(BuildContext context, RecentPlace place, UniMoveColors c) {
+  Widget _placeTile(BuildContext context, RecentPlace place, BeeHubColors c) {
     return Padding(
       padding: EdgeInsets.only(bottom: 10.h),
       child: Material(
@@ -425,7 +425,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
     );
   }
 
-  Widget _placeShimmer(UniMoveColors c) {
+  Widget _placeShimmer(BeeHubColors c) {
     return Padding(
       padding: EdgeInsets.only(bottom: 10.h),
       child: Shimmer.fromColors(

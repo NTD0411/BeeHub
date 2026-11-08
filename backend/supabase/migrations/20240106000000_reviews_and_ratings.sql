@@ -1,4 +1,4 @@
--- UniMove Database Schema - Reviews & Ratings
+-- BeeHub Database Schema - Reviews & Ratings
 -- Description: Review system, ratings, and feedback management
 
 -- =====================================================

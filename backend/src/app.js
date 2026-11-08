@@ -24,7 +24,7 @@ const WEB_DEV_URL = process.env.WEB_DEV_URL || 'http://localhost:3001';
 app.get('/', (_req, res) => {
   res.json({
     success: true,
-    service: 'UniMove Node.js API',
+    service: 'BeeHub Node.js API',
     message: 'Đây là backend API — không phải giao diện web.',
     web: WEB_DEV_URL,
     health: '/api/health',

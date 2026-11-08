@@ -9,8 +9,8 @@ import 'core/theme/shad_unimove_theme.dart';
 import 'core/theme/theme_mode_cubit.dart';
 import 'features/booking/presentation/cubit/booking_flow_cubit.dart';
 
-class UniMoveApp extends StatelessWidget {
-  const UniMoveApp({super.key});
+class BeeHubApp extends StatelessWidget {
+  const BeeHubApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,15 +27,15 @@ class UniMoveApp extends StatelessWidget {
           child: BlocBuilder<ThemeModeCubit, ThemeMode>(
             builder: (context, mode) {
               return MaterialApp.router(
-                title: 'UniMove',
+                title: 'BeeHub',
                 debugShowCheckedModeBanner: false,
-                theme: FlexUniMoveTheme.material(isDark: false),
-                darkTheme: FlexUniMoveTheme.material(isDark: true),
+                theme: FlexBeeHubTheme.material(isDark: false),
+                darkTheme: FlexBeeHubTheme.material(isDark: true),
                 themeMode: mode,
                 routerConfig: AppRouter.router,
                 builder: (context, child) {
                   return ShadTheme(
-                    data: UniMoveShadTheme.forThemeMode(mode),
+                    data: BeeHubShadTheme.forThemeMode(mode),
                     child: ShadToaster(
                       child: child ?? const SizedBox.shrink(),
                     ),

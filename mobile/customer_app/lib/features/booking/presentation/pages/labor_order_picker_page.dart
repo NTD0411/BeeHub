@@ -48,7 +48,7 @@ class _LaborOrderPickerPageState extends State<LaborOrderPickerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return BookingScaffold(
       title: 'Chọn đơn chuyển trọ',
@@ -117,7 +117,7 @@ class _LaborOrderPickerPageState extends State<LaborOrderPickerPage> {
     );
   }
 
-  Widget _empty(UniMoveColors c) {
+  Widget _empty(BeeHubColors c) {
     return Center(
       child: Padding(
         padding: EdgeInsets.all(32.w),

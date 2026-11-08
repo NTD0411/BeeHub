@@ -206,7 +206,7 @@ enum PaymentMethod { payos, momo, otherWallet }
 /// Loại đặt dịch vụ — khớp `orders.requires_helpers` / `number_of_helpers`.
 enum BookingServiceType { fullMove, laborOnly, laborAddon }
 
-/// Báo giá đội khuân vác từ đối tác marketplace (UniMove trung gian).
+/// Báo giá đội khuân vác từ đối tác marketplace (BeeHub trung gian).
 class LaborProviderQuote {
   const LaborProviderQuote({
     required this.id,

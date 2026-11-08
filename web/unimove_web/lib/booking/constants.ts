@@ -108,7 +108,7 @@ export const INSURANCE_PLANS: InsurancePlan[] = [
 export const MOCK_PARTNERS: PartnerOffer[] = [
   {
     id: "p1",
-    name: "UniMove Test Transport",
+    name: "BeeHub Test Transport",
     distanceKm: 1.2,
     rating: 4.9,
     reviewCount: 148,

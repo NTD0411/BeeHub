@@ -1,6 +1,6 @@
-# UniMove — Database Schema Documentation
+# BeeHub — Database Schema Documentation
 
-> Tài liệu mô tả cấu trúc database PostgreSQL trên **Supabase** cho nền tảng marketplace dịch vụ chuyển trọ sinh viên **UniMove**.
+> Tài liệu mô tả cấu trúc database PostgreSQL trên **Supabase** cho nền tảng marketplace dịch vụ chuyển trọ sinh viên **BeeHub**.
 >
 > **Phiên bản:** MVP (sau tối ưu `manual_fix_step4_optimize_mvp.sql`)  
 > **Cập nhật:** 2026-05-29
@@ -28,7 +28,7 @@
 
 ### 1.1 Mục đích
 
-Database UniMove lưu trữ toàn bộ dữ liệu nghiệp vụ của marketplace kết nối **sinh viên (customer)** với **nhà cung cấp vận chuyển (provider)**, bao gồm:
+Database BeeHub lưu trữ toàn bộ dữ liệu nghiệp vụ của marketplace kết nối **sinh viên (customer)** với **nhà cung cấp vận chuyển (provider)**, bao gồm:
 
 - Quản lý tài khoản đa vai trò (customer / provider / admin)
 - Đặt dịch vụ chuyển trọ, theo dõi đơn hàng real-time
@@ -269,6 +269,7 @@ Giấy tờ xác minh KYC.
 |---|---|---|
 | `id` | UUID PK | |
 | `provider_id` | UUID FK → provider_profiles | |
+| `document_slot` | TEXT | Khóa riêng cho từng ô upload; unique cùng `provider_id` |
 | `document_type` | TEXT | `id_card`, `license`, `vehicle_registration`, `insurance` |
 | `document_url` | TEXT | URL file trên Storage |
 | `document_number` | TEXT | Số giấy tờ |
@@ -846,4 +847,4 @@ supabase.from('orders')
 
 ---
 
-*UniMove Database Schema Documentation — WDP301 Group 4*
+*BeeHub Database Schema Documentation — WDP301 Group 4*

@@ -3,7 +3,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../theme/uni_move_colors.dart';
 
-/// Bọc màn con — [ShadTheme] + [ShadToaster] đã có ở root [UniMoveApp].
+/// Bọc màn con — [ShadTheme] + [ShadToaster] đã có ở root [BeeHubApp].
 class ShadScreenScope extends StatelessWidget {
   const ShadScreenScope({
     super.key,
@@ -43,7 +43,7 @@ class GlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Container(
       padding: padding,

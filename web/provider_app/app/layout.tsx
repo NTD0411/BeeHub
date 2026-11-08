@@ -4,8 +4,8 @@ import "./globals.css";
 const themeScript = `(function(){try{var s=localStorage.getItem('unimove-provider-theme');var d=window.matchMedia('(prefers-color-scheme: dark)').matches;if(s==='dark'||(s!=='light'&&(s==='system'||!s)&&d)){document.documentElement.classList.add('dark');}}catch(_){}})()`;
 
 export const metadata: Metadata = {
-  title: "UniMove Provider - Nhà vận chuyển",
-  description: "Quản lý đơn hàng và thu nhập UniMove",
+  title: "BeeHub Provider - Nhà vận chuyển",
+  description: "Quản lý đơn hàng và thu nhập BeeHub",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -36,7 +36,7 @@ export default async function DashboardPage() {
     <div className="space-y-6">
       <PageHeader
         title="Tổng quan"
-        description="Theo dõi hiệu suất nền tảng UniMove"
+        description="Theo dõi hiệu suất nền tảng BeeHub"
       />
 
       {/* Stat Cards */}

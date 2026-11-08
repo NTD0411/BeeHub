@@ -39,7 +39,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return BlocBuilder<BookingFlowCubit, BookingFlowState>(
       builder: (context, state) {
@@ -184,7 +184,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
     );
   }
 
-  Widget _infoBanner(UniMoveColors c, BookingFlowState state) {
+  Widget _infoBanner(BeeHubColors c, BookingFlowState state) {
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
@@ -212,7 +212,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
     );
   }
 
-  Widget _routeSummary(UniMoveColors c, BookingFlowState state) {
+  Widget _routeSummary(BeeHubColors c, BookingFlowState state) {
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
@@ -251,7 +251,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
     );
   }
 
-  Widget _sectionTitle(UniMoveColors c, String text) {
+  Widget _sectionTitle(BeeHubColors c, String text) {
     return Text(
       text,
       style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700, color: c.onSurface),
@@ -259,7 +259,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
   }
 
   Widget _floorRow(
-    UniMoveColors c,
+    BeeHubColors c,
     int floor,
     bool hasElevator,
     void Function(int) onFloor,
@@ -290,7 +290,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
     );
   }
 
-  Widget _roundBtn(UniMoveColors c, IconData icon, VoidCallback onTap) {
+  Widget _roundBtn(BeeHubColors c, IconData icon, VoidCallback onTap) {
     return Material(
       color: c.surfaceTint,
       shape: const CircleBorder(),
@@ -306,7 +306,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
     );
   }
 
-  Widget _alleyChips(UniMoveColors c, AlleyAccess selected, void Function(AlleyAccess) onSelect) {
+  Widget _alleyChips(BeeHubColors c, AlleyAccess selected, void Function(AlleyAccess) onSelect) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -337,7 +337,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
     );
   }
 
-  Widget _transportLaborSection(UniMoveColors c, BookingFlowState state, BookingFlowCubit cubit) {
+  Widget _transportLaborSection(BeeHubColors c, BookingFlowState state, BookingFlowCubit cubit) {
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
@@ -401,7 +401,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
   }
 
   Widget _counterRow(
-    UniMoveColors c,
+    BeeHubColors c,
     int value,
     String label,
     VoidCallback onMinus,
@@ -418,7 +418,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
     );
   }
 
-  Widget _cargoChips(UniMoveColors c, CargoVolume selected, void Function(CargoVolume) onSelect) {
+  Widget _cargoChips(BeeHubColors c, CargoVolume selected, void Function(CargoVolume) onSelect) {
     return Column(
       children: CargoVolume.values.map((v) {
         final isSelected = selected == v;
@@ -465,7 +465,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
   }
 
   Widget _sectionPhotoUpload(
-    UniMoveColors c,
+    BeeHubColors c,
     BookingFlowState state,
     BookingFlowCubit cubit,
     DormPhotoSection section,
@@ -519,7 +519,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
   }
 
   Widget _imageThumb(
-    UniMoveColors c,
+    BeeHubColors c,
     String path,
     DormPhotoSection section,
     int index,
@@ -551,7 +551,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
     );
   }
 
-  Widget _addImageBtn(UniMoveColors c, DormPhotoSection section, BookingFlowCubit cubit) {
+  Widget _addImageBtn(BeeHubColors c, DormPhotoSection section, BookingFlowCubit cubit) {
     return GestureDetector(
       onTap: () => _showImageSourceSheet(cubit, section),
       child: Container(
@@ -575,7 +575,7 @@ class _MoveDormDetailsPageState extends State<MoveDormDetailsPage> {
   }
 
   Future<void> _showImageSourceSheet(BookingFlowCubit cubit, DormPhotoSection section) async {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
       backgroundColor: c.surface,

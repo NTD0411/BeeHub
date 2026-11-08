@@ -1,8 +1,8 @@
-# UniMove - Nền Tảng Marketplace Dịch Vụ Chuyển Trọ Sinh Viên
+# BeeHub - Nền Tảng Marketplace Dịch Vụ Chuyển Trọ Sinh Viên
 
 ## 📋 Tổng Quan Dự Án
 
-UniMove là nền tảng marketplace kết nối sinh viên cần chuyển trọ với các đơn vị vận chuyển uy tín. Nền tảng cung cấp giá cả minh bạch, theo dõi thời gian thực và gợi ý gộp đơn thông minh nhằm giảm chi phí chuyển trọ lên đến 40%.
+BeeHub là nền tảng marketplace kết nối sinh viên cần chuyển trọ với các đơn vị vận chuyển uy tín. Nền tảng cung cấp giá cả minh bạch, theo dõi thời gian thực và gợi ý gộp đơn thông minh nhằm giảm chi phí chuyển trọ lên đến 40%.
 
 **Mục tiêu:** Xây dựng hệ sinh thái hỗ trợ sinh viên tìm kiếm dịch vụ chuyển trọ nhanh chóng, an toàn, minh bạch và tối ưu chi phí.
 
@@ -188,4 +188,4 @@ Tham khảo các tài liệu chi tiết trong thư mục `docs/`:
 
 ---
 
-**UniMove** - UniMove - Making student moving easier with technology 🚚📱
+**BeeHub** - BeeHub - Making student moving easier with technology 🚚📱

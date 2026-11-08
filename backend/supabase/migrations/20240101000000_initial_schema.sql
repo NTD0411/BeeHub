@@ -1,4 +1,4 @@
--- UniMove Database Schema - Initial Setup
+-- BeeHub Database Schema - Initial Setup
 -- Description: Core tables for users, profiles, and basic structure
 -- Optimized: Merged customer_profiles & provider_profiles into profiles (role-based columns)
 

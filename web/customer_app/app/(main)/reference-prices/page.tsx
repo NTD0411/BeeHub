@@ -92,7 +92,7 @@ export default function ReferencePricesPage() {
 
         <div className="text-center py-2">
           <p className="text-xs" style={{ color: "var(--muted)" }}>
-            Cập nhật lần cuối: Tháng 6, 2026 · UniMove
+            Cập nhật lần cuối: Tháng 6, 2026 · BeeHub
           </p>
         </div>
       </div>

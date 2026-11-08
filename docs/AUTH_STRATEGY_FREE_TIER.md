@@ -59,7 +59,7 @@ Node     →  verify JWT  →  query Supabase bằng service role
 
 ---
 
-## Khuyến nghị cho UniMove (nhóm 5 người)
+## Khuyến nghị cho BeeHub (nhóm 5 người)
 
 | Giai đoạn | Làm gì |
 |-----------|--------|

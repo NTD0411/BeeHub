@@ -111,7 +111,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final monday = DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
     final today = DateTime.now().weekday - 1;
     final todayHours = _hoursLabel(_daySchedules[today] ?? _daySchedules[0]!);
@@ -176,7 +176,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
   }
 
   // ---------- Status ----------
-  Widget _statusCard(ShadThemeData theme, UniMoveColors c) {
+  Widget _statusCard(ShadThemeData theme, BeeHubColors c) {
     return _card(
       c,
       child: Column(
@@ -218,7 +218,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     );
   }
 
-  Widget _statCard(ShadThemeData theme, UniMoveColors c, IconData icon, String value, String label) {
+  Widget _statCard(ShadThemeData theme, BeeHubColors c, IconData icon, String value, String label) {
     return _card(
       c,
       padding: const EdgeInsets.all(16),
@@ -236,7 +236,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     );
   }
 
-  Widget _sectionRow(ShadThemeData theme, UniMoveColors c, String title, String subtitle) {
+  Widget _sectionRow(ShadThemeData theme, BeeHubColors c, String title, String subtitle) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -274,7 +274,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     );
   }
 
-  Widget _dayCard(ShadThemeData theme, UniMoveColors c, int i, DateTime date) {
+  Widget _dayCard(ShadThemeData theme, BeeHubColors c, int i, DateTime date) {
     final schedule = _daySchedules[i]!;
     final working = schedule.enabled;
     final selected = _selectedDay == i;
@@ -326,7 +326,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     );
   }
 
-  Widget _dayEditor(ShadThemeData theme, UniMoveColors c) {
+  Widget _dayEditor(ShadThemeData theme, BeeHubColors c) {
     final schedule = _daySchedules[_selectedDay]!;
     return _card(
       c,
@@ -385,7 +385,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
 
   Widget _timeButton(
     ShadThemeData theme,
-    UniMoveColors c, {
+    BeeHubColors c, {
     required String label,
     required String value,
     required bool enabled,
@@ -430,7 +430,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     setState(() => _daySchedules[day] = next);
   }
 
-  Widget _areaChip(ShadThemeData theme, UniMoveColors c, String label) {
+  Widget _areaChip(ShadThemeData theme, BeeHubColors c, String label) {
     final selected = _areas.contains(label);
     return GestureDetector(
       onTap: () => setState(() {
@@ -464,7 +464,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     );
   }
 
-  Widget _addAreaChip(ShadThemeData theme, UniMoveColors c) {
+  Widget _addAreaChip(ShadThemeData theme, BeeHubColors c) {
     return GestureDetector(
       onTap: () => ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Thêm khu vực — chọn trên bản đồ (sắp có)')),
@@ -488,7 +488,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     );
   }
 
-  Widget _mapPreview(ShadThemeData theme, UniMoveColors c) {
+  Widget _mapPreview(ShadThemeData theme, BeeHubColors c) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(18),
       child: Container(
@@ -548,7 +548,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     );
   }
 
-  Widget _card(UniMoveColors c, {required Widget child, EdgeInsetsGeometry? padding}) {
+  Widget _card(BeeHubColors c, {required Widget child, EdgeInsetsGeometry? padding}) {
     return Container(
       padding: padding ?? const EdgeInsets.all(18),
       decoration: BoxDecoration(

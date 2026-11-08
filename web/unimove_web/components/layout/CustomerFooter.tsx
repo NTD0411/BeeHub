@@ -24,7 +24,7 @@ export function CustomerFooter() {
             </Link>
           ))}
         </nav>
-        <p className="text-xs text-gray-400 md:text-right">© {new Date().getFullYear()} UniMove Logistics. All rights reserved.</p>
+        <p className="text-xs text-gray-400 md:text-right">© {new Date().getFullYear()} BeeHub Logistics. All rights reserved.</p>
       </div>
     </footer>
   );

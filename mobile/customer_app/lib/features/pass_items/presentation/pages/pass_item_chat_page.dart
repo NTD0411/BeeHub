@@ -166,7 +166,7 @@ class _PassItemChatPageState extends State<PassItemChatPage> {
     final ctrl = TextEditingController(
       text: post.isFree ? '' : post.price.toString(),
     );
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final agreed = await showModalBottomSheet<int?>(
       context: context,
       isScrollControlled: true,
@@ -229,7 +229,7 @@ class _PassItemChatPageState extends State<PassItemChatPage> {
     final ctrl = TextEditingController(
       text: _post != null && !_post!.isFree ? _post!.price.toString() : '',
     );
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final amount = await showModalBottomSheet<int>(
       context: context,
       isScrollControlled: true,
@@ -269,7 +269,7 @@ class _PassItemChatPageState extends State<PassItemChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final post = _post;
 
     if (_isSellerInbox) {
@@ -417,7 +417,7 @@ class _PassItemChatPageState extends State<PassItemChatPage> {
       return;
     }
 
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final yes = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -460,7 +460,7 @@ class _PassItemChatPageState extends State<PassItemChatPage> {
     return 'Chờ người bán chốt đơn';
   }
 
-  Widget _logisticsBanner(UniMoveColors c, PassItemPost post) {
+  Widget _logisticsBanner(BeeHubColors c, PassItemPost post) {
     if (post.isMine) {
       if (post.buyerTransportBooked) {
         return Container(
@@ -592,7 +592,7 @@ class _PassItemChatPageState extends State<PassItemChatPage> {
     );
   }
 
-  Widget _sellerDealBar(UniMoveColors c, PassItemPost post) {
+  Widget _sellerDealBar(BeeHubColors c, PassItemPost post) {
     if (post.buyerTransportBooked) return const SizedBox.shrink();
 
     if (post.dealConfirmed) {
@@ -620,7 +620,7 @@ class _PassItemChatPageState extends State<PassItemChatPage> {
     );
   }
 
-  Widget _itemBanner(UniMoveColors c, PassItemPost post) {
+  Widget _itemBanner(BeeHubColors c, PassItemPost post) {
     return Container(
       margin: const EdgeInsets.fromLTRB(12, 10, 12, 0),
       padding: const EdgeInsets.all(10),
@@ -655,7 +655,7 @@ class _PassItemChatPageState extends State<PassItemChatPage> {
     );
   }
 
-  Widget _bubble(UniMoveColors c, PassChatMessage m, PassItemPost? post) {
+  Widget _bubble(BeeHubColors c, PassChatMessage m, PassItemPost? post) {
     if (m.isDealCancel) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -763,7 +763,7 @@ class _PassItemChatPageState extends State<PassItemChatPage> {
     ).animate().fadeIn(duration: 220.ms).slideY(begin: 0.18, end: 0, curve: Curves.easeOut);
   }
 
-  Widget _quickOffers(UniMoveColors c, PassItemPost? post) {
+  Widget _quickOffers(BeeHubColors c, PassItemPost? post) {
     final isSeller = post?.isMine ?? false;
     final chips = isSeller
         ? ['OK giá đó', 'Bạn đến lấy nhé', 'Còn hàng']
@@ -787,7 +787,7 @@ class _PassItemChatPageState extends State<PassItemChatPage> {
     );
   }
 
-  Widget _quickChip(UniMoveColors c, IconData? icon, String label, VoidCallback onTap) {
+  Widget _quickChip(BeeHubColors c, IconData? icon, String label, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.only(right: 8, top: 4, bottom: 4),
       child: GestureDetector(
@@ -811,7 +811,7 @@ class _PassItemChatPageState extends State<PassItemChatPage> {
     );
   }
 
-  Widget _composer(UniMoveColors c, PassItemPost? post) {
+  Widget _composer(BeeHubColors c, PassItemPost? post) {
     if (post == null || _threadBuyerId == null) return const SizedBox.shrink();
     return SafeArea(
       top: false,

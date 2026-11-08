@@ -21,7 +21,7 @@ const server = app.listen(env.PORT, '0.0.0.0', () => {
   startOrderTimeoutJob();
   const payosOk = Boolean(env.PAYOS_CLIENT_ID && env.PAYOS_API_KEY && env.PAYOS_CHECKSUM_KEY);
   const goongOk = Boolean(env.GOONG_API_KEY);
-  console.log(`UniMove API: http://localhost:${env.PORT}`);
+  console.log(`BeeHub API: http://localhost:${env.PORT}`);
   console.log(`Health: http://localhost:${env.PORT}/api/health`);
   console.log(`Web (Next.js): http://localhost:3001 — mở URL này trên trình duyệt`);
   console.log(`PayOS: ${payosOk ? 'đã cấu hình' : 'CHƯA cấu hình — lưu file .env ở thư mục gốc project'}`);

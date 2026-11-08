@@ -1,4 +1,4 @@
--- UniMove Database Schema - Orders & Bookings
+-- BeeHub Database Schema - Orders & Bookings
 -- Description: Order management and service requests
 -- Optimized: Merged order_items into orders (JSONB), removed provider_bids (overkill for MVP)
 

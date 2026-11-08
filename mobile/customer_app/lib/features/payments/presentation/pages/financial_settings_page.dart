@@ -6,7 +6,7 @@ import '../../../../core/theme/uni_move_colors.dart';
 import '../widgets/financial_settings_tile.dart';
 import 'payment_methods_page.dart';
 
-/// Cài đặt tài chính — kiểu Grab, dữ liệu thanh toán UniMove.
+/// Cài đặt tài chính — kiểu Grab, dữ liệu thanh toán BeeHub.
 class FinancialSettingsPage extends StatelessWidget {
   const FinancialSettingsPage({super.key});
 
@@ -17,7 +17,7 @@ class FinancialSettingsPage extends StatelessWidget {
   }
 
   void _openPinInfo(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: c.surface,
@@ -31,7 +31,7 @@ class FinancialSettingsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Mã PIN UniMove',
+              'Mã PIN BeeHub',
               style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w800, color: c.onSurface),
             ),
             SizedBox(height: 12.h),
@@ -58,7 +58,7 @@ class FinancialSettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Scaffold(
       backgroundColor: c.background,
@@ -102,7 +102,7 @@ class FinancialSettingsPage extends StatelessWidget {
                   icon: Icons.lock_outline_rounded,
                   iconColor: c.success,
                   iconBgColor: c.accentGreen.withValues(alpha: 0.15),
-                  title: 'Mã PIN UniMove',
+                  title: 'Mã PIN BeeHub',
                   subtitle: 'Tạo hoặc đặt lại mã PIN của bạn',
                   onTap: () => _openPinInfo(context),
                 ),

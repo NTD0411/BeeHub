@@ -1,50 +1,54 @@
 /**
  * Reset password cho admin@unimove.com
- * Dùng Supabase Admin REST API trực tiếp (không cần SDK / WebSocket)
- * Chạy: node reset-admin-password.js
+ * Chạy từ thư mục backend: node .\reset-admin-password.js
  */
 
-const SUPABASE_URL        = 'https://byqwsmdgyojzgyhbladx.supabase.co';
-const SERVICE_ROLE_KEY    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ5cXdzbWRneW9qemd5aGJsYWR4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTg0NDg3MiwiZXhwIjoyMDk1NDIwODcyfQ.4W-gQgmpYFDTpu9yrZC_yQ4IQq4SZJS8lIm7QQuNhjs';
-const ADMIN_EMAIL         = 'admin@unimove.com';
-const NEW_PASSWORD        = 'Admin123!@#';
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const ADMIN_EMAIL = 'admin@unimove.com';
+const NEW_PASSWORD = 'Admin123!@#';
 
 async function resetAdminPassword() {
+  if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+    throw new Error('Thiếu SUPABASE_URL hoặc SUPABASE_SERVICE_ROLE_KEY trong backend/.env');
+  }
+
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
     'apikey': SERVICE_ROLE_KEY,
   };
 
-  // 1. Tìm UID của admin theo email
   console.log('🔍 Tìm user', ADMIN_EMAIL, '...');
-  const listRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users?email=${encodeURIComponent(ADMIN_EMAIL)}`, { headers });
-  const listJson = await listRes.json();
-
-  let userId = null;
-
-  // Response có thể là { users: [...] } hoặc mảng trực tiếp
-  const users = listJson.users ?? (Array.isArray(listJson) ? listJson : []);
-  const found = users.find(u => u.email === ADMIN_EMAIL);
-
-  if (found) {
-    userId = found.id;
-  } else {
-    // Fallback: dùng UID từ screenshot nếu API list không trả về
-    userId = '2690c66f-d1b5-4820-a7fb-b4bf94b96277';
-    console.log('⚠️  Dùng UID từ Supabase Dashboard:', userId);
+  const perPage = 1000;
+  let adminUser = null;
+  for (let page = 1; !adminUser; page++) {
+    const listRes = await fetch(
+      `${SUPABASE_URL}/auth/v1/admin/users?page=${page}&per_page=${perPage}`,
+      { headers },
+    );
+    if (!listRes.ok) {
+      throw new Error(`Không thể tìm tài khoản admin (HTTP ${listRes.status})`);
+    }
+    const listJson = await listRes.json();
+    const users = listJson.users ?? (Array.isArray(listJson) ? listJson : []);
+    adminUser = users.find(user => user.email === ADMIN_EMAIL);
+    if (adminUser || users.length < perPage) break;
   }
 
-  console.log('✅ UID:', userId);
+  if (!adminUser) {
+    throw new Error(`Không tìm thấy tài khoản ${ADMIN_EMAIL} trong Supabase project đã cấu hình`);
+  }
 
-  // 2. Update password
+  console.log('✅ UID:', adminUser.id);
   console.log('🔑 Đang reset password...');
-  const updateRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
+  const updateRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${adminUser.id}`, {
     method: 'PUT',
     headers,
     body: JSON.stringify({ password: NEW_PASSWORD, email_confirm: true }),
   });
-
   const updateJson = await updateRes.json();
 
   if (!updateRes.ok) {
@@ -59,4 +63,7 @@ async function resetAdminPassword() {
 
 resetAdminPassword()
   .then(() => process.exit(0))
-  .catch(e => { console.error('\n❌ Lỗi:', e.message); process.exit(1); });
+  .catch(error => {
+    console.error('\n❌ Lỗi:', error.message);
+    process.exit(1);
+  });

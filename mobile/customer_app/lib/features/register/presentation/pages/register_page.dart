@@ -182,7 +182,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     return ShadScreenScope(
       builder: (shadContext, theme) {
-        final c = UniMoveColors.of(shadContext);
+        final c = BeeHubColors.of(shadContext);
         return Scaffold(
           backgroundColor: Colors.transparent,
             body: Stack(
@@ -263,7 +263,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ),
                                   const SizedBox(width: 12),
                                   Text(
-                                    'UniMove',
+                                    'BeeHub',
                                     style: theme.textTheme.h2.copyWith(
                                       color: AppColors.primary,
                                       fontWeight: FontWeight.w800,
@@ -495,7 +495,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                                         fontWeight: FontWeight.w700,
                                                       ),
                                                     ),
-                                                    const TextSpan(text: ' của UniMove.'),
+                                                    const TextSpan(text: ' của BeeHub.'),
                                                   ],
                                                 ),
                                               ),

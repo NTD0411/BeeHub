@@ -90,7 +90,7 @@ class PassTransportQuote {
   final String? badge;
 }
 
-/// Chính sách phí đăng tin pass đồ trên UniMove.
+/// Chính sách phí đăng tin pass đồ trên BeeHub.
 abstract final class PassListingFee {
   static const int minFee = 5000;
   static const int maxFee = 30000;

@@ -95,7 +95,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -137,7 +137,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
     );
   }
 
-  Widget _header(ShadThemeData theme, UniMoveColors c) {
+  Widget _header(ShadThemeData theme, BeeHubColors c) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(6, 6, 16, 0),
       child: Row(
@@ -163,7 +163,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
   }
 
   // ---------- Progress ----------
-  Widget _progress(ShadThemeData theme, UniMoveColors c) {
+  Widget _progress(ShadThemeData theme, BeeHubColors c) {
     final pct = (_step + 1) / 4;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
@@ -208,7 +208,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
   }
 
   // ---------- Step 1: personal ----------
-  List<Widget> _personalStep(ShadThemeData theme, UniMoveColors c) {
+  List<Widget> _personalStep(ShadThemeData theme, BeeHubColors c) {
     return [
       Container(
         padding: const EdgeInsets.all(18),
@@ -265,7 +265,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
     ];
   }
 
-  Widget _securityNote(ShadThemeData theme, UniMoveColors c) {
+  Widget _securityNote(ShadThemeData theme, BeeHubColors c) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -297,7 +297,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
   }
 
   // ---------- Step 2: vehicle ----------
-  List<Widget> _vehicleStep(ShadThemeData theme, UniMoveColors c) {
+  List<Widget> _vehicleStep(ShadThemeData theme, BeeHubColors c) {
     return [
       Text('Chọn loại xe', style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w700, color: c.onSurface)),
       const SizedBox(height: 10),
@@ -322,7 +322,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
   }
 
   Widget _vehicleOption(
-      ShadThemeData theme, UniMoveColors c, _VehicleType type, IconData icon, String title, String subtitle) {
+      ShadThemeData theme, BeeHubColors c, _VehicleType type, IconData icon, String title, String subtitle) {
     final selected = _vehicle == type;
     return Material(
       color: Colors.transparent,
@@ -362,7 +362,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
   }
 
   // ---------- Step 3: documents ----------
-  List<Widget> _documentsStep(ShadThemeData theme, UniMoveColors c) {
+  List<Widget> _documentsStep(ShadThemeData theme, BeeHubColors c) {
     return [
       Text('Căn cước công dân (CCCD)',
           style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w700, color: c.onSurface)),
@@ -393,7 +393,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
   }
 
   Widget _uploadBox(
-      ShadThemeData theme, UniMoveColors c, String title, String subtitle, bool done, VoidCallback onTap) {
+      ShadThemeData theme, BeeHubColors c, String title, String subtitle, bool done, VoidCallback onTap) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -441,7 +441,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
   }
 
   // ---------- Shared ----------
-  Widget _field(ShadThemeData theme, UniMoveColors c, String label, TextEditingController ctrl,
+  Widget _field(ShadThemeData theme, BeeHubColors c, String label, TextEditingController ctrl,
       String hint, IconData icon,
       {TextInputType? keyboard, int maxLines = 1}) {
     return Column(
@@ -462,7 +462,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
     );
   }
 
-  Widget _errorBox(ShadThemeData theme, UniMoveColors c, String msg) {
+  Widget _errorBox(ShadThemeData theme, BeeHubColors c, String msg) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -482,7 +482,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
     );
   }
 
-  Widget _bottomBar(ShadThemeData theme, UniMoveColors c) {
+  Widget _bottomBar(ShadThemeData theme, BeeHubColors c) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
       decoration: BoxDecoration(
@@ -542,7 +542,7 @@ class _PendingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final theme = ShadTheme.of(context);
 
     return ListView(
@@ -569,7 +569,7 @@ class _PendingView extends StatelessWidget {
             style: theme.textTheme.h2.copyWith(fontWeight: FontWeight.w800, color: c.onSurface)),
         const SizedBox(height: 10),
         Text(
-          'Cảm ơn bạn đã hoàn thành đăng ký! UniMove đang kiểm tra hồ sơ của bạn.',
+          'Cảm ơn bạn đã hoàn thành đăng ký! BeeHub đang kiểm tra hồ sơ của bạn.',
           textAlign: TextAlign.center,
           style: theme.textTheme.p.copyWith(color: c.onSurfaceMuted, height: 1.5),
         ),
@@ -631,7 +631,7 @@ class _PendingView extends StatelessWidget {
     );
   }
 
-  Widget _infoRow(ShadThemeData theme, UniMoveColors c, Color tint, IconData icon, String title, String body) {
+  Widget _infoRow(ShadThemeData theme, BeeHubColors c, Color tint, IconData icon, String title, String body) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

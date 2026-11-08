@@ -1,4 +1,4 @@
-# UniMove Documentation
+# BeeHub Documentation
 
 ## 📁 Cấu trúc documentation
 

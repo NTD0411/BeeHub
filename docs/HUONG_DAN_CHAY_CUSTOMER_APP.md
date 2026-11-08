@@ -1,4 +1,4 @@
-# Hướng dẫn chạy Customer App (UniMove)
+# Hướng dẫn chạy Customer App (BeeHub)
 
 Tài liệu cho thành viên **pull code lần đầu** — chạy được app khách hàng trên máy Windows (Android emulator, điện thoại thật, hoặc Windows desktop).
 

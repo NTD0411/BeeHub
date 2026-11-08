@@ -1,4 +1,4 @@
-# Tổng kết Admin Dashboard — UniMove
+# Tổng kết Admin Dashboard — BeeHub
 
 > Tài liệu tổng hợp những gì đã triển khai cho trang quản trị web (`web/admin_dashboard`).
 
@@ -6,7 +6,7 @@
 
 ## 1. Tổng quan
 
-Admin Dashboard là giao diện quản trị nền tảng UniMove, xây dựng bằng **Next.js** (App Router), kết nối **Backend Node.js/Express** qua REST API, dữ liệu lưu trên **Supabase (PostgreSQL)**.
+Admin Dashboard là giao diện quản trị nền tảng BeeHub, xây dựng bằng **Next.js** (App Router), kết nối **Backend Node.js/Express** qua REST API, dữ liệu lưu trên **Supabase (PostgreSQL)**.
 
 | Thành phần | Công nghệ |
 |---|---|

@@ -171,7 +171,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 
     return ShadScreenScope(
       builder: (shadContext, theme) {
-        final c = UniMoveColors.of(shadContext);
+        final c = BeeHubColors.of(shadContext);
 
         return Scaffold(
           backgroundColor: Colors.transparent,
@@ -245,7 +245,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                                   ),
                                   const SizedBox(width: 12),
                                   Text(
-                                    'UniMove Partner',
+                                    'BeeHub Partner',
                                     style: theme.textTheme.h2.copyWith(
                                       color: AppColors.primary,
                                       fontWeight: FontWeight.w800,
@@ -310,7 +310,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                                           _buildInput(
                                             shadContext: shadContext,
                                             controller: _businessCtrl,
-                                            placeholder: 'UniMove Logistics',
+                                            placeholder: 'BeeHub Logistics',
                                             leadingIcon: LucideIcons.building2,
                                             textInputAction: TextInputAction.next,
                                           ),
@@ -458,7 +458,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                                                         fontWeight: FontWeight.w700,
                                                       ),
                                                     ),
-                                                    const TextSpan(text: ' của UniMove.'),
+                                                    const TextSpan(text: ' của BeeHub.'),
                                                   ],
                                                 ),
                                               ),

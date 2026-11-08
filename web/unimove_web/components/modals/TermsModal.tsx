@@ -139,7 +139,7 @@ function CustomerTermsContent() {
         </ul>
       </Section>
 
-      <Section icon={<ShieldCheck size={16} />} color="#16A34A" title="4. Cam kết từ UniMove">
+      <Section icon={<ShieldCheck size={16} />} color="#16A34A" title="4. Cam kết từ BeeHub">
         <ul className="space-y-2">
           <li>Tất cả nhà xe đều được <strong>xác minh giấy tờ và lý lịch</strong> trước khi hoạt động.</li>
           <li>Khoản đặt cọc được bảo vệ an toàn — không bao giờ bị giữ lại nếu hủy đúng chính sách.</li>
@@ -149,7 +149,7 @@ function CustomerTermsContent() {
 
       <Section icon={<Clock size={16} />} color="#7C3AED" title="5. Điều khoản chung">
         <ul className="space-y-2">
-          <li>UniMove là nền tảng kết nối và không chịu trách nhiệm về thiệt hại do thiên tai, tai nạn bất khả kháng.</li>
+          <li>BeeHub là nền tảng kết nối và không chịu trách nhiệm về thiệt hại do thiên tai, tai nạn bất khả kháng.</li>
           <li>Chính sách có thể thay đổi — phiên bản mới sẽ thông báo qua email/thông báo trong app.</li>
           <li>Sử dụng dịch vụ đồng nghĩa với việc bạn chấp nhận toàn bộ điều khoản này.</li>
         </ul>
@@ -204,7 +204,7 @@ function ProviderTermsContent() {
         <ul className="space-y-2">
           <li>Tiền đặt cọc (30%) do nền tảng giữ — được chuyển cho nhà xe sau khi khách xác nhận hoàn tất.</li>
           <li>Phần còn lại (70%) do khách thanh toán trực tiếp khi giao hàng.</li>
-          <li>UniMove thu <strong>phí nền tảng</strong> theo hợp đồng riêng (không trừ từ tiền chuyến).</li>
+          <li>BeeHub thu <strong>phí nền tảng</strong> theo hợp đồng riêng (không trừ từ tiền chuyến).</li>
         </ul>
       </Section>
 
@@ -219,7 +219,7 @@ function ProviderTermsContent() {
 
       <Section icon={<Clock size={16} />} color="#7C3AED" title="5. Điều khoản chung">
         <ul className="space-y-2">
-          <li>UniMove có quyền từ chối hoặc xóa tài khoản nếu vi phạm điều khoản.</li>
+          <li>BeeHub có quyền từ chối hoặc xóa tài khoản nếu vi phạm điều khoản.</li>
           <li>Chính sách có thể cập nhật — thông báo trước ít nhất 7 ngày qua email.</li>
           <li>Đăng ký tài khoản nhà xe đồng nghĩa chấp nhận toàn bộ điều khoản này.</li>
         </ul>

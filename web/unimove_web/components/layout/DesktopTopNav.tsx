@@ -111,7 +111,7 @@ export function DesktopTopNav() {
       <header className="sticky top-0 z-50 hidden w-full shrink-0 border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur-md lg:block">
         <div className="mx-auto flex h-[68px] max-w-[var(--width-container)] items-center gap-6 px-8">
 
-          <Link href={user ? '/trang-chu' : '/'} className="flex shrink-0 items-center no-underline" aria-label="UniMove">
+          <Link href={user ? '/trang-chu' : '/'} className="flex shrink-0 items-center no-underline" aria-label="BeeHub">
             <span className="text-xl font-extrabold tracking-tight">
               <span className="text-[#FFC107]">Uni</span>
               <span className="text-[#0047FF]">Move</span>

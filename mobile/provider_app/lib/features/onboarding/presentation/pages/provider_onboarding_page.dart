@@ -90,7 +90,7 @@ class _ProviderOnboardingPageState extends State<ProviderOnboardingPage> {
                         padding: const EdgeInsets.fromLTRB(20, 8, 12, 0),
                         child: Row(
                           children: [
-                            const UniMoveLogoAccent(fontSize: 22),
+                            const BeeHubLogoAccent(fontSize: 22),
                             const Spacer(),
                             ShadButton.ghost(
                               onPressed: _finish,

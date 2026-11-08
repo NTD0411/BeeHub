@@ -236,7 +236,7 @@ function SellerSidebar({
           <p className="text-base font-bold text-gray-900">{seller.full_name}</p>
           <BadgeCheck size={18} className="shrink-0 text-[#0047FF]" />
         </div>
-        <p className="mt-1 text-xs text-gray-500">Thành viên UniMove · Đã xác thực</p>
+        <p className="mt-1 text-xs text-gray-500">Thành viên BeeHub · Đã xác thực</p>
       </div>
 
       <div className="mt-5 grid grid-cols-3 divide-x divide-gray-100 rounded-xl border border-gray-100 bg-gray-50/80 py-3">

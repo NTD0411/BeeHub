@@ -94,7 +94,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const UniMoveLogoAccent(fontSize: 22),
+                          const BeeHubLogoAccent(fontSize: 22),
                           ShadButton.ghost(
                             onPressed: _finish,
                             child: Text(

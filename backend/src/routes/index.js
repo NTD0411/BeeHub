@@ -27,7 +27,7 @@ const router = express.Router();
 router.get('/health', (_req, res) => {
   res.json({
     success: true,
-    service: 'UniMove Node.js API',
+    service: 'BeeHub Node.js API',
     timestamp: new Date().toISOString(),
   });
 });

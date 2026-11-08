@@ -1,4 +1,4 @@
--- UniMove MVP Cleanup — for fresh installs after all migrations
+-- BeeHub MVP Cleanup — for fresh installs after all migrations
 -- Mirrors manual_fix_step4_optimize_mvp.sql
 -- Note: wallets & wallet_transactions are KEPT (not dropped) for payment processing
 

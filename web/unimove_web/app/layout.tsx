@@ -23,7 +23,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UniMove - Chuyển trọ & Chợ sinh viên",
+  title: "BeeHub - Chuyển trọ & Chợ sinh viên",
   description: "Nền tảng chuyển đồ và mua bán đồ dùng sinh viên",
 };
 

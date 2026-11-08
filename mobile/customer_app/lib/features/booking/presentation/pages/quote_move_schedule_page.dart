@@ -76,7 +76,7 @@ class _QuoteMoveSchedulePageState extends State<QuoteMoveSchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     if (_loading) {
       return Scaffold(
@@ -188,7 +188,7 @@ class _QuoteMoveSchedulePageState extends State<QuoteMoveSchedulePage> {
     );
   }
 
-  Widget _dayChip(UniMoveColors c, MoveDayAvailability day, bool selected) {
+  Widget _dayChip(BeeHubColors c, MoveDayAvailability day, bool selected) {
     final label = _formatDayLabel(day.date);
 
     return Material(
@@ -230,7 +230,7 @@ class _QuoteMoveSchedulePageState extends State<QuoteMoveSchedulePage> {
     return '$wd\n$dd/$mm';
   }
 
-  Widget _slotChip(UniMoveColors c, MoveTimeSlot slot) {
+  Widget _slotChip(BeeHubColors c, MoveTimeSlot slot) {
     final available = slot.available;
     final selected = _selectedSlot?.id == slot.id;
 

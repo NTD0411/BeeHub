@@ -61,11 +61,11 @@ const PROVIDER_BENEFITS = [
   "Nhận đơn phù hợp với loại xe và tuyến đường của bạn",
   "Giữ lại 90% doanh thu — không cắt xén",
   "Quản lý lịch trình theo ý muốn, nhận đơn khi rảnh",
-  "Hỗ trợ kỹ thuật 24/7 từ đội ngũ UniMove",
+  "Hỗ trợ kỹ thuật 24/7 từ đội ngũ BeeHub",
 ];
 
 /* ─── Logo component ─────────────────────────────────────── */
-function UniMoveLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+function BeeHubLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const sizes = { sm: "text-xl", md: "text-2xl", lg: "text-3xl" };
   return (
     <span className={cn("font-extrabold tracking-tight", sizes[size])}>
@@ -162,7 +162,7 @@ export default function LandingPage() {
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-6 lg:px-8">
           {/* Logo — left */}
           <Link href="/" className="shrink-0">
-            <UniMoveLogo size="lg" />
+            <BeeHubLogo size="lg" />
           </Link>
 
           {/* Desktop nav — center */}
@@ -316,7 +316,7 @@ export default function LandingPage() {
                 </div>
                 <p className="text-sm font-medium" style={{ color: G }}>
                   <strong style={{ color: D }}>90+ người dùng</strong> và{" "}
-                  <strong style={{ color: D }}>1 tài xế</strong> đang dùng UniMove
+                  <strong style={{ color: D }}>1 tài xế</strong> đang dùng BeeHub
                 </p>
               </div>
             </motion.div>
@@ -460,7 +460,7 @@ export default function LandingPage() {
                 Bạn có <span style={{ color: Y }}>xe tải</span>?<br />Hãy cùng kiếm tiền.
               </motion.h2>
               <motion.p variants={fadeInUp} className="mt-5 text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.75)" }}>
-                Tham gia mạng lưới nhà vận chuyển UniMove. Thu nhập chủ động, nhận đơn khi rảnh.
+                Tham gia mạng lưới nhà vận chuyển BeeHub. Thu nhập chủ động, nhận đơn khi rảnh.
               </motion.p>
               <motion.ul variants={fadeInUp} className="mt-8 space-y-3.5">
                 {PROVIDER_BENEFITS.map((item) => (
@@ -491,7 +491,7 @@ export default function LandingPage() {
               className="grid grid-cols-2 gap-4">
               {[
                 { icon: DollarSign, value: "90%",     label: "Doanh thu giữ lại",   sub: "Sau mỗi chuyến hoàn thành" },
-                { icon: Truck,      value: "1",      label: "Tài xế đang hoạt động", sub: "Trên nền tảng UniMove"   },
+                { icon: Truck,      value: "1",      label: "Tài xế đang hoạt động", sub: "Trên nền tảng BeeHub"   },
                 { icon: Clock,      value: "7/7",     label: "Ngày hoạt động",       sub: "Không nghỉ lễ"            },
                 { icon: Star,       value: "4.9★",    label: "Điểm tài xế TB",       sub: "Từ đánh giá thực tế"     },
               ].map(({ icon: Icon, value, label, sub }) => (
@@ -551,10 +551,10 @@ export default function LandingPage() {
       <footer id="lien-he" className="border-t py-12" style={{ borderColor: "#FFF0A0" }}>
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 text-center md:flex-row md:text-left lg:px-8">
           <Link href="/" className="shrink-0">
-            <UniMoveLogo size="sm" />
+            <BeeHubLogo size="sm" />
           </Link>
           <p className="text-sm" style={{ color: G }}>
-            © 2026 UniMove. Nền tảng chuyển trọ dành cho sinh viên Việt Nam.
+            © 2026 BeeHub. Nền tảng chuyển trọ dành cho sinh viên Việt Nam.
           </p>
           <div className="flex gap-6">
             {["Điều khoản", "Bảo mật", "Liên hệ"].map((item) => (

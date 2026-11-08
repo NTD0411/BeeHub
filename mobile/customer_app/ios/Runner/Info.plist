@@ -60,11 +60,11 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>UniMove cần truy cập thư viện ảnh để đăng ảnh món pass đồ.</string>
+	<string>BeeHub cần truy cập thư viện ảnh để đăng ảnh món pass đồ.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>UniMove cần dùng camera để chụp ảnh món pass đồ.</string>
+	<string>BeeHub cần dùng camera để chụp ảnh món pass đồ.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>UniMove cần vị trí để điền điểm đi khi đặt chuyến.</string>
+	<string>BeeHub cần vị trí để điền điểm đi khi đặt chuyến.</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

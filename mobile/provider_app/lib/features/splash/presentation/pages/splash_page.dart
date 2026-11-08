@@ -53,7 +53,7 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -88,7 +88,7 @@ class _SplashPageState extends State<SplashPage> {
                         .animate()
                         .scale(duration: 600.ms, curve: Curves.easeOutBack),
                     const SizedBox(height: 20),
-                    const UniMoveLogoAccent(fontSize: 32)
+                    const BeeHubLogoAccent(fontSize: 32)
                         .animate()
                         .fadeIn(delay: 200.ms, duration: 500.ms),
                     const SizedBox(height: 8),

@@ -12,5 +12,5 @@ Future<void> main() async {
     ApiClient.instance.setAccessToken(token);
   }
 
-  runApp(const UniMoveApp());
+  runApp(const BeeHubApp());
 }

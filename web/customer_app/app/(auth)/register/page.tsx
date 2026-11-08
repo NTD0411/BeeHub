@@ -52,7 +52,7 @@ export default function RegisterPage() {
       }
       const { accessToken, user } = res.data as { accessToken: string; user: UserType };
       storeUser(user, accessToken);
-      toast("Đăng ký thành công! Chào mừng đến với UniMove.", "success");
+      toast("Đăng ký thành công! Chào mừng đến với BeeHub.", "success");
       window.location.href = "/home";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Không thể kết nối đến server");
@@ -72,7 +72,7 @@ export default function RegisterPage() {
             <Truck size={28} className="text-white" />
           </div>
           <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>Tạo tài khoản</h1>
-          <p className="mt-2 text-sm" style={{ color: "var(--muted)" }}>Bắt đầu hành trình với UniMove</p>
+          <p className="mt-2 text-sm" style={{ color: "var(--muted)" }}>Bắt đầu hành trình với BeeHub</p>
         </div>
 
         <div className="rounded-3xl border p-8 shadow-xl" style={{ backgroundColor: "var(--card)", borderColor: "var(--border)" }}>

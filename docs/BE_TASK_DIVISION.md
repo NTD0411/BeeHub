@@ -1,4 +1,4 @@
-# UniMove — Phân chia Backend
+# BeeHub — Phân chia Backend
 
 **File Sheet:** [BE_TASK_DIVISION.csv](./BE_TASK_DIVISION.csv)
 
@@ -44,7 +44,7 @@ Trong **Note**, các mục dùng prefix:
 ## Google Sheets
 
 1. Import `BE_TASK_DIVISION.csv` (Comma)
-2. Hàng 1 merge: **UNIMOVE**
+2. Hàng 1 merge: **BEEHUB**
 3. Cột **Progress Bar**: `=REPT("█",ROUND(G3*10/100,0))&REPT("░",10-ROUND(G3*10/100,0))`
 4. Cột **Note** — bật Wrap text để đọc 【】sections
 

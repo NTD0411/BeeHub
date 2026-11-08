@@ -1,4 +1,4 @@
--- UniMove Database Schema - Chat & Notifications
+-- BeeHub Database Schema - Chat & Notifications
 -- Description: Real-time messaging and notification system
 
 -- Create ENUM types

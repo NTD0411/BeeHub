@@ -58,7 +58,7 @@ class _ActivityPageState extends State<ActivityPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     if (_loading) {
       return Center(child: CircularProgressIndicator(color: c.primary));
@@ -173,7 +173,7 @@ class _ActiveOrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return UniSurfaceCard(
       padding: EdgeInsets.all(16.w),
@@ -251,7 +251,7 @@ class _ReviewPromptCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return UniSurfaceCard(
       padding: EdgeInsets.all(16.w),
@@ -306,7 +306,7 @@ class _ActivityOrderRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final time = order.completedAt ?? order.createdAt;
 
     return PressableScale(

@@ -4,8 +4,8 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 
 import 'app_colors.dart';
 
-/// ShadCN theme UniMove — dark glass (mặc định toàn app).
-abstract final class UniMoveShadTheme {
+/// ShadCN theme BeeHub — dark glass (mặc định toàn app).
+abstract final class BeeHubShadTheme {
   /// Card kính mờ trên nền tối.
   static const glassCard = Color(0xB3111827);
   static const glassCardElevated = Color(0xCC1A2332);

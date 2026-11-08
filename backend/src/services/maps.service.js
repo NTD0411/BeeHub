@@ -2,7 +2,7 @@ const env = require('../config/env');
 const { httpError } = require('./auth.helpers');
 
 const NOMINATIM_HEADERS = {
-  'User-Agent': 'UniMove/1.0 (booking-autocomplete)',
+  'User-Agent': 'BeeHub/1.0 (booking-autocomplete)',
   From: 'no-reply@unimove.com',
 };
 

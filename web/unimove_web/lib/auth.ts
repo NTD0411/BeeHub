@@ -14,6 +14,7 @@ export interface AuthUser {
   loyalty_points?: number;
   /* common extras */
   address?: string;
+  city?: string;
   /* provider extras */
   business_name?: string;
   vehicle_type?: string;

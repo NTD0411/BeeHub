@@ -18,7 +18,7 @@ class ReferencePricesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Scaffold(
       backgroundColor: c.background,
@@ -60,7 +60,7 @@ class ReferencePricesPage extends StatelessWidget {
     );
   }
 
-  Widget _priceRow(UniMoveColors c, String title, String price, String note) {
+  Widget _priceRow(BeeHubColors c, String title, String price, String note) {
     return Container(
       margin: EdgeInsets.only(bottom: 10.h),
       padding: EdgeInsets.all(14.w),

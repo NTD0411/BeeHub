@@ -88,7 +88,7 @@ const V_STEPS = [
   { key: "accepted",    label: "Đặt cọc thành công",    sub: "Nhà xe đã xác nhận chuyến hàng",    icon: "💳" },
   { key: "picking_up",  label: "Nhà xe đang đến lấy",   sub: "Vui lòng chuẩn bị hàng hoá sẵn sàng", icon: "🚚" },
   { key: "in_progress", label: "Đang vận chuyển",       sub: "Hàng hoá đang trên đường đến bạn",   icon: "📦" },
-  { key: "completed",   label: "Giao hàng thành công",  sub: "Cảm ơn bạn đã sử dụng UniMove!",    icon: "🎉" },
+  { key: "completed",   label: "Giao hàng thành công",  sub: "Cảm ơn bạn đã sử dụng BeeHub!",    icon: "🎉" },
 ];
 
 const STATUS_STEP: Record<string, number> = {

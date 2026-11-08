@@ -83,7 +83,7 @@ class _ChatThreadPageState extends ConsumerState<ChatThreadPage> {
   Widget build(BuildContext context) {
     final threadsAsync = ref.watch(providerChatThreadsProvider);
     final messagesAsync = ref.watch(providerChatMessagesProvider(widget.threadId));
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -222,7 +222,7 @@ class _Bubble extends StatelessWidget {
 
   final ProviderChatMessage message;
   final ShadThemeData theme;
-  final UniMoveColors c;
+  final BeeHubColors c;
 
   @override
   Widget build(BuildContext context) {

@@ -28,7 +28,7 @@ class ProviderOrderListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final theme = ShadTheme.of(context);
     final statusColor = filter != null
         ? ProviderOrderFilterBar.colorFor(c, filter!)
@@ -192,7 +192,7 @@ class ProviderOrderListCard extends StatelessWidget {
     );
   }
 
-  static Color _statusColor(UniMoveColors c, ProviderOrder o, String? myId) {
+  static Color _statusColor(BeeHubColors c, ProviderOrder o, String? myId) {
     if (o.isReadyToAccept(myId)) return c.success;
     if (o.isOpenQuoteRequest) return c.primaryLight;
     if (o.isAwaitingDeposit(myId)) return const Color(0xFFF59E0B);

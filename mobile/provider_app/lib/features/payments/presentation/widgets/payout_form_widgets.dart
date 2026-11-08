@@ -23,7 +23,7 @@ class PayoutFormSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -71,7 +71,7 @@ class PayoutFieldLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -123,7 +123,7 @@ class PayoutMethodTypeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -189,7 +189,7 @@ class PayoutMethodTypeCard extends StatelessWidget {
 }
 
 Future<VietnamBank?> showBankPickerSheet(BuildContext context, VietnamBank? current) {
-  final c = UniMoveColors.of(context);
+  final c = BeeHubColors.of(context);
 
   return showModalBottomSheet<VietnamBank>(
     context: context,

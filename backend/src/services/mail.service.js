@@ -29,9 +29,9 @@ function getTransporter() {
 
 async function sendPasswordResetOtp({ to, otp, expiresMinutes }) {
   const from = env.smtp.from;
-  const subject = 'UniMove — Mã đặt lại mật khẩu';
+  const subject = 'BeeHub — Mã đặt lại mật khẩu';
   const text = [
-    'Bạn vừa yêu cầu đặt lại mật khẩu UniMove.',
+    'Bạn vừa yêu cầu đặt lại mật khẩu BeeHub.',
     '',
     `Mã xác nhận: ${otp}`,
     `Mã hết hạn sau ${expiresMinutes} phút.`,
@@ -41,7 +41,7 @@ async function sendPasswordResetOtp({ to, otp, expiresMinutes }) {
 
   const html = `
     <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px">
-      <h2 style="color:#2563eb">UniMove</h2>
+      <h2 style="color:#2563eb">BeeHub</h2>
       <p>Bạn vừa yêu cầu đặt lại mật khẩu.</p>
       <p style="font-size:28px;font-weight:700;letter-spacing:6px;margin:24px 0">${otp}</p>
       <p style="color:#64748b">Mã hết hạn sau <strong>${expiresMinutes} phút</strong>.</p>
@@ -54,7 +54,7 @@ async function sendPasswordResetOtp({ to, otp, expiresMinutes }) {
 
 async function sendPhoneOtp({ to, otp, phone, expiresMinutes = 10 }) {
   const from = env.smtp.from;
-  const subject = 'UniMove — Xác minh số điện thoại';
+  const subject = 'BeeHub — Xác minh số điện thoại';
   const text = [
     `Mã xác minh số điện thoại ${phone} của bạn:`,
     '',
@@ -66,7 +66,7 @@ async function sendPhoneOtp({ to, otp, phone, expiresMinutes = 10 }) {
 
   const html = `
     <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px">
-      <h2 style="color:#1A56DB">UniMove</h2>
+      <h2 style="color:#1A56DB">BeeHub</h2>
       <p>Xác minh số điện thoại <strong>${phone}</strong> của bạn.</p>
       <p style="font-size:32px;font-weight:700;letter-spacing:8px;color:#1A56DB;margin:24px 0;background:#EFF4FE;padding:16px;border-radius:12px;text-align:center">${otp}</p>
       <p style="color:#64748b">Mã hết hạn sau <strong>${expiresMinutes} phút</strong>.</p>

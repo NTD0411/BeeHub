@@ -307,11 +307,12 @@ async function uploadProviderDocuments(providerId, filesMap) {
       {
         provider_id: providerId,
         document_type: documentType,
+        document_slot: field,
         document_url: fileUrl,
         is_verified: false,
         notes: field,
       },
-      { onConflict: 'provider_id,document_type' },
+      { onConflict: 'provider_id,document_slot' },
     );
     if (dbError) throw httpError(500, dbError.message, 'db_error');
 

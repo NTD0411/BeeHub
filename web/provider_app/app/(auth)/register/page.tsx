@@ -46,7 +46,7 @@ export default function ProviderRegisterPage() {
             <Truck size={28} className="text-white" />
           </div>
           <h1 className="text-2xl font-bold" style={{ color: "var(--text)" }}>Đăng ký làm đối tác</h1>
-          <p className="mt-2 text-sm" style={{ color: "var(--muted)" }}>Tham gia mạng lưới nhà vận chuyển UniMove</p>
+          <p className="mt-2 text-sm" style={{ color: "var(--muted)" }}>Tham gia mạng lưới nhà vận chuyển BeeHub</p>
         </div>
 
         <div className="rounded-3xl border p-8 shadow-xl" style={{ backgroundColor: "var(--card)", borderColor: "var(--border)" }}>

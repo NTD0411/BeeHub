@@ -13,7 +13,7 @@ const COPY: Record<
     badge: "Gói combo",
     title: "Giá niêm yết — biết trước, đặt nhanh",
     description:
-      "Bắt đầu bằng địa điểm lấy và giao đồ. UniMove sẽ dẫn bạn qua mô tả trọ, chọn giờ và chọn gói phù hợp.",
+      "Bắt đầu bằng địa điểm lấy và giao đồ. BeeHub sẽ dẫn bạn qua mô tả trọ, chọn giờ và chọn gói phù hợp.",
     icon: Package,
     tint: "#EFF6FF",
     color: "#0047FF",

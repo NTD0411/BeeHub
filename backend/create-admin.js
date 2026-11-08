@@ -11,7 +11,7 @@ async function createAdminUser() {
 
     const adminEmail = 'admin@unimove.com';
     const adminPassword = 'Admin123!@#';
-    const adminName = 'UniMove Admin';
+    const adminName = 'BeeHub Admin';
 
     // 1. Tạo user trong Supabase Auth
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({

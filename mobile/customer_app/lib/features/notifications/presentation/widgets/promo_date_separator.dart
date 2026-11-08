@@ -21,7 +21,7 @@ class PromoDateSeparator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 14.h),
       child: Center(

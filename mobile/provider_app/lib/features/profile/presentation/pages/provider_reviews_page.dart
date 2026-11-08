@@ -30,7 +30,7 @@ class ProviderReviewsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final summary = MockProviderReviews.summary;
     final reviewsAsync = ref.watch(_reviewsProvider);
 
@@ -93,7 +93,7 @@ class ProviderReviewsPage extends ConsumerWidget {
     );
   }
 
-  Widget _summaryHero(ShadThemeData theme, UniMoveColors c, ProviderReviewSummary s) {
+  Widget _summaryHero(ShadThemeData theme, BeeHubColors c, ProviderReviewSummary s) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -141,7 +141,7 @@ class ProviderReviewsPage extends ConsumerWidget {
     );
   }
 
-  Widget _detailScores(ShadThemeData theme, UniMoveColors c, ProviderReviewSummary s) {
+  Widget _detailScores(ShadThemeData theme, BeeHubColors c, ProviderReviewSummary s) {
     final rows = [
       ('Chất lượng dịch vụ', s.avgServiceQuality),
       ('Đúng giờ', s.avgPunctuality),
@@ -214,7 +214,7 @@ class _ReviewCard extends StatefulWidget {
 
   final ProviderReview review;
   final ShadThemeData theme;
-  final UniMoveColors c;
+  final BeeHubColors c;
   final ReviewsRepository repo;
   final VoidCallback onRefresh;
 

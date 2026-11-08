@@ -244,7 +244,7 @@ export default function ReferencePricesPage() {
         </div>
       </FadeSlideIn>
 
-      <p className="mt-8 text-center text-xs text-gray-400">Cập nhật tháng 6/2026 · UniMove</p>
+      <p className="mt-8 text-center text-xs text-gray-400">Cập nhật tháng 6/2026 · BeeHub</p>
     </Container>
   );
 }

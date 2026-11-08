@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { Bot, MessageCircle, Send, Sparkles, UserRound, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { getStoredToken } from '@/lib/auth';
 
 const USE_AI_ROUTE = true;
 
@@ -11,6 +12,105 @@ type ChatMessage = {
   role: 'assistant' | 'user';
   content: string;
 };
+
+function renderInlineMarkdown(text: string) {
+  const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g).filter(Boolean);
+
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={index} className="font-semibold text-slate-900">{part.slice(2, -2)}</strong>;
+    }
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return <code key={index} className="rounded bg-slate-100 px-1 py-0.5 text-[0.9em]">{part.slice(1, -1)}</code>;
+    }
+    if (part.startsWith('*') && part.endsWith('*')) {
+      return <em key={index}>{part.slice(1, -1)}</em>;
+    }
+    return part;
+  });
+}
+
+function renderAssistantContent(content: string) {
+  const lines = content.split(/\r?\n/);
+  const blocks: React.ReactNode[] = [];
+
+  for (let index = 0; index < lines.length;) {
+    const line = lines[index].trim();
+    if (!line) {
+      index += 1;
+      continue;
+    }
+
+    const heading = line.match(/^(#{1,3})\s+(.+)$/);
+    if (heading) {
+      const HeadingTag = heading[1].length === 1 ? 'h3' : 'h4';
+      blocks.push(
+        <HeadingTag key={`heading-${index}`} className="mb-1 font-semibold text-slate-900">
+          {renderInlineMarkdown(heading[2])}
+        </HeadingTag>,
+      );
+      index += 1;
+      continue;
+    }
+
+    const orderedItem = line.match(/^\d+[.)]\s+(.+)$/);
+    if (orderedItem) {
+      const items: string[] = [];
+      while (index < lines.length) {
+        const match = lines[index].trim().match(/^\d+[.)]\s+(.+)$/);
+        if (!match) break;
+        items.push(match[1]);
+        index += 1;
+      }
+      blocks.push(
+        <ol key={`ordered-${index}`} className="my-1.5 list-decimal space-y-1 pl-5 marker:font-medium">
+          {items.map((item, itemIndex) => (
+            <li key={itemIndex} className="pl-0.5">{renderInlineMarkdown(item)}</li>
+          ))}
+        </ol>,
+      );
+      continue;
+    }
+
+    if (/^[-*]\s+/.test(line)) {
+      const items: string[] = [];
+      while (index < lines.length) {
+        const match = lines[index].trim().match(/^[-*]\s+(.+)$/);
+        if (!match) break;
+        items.push(match[1]);
+        index += 1;
+      }
+      blocks.push(
+        <ul key={`unordered-${index}`} className="my-1.5 list-disc space-y-1 pl-5 marker:text-blue-500">
+          {items.map((item, itemIndex) => (
+            <li key={itemIndex} className="pl-0.5">{renderInlineMarkdown(item)}</li>
+          ))}
+        </ul>,
+      );
+      continue;
+    }
+
+    const paragraph: string[] = [];
+    while (index < lines.length && lines[index].trim()) {
+      const nextLine = lines[index].trim();
+      if (
+        paragraph.length > 0 &&
+        (/^#{1,3}\s+/.test(nextLine) || /^\d+[.)]\s+/.test(nextLine) || /^[-*]\s+/.test(nextLine))
+      ) {
+        break;
+      }
+      paragraph.push(nextLine);
+      index += 1;
+    }
+    blocks.push(
+      <p key={`paragraph-${index}`} className="my-1.5 whitespace-pre-wrap break-words">
+        {renderInlineMarkdown(paragraph.join(' '))}
+      </p>,
+    );
+  }
+
+  return <div className="space-y-1">{blocks}</div>;
+}
 
 function getAssistantReply(message: string) {
   const normalized = message.toLowerCase();
@@ -23,7 +123,7 @@ function getAssistantReply(message: string) {
     normalized.includes('register') ||
     normalized.includes('create account')
   ) {
-    return 'Để đăng ký tài khoản trên UniMove, bạn truy cập trang đăng ký, chọn đúng vai trò phù hợp (khách hàng hoặc nhà cung cấp), điền thông tin cơ bản và hoàn tất xác nhận. Nếu bạn chưa rõ vai trò, hãy chọn vai trò phù hợp với nhu cầu sử dụng.';
+    return 'Để đăng ký tài khoản trên BeeHub, bạn truy cập trang đăng ký, chọn đúng vai trò phù hợp (khách hàng hoặc nhà cung cấp), điền thông tin cơ bản và hoàn tất xác nhận. Nếu bạn chưa rõ vai trò, hãy chọn vai trò phù hợp với nhu cầu sử dụng.';
   }
 
   if (
@@ -63,7 +163,7 @@ function getAssistantReply(message: string) {
     normalized.includes('cổng thanh toán') ||
     normalized.includes('đặt cọc')
   ) {
-    return 'UniMove hỗ trợ thanh toán an toàn qua cổng thanh toán. Bạn có thể thực hiện đặt cọc trước và thanh toán phần còn lại sau khi hoàn tất dịch vụ.';
+    return 'BeeHub hỗ trợ thanh toán an toàn qua cổng thanh toán. Bạn có thể thực hiện đặt cọc trước và thanh toán phần còn lại sau khi hoàn tất dịch vụ.';
   }
 
   if (
@@ -99,7 +199,7 @@ function getAssistantReply(message: string) {
     normalized.includes('customer') ||
     normalized.includes('sinh viên')
   ) {
-    return 'Nếu bạn là khách hàng, bạn có thể đăng ký tài khoản, đặt dịch vụ và theo dõi đơn hàng dễ dàng trên UniMove.';
+    return 'Nếu bạn là khách hàng, bạn có thể đăng ký tài khoản, đặt dịch vụ và theo dõi đơn hàng dễ dàng trên BeeHub.';
   }
 
   if (
@@ -108,31 +208,49 @@ function getAssistantReply(message: string) {
     normalized.includes('unimove') ||
     normalized.includes('là gì')
   ) {
-    return 'UniMove là nền tảng kết nối sinh viên với nhà cung cấp dịch vụ vận chuyển, giúp bạn đặt dịch vụ, quản lý đơn hàng và trao đổi thông tin một cách thuận tiện.';
+    return 'BeeHub là nền tảng kết nối sinh viên với nhà cung cấp dịch vụ vận chuyển, giúp bạn đặt dịch vụ, quản lý đơn hàng và trao đổi thông tin một cách thuận tiện.';
   }
 
   return 'Nội dung không hợp lệ.';
 }
 
-async function getAiReply(message: string) {
+async function getAiReply(message: string, history: ChatMessage[]) {
   try {
+    const token = getStoredToken();
     const response = await fetch('/api/chat/ai', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message }),
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({
+        message,
+        history: history.slice(-8).map(({ role, content }) => ({ role, content })),
+      }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('AI API route error', response.status, errorText);
-      return getAssistantReply(message);
+    const responseText = await response.text();
+    let data: { reply?: unknown; error?: unknown };
+    try {
+      data = JSON.parse(responseText) as { reply?: unknown; error?: unknown };
+    } catch {
+      if (response.status === 404) {
+        return 'Không tìm thấy API trợ lý. Vui lòng khởi động lại website BeeHub từ thư mục web/unimove_web.';
+      }
+      return 'Máy chủ trợ lý phản hồi không hợp lệ. Vui lòng thử lại sau.';
     }
 
-    const data = await response.json();
-    return data?.reply || getAssistantReply(message);
+    if (!response.ok) {
+      return typeof data?.error === 'string'
+        ? data.error
+        : 'Xin lỗi, hiện tôi chưa thể trả lời. Vui lòng thử lại sau.';
+    }
+    return typeof data?.reply === 'string' && data.reply
+      ? data.reply
+      : 'Xin lỗi, tôi chưa nhận được câu trả lời. Bạn vui lòng thử lại nhé.';
   } catch (error) {
     console.error('AI request failed', error);
-    return getAssistantReply(message);
+    return 'Xin lỗi, hiện tôi chưa kết nối được trợ lý. Bạn vui lòng thử lại sau nhé.';
   }
 }
 
@@ -145,7 +263,7 @@ export function ChatWidget() {
       id: 1,
       role: 'assistant',
       content:
-        'Xin chào! Tôi là trợ lý UniMove. Bạn có thể hỏi về đăng ký tài khoản, đăng nhập, cách sử dụng website, đặt dịch vụ, thanh toán, theo dõi đơn hàng hoặc hồ sơ cá nhân.',
+        'Xin chào! Tôi là trợ lý BeeHub. Bạn có thể hỏi về đăng ký tài khoản, đăng nhập, cách sử dụng website, đặt dịch vụ, thanh toán, theo dõi đơn hàng hoặc hồ sơ cá nhân.',
     },
   ]);
   const [inputValue, setInputValue] = useState('');
@@ -153,9 +271,9 @@ export function ChatWidget() {
   const [showSuggestions, setShowSuggestions] = useState(true);
   const dragInfo = useRef<{ offsetX: number; offsetY: number; didDrag: boolean } | null>(null);
 
-  const getReply = async (message: string) => {
+  const getReply = async (message: string, history: ChatMessage[]) => {
     if (USE_AI_ROUTE) {
-      return getAiReply(message);
+      return getAiReply(message, history);
     }
 
     return getAssistantReply(message);
@@ -247,7 +365,7 @@ export function ChatWidget() {
     setIsLoading(true);
     setShowSuggestions(false);
 
-    const reply = await getReply(trimmed);
+    const reply = await getReply(trimmed, messages);
 
     const assistantMessage: ChatMessage = {
       id: Date.now() + 1,
@@ -289,7 +407,7 @@ export function ChatWidget() {
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
               <MessageCircle className="h-4 w-4" />
             </div>
-            <span>Hỗ trợ UniMove</span>
+            <span>Hỗ trợ BeeHub</span>
           </motion.button>
         ) : (
           <motion.div
@@ -303,7 +421,7 @@ export function ChatWidget() {
           >
             <div className="flex items-center justify-between bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-white">
               <div>
-                <p className="text-sm font-semibold">Trợ lý UniMove</p>
+                <p className="text-sm font-semibold">Trợ lý BeeHub</p>
                 <p className="text-xs text-blue-100">Hỗ trợ về website và đăng ký</p>
               </div>
               <button onClick={() => setIsOpen(false)} className="rounded-full p-1 hover:bg-blue-700">
@@ -324,7 +442,7 @@ export function ChatWidget() {
                       </div>
                     )}
 
-                    <div className="max-w-[80%]">
+                    <div className={message.role === 'assistant' ? 'max-w-[86%]' : 'max-w-[80%]'}>
                       <div
                         className={`rounded-2xl px-3 py-2 text-sm leading-relaxed ${
                           message.role === 'user'
@@ -332,7 +450,9 @@ export function ChatWidget() {
                             : 'bg-white text-slate-700 shadow-sm'
                         }`}
                       >
-                        {message.content}
+                        {message.role === 'assistant'
+                          ? renderAssistantContent(message.content)
+                          : message.content}
                       </div>
                     </div>
 

@@ -12,7 +12,7 @@ async function createAdminUser() {
 
     const adminEmail = 'admin@unimove.com';
     const adminPassword = 'Admin123!@#';
-    const adminName = 'UniMove Admin';
+    const adminName = 'BeeHub Admin';
 
     // 1. Check if admin already exists
     const { data: existingProfile } = await supabaseAdmin

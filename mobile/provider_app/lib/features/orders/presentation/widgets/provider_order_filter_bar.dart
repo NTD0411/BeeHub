@@ -21,7 +21,7 @@ class ProviderOrderFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final filters = OrderInboxFilter.values;
 
     return SizedBox(
@@ -106,7 +106,7 @@ class ProviderOrderFilterBar extends StatelessWidget {
     );
   }
 
-  static Color _filterColor(UniMoveColors c, OrderInboxFilter f) => switch (f) {
+  static Color _filterColor(BeeHubColors c, OrderInboxFilter f) => switch (f) {
         OrderInboxFilter.ready => c.success,
         OrderInboxFilter.quoteNew => c.primaryLight,
         OrderInboxFilter.awaitingDeposit => const Color(0xFFF59E0B),
@@ -124,5 +124,5 @@ class ProviderOrderFilterBar extends StatelessWidget {
         OrderInboxFilter.cancelled => LucideIcons.circleX,
       };
 
-  static Color colorFor(UniMoveColors c, OrderInboxFilter f) => _filterColor(c, f);
+  static Color colorFor(BeeHubColors c, OrderInboxFilter f) => _filterColor(c, f);
 }

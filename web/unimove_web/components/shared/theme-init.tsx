@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-/** Force light mode — UniMove customer UI luôn dùng white/yellow/blue theme. */
+/** Force light mode — BeeHub customer UI luôn dùng white/yellow/blue theme. */
 export function ThemeInit() {
   useEffect(() => {
     document.documentElement.classList.remove("dark");

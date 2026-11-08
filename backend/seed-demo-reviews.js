@@ -1,5 +1,5 @@
 /**
- * Seed đánh giá demo — UniMove Test Transport & Hùng Move Express Test
+ * Seed đánh giá demo — BeeHub Test Transport & Hùng Move Express Test
  *
  * Chạy (cần backend/.env với SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY):
  *   npm run seed:reviews
@@ -38,7 +38,7 @@ const PROV1_REVIEWS = [
     title: 'Rất hài lòng',
     comment: 'Tài xế nhiệt tình, bốc xếp cẩn thận, đúng giờ hẹn. Đồ đạc không bị trầy xước.',
     tags: ['thân thiện', 'cẩn thận', 'đúng giờ'],
-    response: 'Cảm ơn bạn đã tin tưởng UniMove Test Transport!',
+    response: 'Cảm ơn bạn đã tin tưởng BeeHub Test Transport!',
     daysAgo: 9,
   },
   {
@@ -128,7 +128,7 @@ const PROV1_REVIEWS = [
     customerIdx: 8,
     rating: 5,
     title: 'Hài lòng',
-    comment: 'Rất hài lòng với UniMove Test Transport, đúng giờ và giá rõ ràng.',
+    comment: 'Rất hài lòng với BeeHub Test Transport, đúng giờ và giá rõ ràng.',
     tags: ['đúng giờ', 'minh bạch'],
     response: 'Hẹn gặp lại bạn!',
     daysAgo: 14,
@@ -354,7 +354,7 @@ async function main() {
   }
 
   await syncProviderRating(PROV1);
-  console.log(`✓ Đã seed ${PROV1_REVIEWS.length} đánh giá cho UniMove Test Transport`);
+  console.log(`✓ Đã seed ${PROV1_REVIEWS.length} đánh giá cho BeeHub Test Transport`);
   console.log('Reload trang báo giá trên web để xem danh sách đánh giá.');
 }
 

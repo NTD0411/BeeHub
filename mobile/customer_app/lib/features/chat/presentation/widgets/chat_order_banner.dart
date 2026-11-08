@@ -13,7 +13,7 @@ class ChatOrderBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final order = activeChat.order;
 
     return Material(

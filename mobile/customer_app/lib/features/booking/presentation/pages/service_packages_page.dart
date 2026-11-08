@@ -37,7 +37,7 @@ class _ServicePackagesPageState extends State<ServicePackagesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return BlocBuilder<BookingFlowCubit, BookingFlowState>(
       builder: (context, state) {
@@ -97,7 +97,7 @@ class _ServicePackagesPageState extends State<ServicePackagesPage> {
               _benefitRow(Icons.savings_outlined, 'Tiết kiệm nhất cho chuyến chuẩn trong gói km', c),
               _benefitRow(Icons.inventory_2_outlined, 'Giá biết trước — xe+km niêm yết cố định', c),
               _benefitRow(Icons.groups_outlined, 'Khuân vác ưu đãi — rẻ hơn thuê riêng', c),
-              _benefitRow(Icons.account_balance_wallet_outlined, 'Cọc giữ an toàn qua UniMove', c),
+              _benefitRow(Icons.account_balance_wallet_outlined, 'Cọc giữ an toàn qua BeeHub', c),
               SizedBox(height: 14.h),
               _customTripLink(context, c),
               SizedBox(height: 16.h),
@@ -187,7 +187,7 @@ class _ServicePackagesPageState extends State<ServicePackagesPage> {
     );
   }
 
-  Widget _packageCard(BuildContext context, BookingFlowState state, ServicePackage pkg, UniMoveColors c) {
+  Widget _packageCard(BuildContext context, BookingFlowState state, ServicePackage pkg, BeeHubColors c) {
     final selected = state.selectedTier == pkg.tier;
     final laborCount = selected ? state.effectiveComboLaborCount : pkg.laborSuggested;
     final estimatePrice = pkg.priceAtLabor(laborCount);
@@ -352,7 +352,7 @@ class _ServicePackagesPageState extends State<ServicePackagesPage> {
     );
   }
 
-  Widget _includeChip(UniMoveColors c, IconData icon, String text) {
+  Widget _includeChip(BeeHubColors c, IconData icon, String text) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
@@ -375,7 +375,7 @@ class _ServicePackagesPageState extends State<ServicePackagesPage> {
   }
 
   Widget _laborCountChip(
-    UniMoveColors c, {
+    BeeHubColors c, {
     required int count,
     required int unitPrice,
     required bool selected,
@@ -420,7 +420,7 @@ class _ServicePackagesPageState extends State<ServicePackagesPage> {
     );
   }
 
-  Widget _badge(String text, ServiceTier tier, UniMoveColors c) {
+  Widget _badge(String text, ServiceTier tier, BeeHubColors c) {
     final color = switch (tier) {
       ServiceTier.economy => c.chipBg,
       ServiceTier.standard => c.primary.withValues(alpha: 0.12),
@@ -436,7 +436,7 @@ class _ServicePackagesPageState extends State<ServicePackagesPage> {
     );
   }
 
-  Widget _benefitRow(IconData icon, String text, UniMoveColors c) {
+  Widget _benefitRow(IconData icon, String text, BeeHubColors c) {
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
       child: Row(
@@ -465,7 +465,7 @@ class _ServicePackagesPageState extends State<ServicePackagesPage> {
     return '${buf}đ';
   }
 
-  Widget _customTripLink(BuildContext context, UniMoveColors c) {
+  Widget _customTripLink(BuildContext context, BeeHubColors c) {
     return Material(
       color: c.surface,
       borderRadius: BorderRadius.circular(14.r),
@@ -511,7 +511,7 @@ class _ServicePackagesPageState extends State<ServicePackagesPage> {
     );
   }
 
-  Widget _needLocationHint(UniMoveColors c) {
+  Widget _needLocationHint(BeeHubColors c) {
     return Material(
       color: c.chipBg,
       borderRadius: BorderRadius.circular(12.r),
@@ -544,7 +544,7 @@ class _ComboPricingTable extends StatelessWidget {
   const _ComboPricingTable({required this.packages, required this.colors});
 
   final List<ServicePackage> packages;
-  final UniMoveColors colors;
+  final BeeHubColors colors;
 
   @override
   Widget build(BuildContext context) {
@@ -633,7 +633,7 @@ class _ComboPricingTable extends StatelessWidget {
     );
   }
 
-  Widget _th(String text, UniMoveColors c, {bool center = false, bool right = false}) {
+  Widget _th(String text, BeeHubColors c, {bool center = false, bool right = false}) {
     return Text(
       text,
       textAlign: right ? TextAlign.right : (center ? TextAlign.center : TextAlign.left),
@@ -658,7 +658,7 @@ class _QuickRouteCard extends StatelessWidget {
 
   final String pickup;
   final String destination;
-  final UniMoveColors colors;
+  final BeeHubColors colors;
   final VoidCallback onEdit;
 
   @override

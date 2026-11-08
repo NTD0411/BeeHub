@@ -1,4 +1,4 @@
-# 🚀 QUICK START - UNIMOVE ADMIN DASHBOARD
+# 🚀 QUICK START - BEEHUB ADMIN DASHBOARD
 
 ## Chạy ứng dụng trong 3 bước
 

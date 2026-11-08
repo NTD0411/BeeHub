@@ -1,4 +1,4 @@
--- UniMove Database Schema - Seed Data
+-- BeeHub Database Schema - Seed Data
 -- Description: Initial data for development and testing
 
 -- =====================================================

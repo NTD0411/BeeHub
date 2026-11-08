@@ -24,7 +24,7 @@ class ProviderOrderStatusTiles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final items = [
       _TileData(OrderInboxFilter.ready, ready, LucideIcons.badgeCheck),
       _TileData(OrderInboxFilter.quoteNew, quotes, LucideIcons.filePen),

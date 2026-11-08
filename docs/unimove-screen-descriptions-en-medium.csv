@@ -1,6 +1,6 @@
 #,Feature,Screen,Description
-1,Authentication,Splash Screen,Displays UniMove branding while the app checks session state and routes the user to onboarding login or home.
-2,Authentication,Onboarding,Introduces UniMove services and guides first-time users through key platform capabilities before sign-in.
+1,Authentication,Splash Screen,Displays BeeHub branding while the app checks session state and routes the user to onboarding login or home.
+2,Authentication,Onboarding,Introduces BeeHub services and guides first-time users through key platform capabilities before sign-in.
 3,Authentication,Login,Allows customers to sign in with email and password or Google OAuth.
 4,Authentication,Register,Allows new customers to create an account with email password full name and phone number.
 5,Authentication,Forgot Password,Lets users request a password reset link or OTP sent to their registered email.
@@ -78,6 +78,6 @@
 77,Admin Dashboard,Activity Logs,Audit trail of admin actions order status changes verifications and refund history.
 78,Admin Dashboard,Platform Settings,Configure platform parameters theme preferences and admin account settings.
 79,Admin Dashboard,Admin Profile,Administrator profile view and avatar management.
-80,Public Website,Landing Page,Public marketing page introducing UniMove services pricing and call-to-action for booking.
+80,Public Website,Landing Page,Public marketing page introducing BeeHub services pricing and call-to-action for booking.
 81,Public Website,Sign In / Sign Up,Public web authentication entry that redirects users into the customer app registration flow.
 82,Public Website,FAQ and Contact,Information pages for frequently asked questions and customer support contact form.

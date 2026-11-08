@@ -32,7 +32,7 @@ class LaborQuotesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     if (state.loadingLaborQuotes) {
       return Shimmer.fromColors(
@@ -89,7 +89,7 @@ class LaborQuotesSection extends StatelessWidget {
         ),
         SizedBox(height: 6.h),
         Text(
-          'UniMove là trung gian — chọn một đội phù hợp (có thể kết hợp nhà xe).',
+          'BeeHub là trung gian — chọn một đội phù hợp (có thể kết hợp nhà xe).',
           style: TextStyle(fontSize: 12.sp, color: c.onSurfaceMuted, height: 1.3),
         ),
         SizedBox(height: 12.h),
@@ -121,7 +121,7 @@ class _QuoteTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Padding(
       padding: EdgeInsets.only(bottom: 10.h),
@@ -196,7 +196,7 @@ class _QuoteTile extends StatelessWidget {
     );
   }
 
-  Widget _badge(String text, UniMoveColors c) {
+  Widget _badge(String text, BeeHubColors c) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
       decoration: BoxDecoration(

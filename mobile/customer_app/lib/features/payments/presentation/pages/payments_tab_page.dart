@@ -42,7 +42,7 @@ class _PaymentsTabPageState extends State<PaymentsTabPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final theme = ShadTheme.of(context);
 
     if (_loading) {
@@ -225,7 +225,7 @@ class _PaymentRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final refunded = payment.status == PaymentStatus.refunded;
 
     return PressableScale(

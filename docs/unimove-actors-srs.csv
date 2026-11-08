@@ -1,5 +1,5 @@
 #,Actor,Description
-1,Administrator,"The highest-privilege user who manages the UniMove platform through the Admin Web Dashboard.
+1,Administrator,"The highest-privilege user who manages the BeeHub platform through the Admin Web Dashboard.
 • View dashboard KPIs (orders, revenue, GMV, active customers, active providers).
 • Manage users: view user profiles, suspend or activate accounts.
 • Verify providers: review submitted documents, approve or reject provider registration, update verification status and notes.
@@ -24,11 +24,11 @@
 • View earnings, payouts, configure bank payout methods.
 • Chat with customers; view notifications and reviews.
 • Manage driver registration and provider profile."
-4,Payment Service (PayOS),"An external payment gateway integrated with UniMove to handle financial transactions securely.
+4,Payment Service (PayOS),"An external payment gateway integrated with BeeHub to handle financial transactions securely.
 • Processes deposit payments for moving and labor orders.
 • Processes listing fees for Pass đồ when required.
 • Sends payment confirmation webhooks when transactions succeed or fail.
 • Supports refund processing (cancellation, dispute resolution)."
 5,Google Authentication Service,"An external service for sign up / log in with Google accounts.
 • Authenticates credentials when user chooses Continue with Google.
-• Returns identity info so UniMove can create or link user profile."
+• Returns identity info so BeeHub can create or link user profile."

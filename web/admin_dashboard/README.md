@@ -1,6 +1,6 @@
-# UniMove Admin Dashboard
+# BeeHub Admin Dashboard
 
-Admin web dashboard cho nền tảng **UniMove** — marketplace kết nối sinh viên với đơn vị vận chuyển.
+Admin web dashboard cho nền tảng **BeeHub** — marketplace kết nối sinh viên với đơn vị vận chuyển.
 
 ## Tech Stack
 

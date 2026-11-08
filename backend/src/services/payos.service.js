@@ -139,7 +139,7 @@ async function createPaymentLink(paymentData) {
 
     const numericAmount = parseInt(amount, 10);
     const numericOrderCode = parseInt(orderCode, 10);
-    const paymentDescription = description || 'Thanh toan UniMove';
+    const paymentDescription = description || 'Thanh toan BeeHub';
     const successUrl = returnUrl || `${APP_URL}/payment-success`;
     const failUrl = cancelUrl || `${APP_URL}/payment-cancel`;
 

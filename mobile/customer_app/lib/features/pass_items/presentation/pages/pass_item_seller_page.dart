@@ -49,7 +49,7 @@ class _PassItemSellerPageState extends State<PassItemSellerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Scaffold(
       backgroundColor: c.background,
@@ -102,7 +102,7 @@ class _PassItemSellerPageState extends State<PassItemSellerPage> {
     );
   }
 
-  Widget _profileHeader(UniMoveColors c) {
+  Widget _profileHeader(BeeHubColors c) {
     final hasAvatar = _avatarUrl != null && _avatarUrl!.isNotEmpty;
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
@@ -165,7 +165,7 @@ class _PassItemSellerPageState extends State<PassItemSellerPage> {
     );
   }
 
-  Widget _sellerGridCard(UniMoveColors c, PassItemPost post) {
+  Widget _sellerGridCard(BeeHubColors c, PassItemPost post) {
     final isReserved = post.status == PassItemStatus.reserved;
     return Material(
       color: c.surface,
@@ -263,7 +263,7 @@ class _PassItemSellerPageState extends State<PassItemSellerPage> {
     );
   }
 
-  Widget _empty(UniMoveColors c) {
+  Widget _empty(BeeHubColors c) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

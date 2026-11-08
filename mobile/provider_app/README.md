@@ -1,4 +1,4 @@
-# UniMove Provider App
+# BeeHub Provider App
 
 ## Auth
 

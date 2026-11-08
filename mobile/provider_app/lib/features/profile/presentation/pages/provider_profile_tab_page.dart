@@ -20,7 +20,7 @@ class ProviderProfileTabPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(providerProfileProvider);
     final ordersAsync = ref.watch(providerOrdersListProvider);
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final reviewSummary = MockProviderReviews.summary;
 
     return ShadScreenScope(
@@ -211,11 +211,11 @@ class ProviderProfileTabPage extends ConsumerWidget {
     );
   }
 
-  Widget _sectionTitle(ShadThemeData theme, UniMoveColors c, String text) {
+  Widget _sectionTitle(ShadThemeData theme, BeeHubColors c, String text) {
     return Text(text, style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w800, color: c.onSurface));
   }
 
-  Widget _infoRow(ShadThemeData theme, UniMoveColors c, IconData icon, String label, String value) {
+  Widget _infoRow(ShadThemeData theme, BeeHubColors c, IconData icon, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
@@ -238,7 +238,7 @@ class ProviderProfileTabPage extends ConsumerWidget {
     );
   }
 
-  Widget _divider(UniMoveColors c) => Divider(height: 1, color: c.border);
+  Widget _divider(BeeHubColors c) => Divider(height: 1, color: c.border);
 
   String _vehicleLabel(String? size) => switch (size) {
         'motorbike' => 'Xe máy (< 50kg)',
@@ -258,7 +258,7 @@ class _ProfileHero extends StatelessWidget {
   });
 
   final ShadThemeData theme;
-  final UniMoveColors c;
+  final BeeHubColors c;
   final ProviderProfile? profile;
   final ProviderReviewSummary reviewSummary;
 
@@ -340,7 +340,7 @@ class _ProfileHero extends StatelessWidget {
 class _StatChip extends StatelessWidget {
   const _StatChip({required this.c, required this.theme, required this.icon, required this.value, required this.label});
 
-  final UniMoveColors c;
+  final BeeHubColors c;
   final ShadThemeData theme;
   final IconData icon;
   final String value;
@@ -377,7 +377,7 @@ class _MenuTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final theme = ShadTheme.of(context);
 
     return Padding(

@@ -60,7 +60,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     if (_loading) {
       return Scaffold(
@@ -191,7 +191,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     );
   }
 
-  Widget _imageCarousel(UniMoveColors c, PassItemPost post) {
+  Widget _imageCarousel(BeeHubColors c, PassItemPost post) {
     final imgs = post.images.isNotEmpty
         ? post.images
         : (post.imageUrl.isNotEmpty ? [post.imageUrl] : <String>[]);
@@ -298,7 +298,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     ));
   }
 
-  Widget _infoGrid(UniMoveColors c, PassItemPost post) {
+  Widget _infoGrid(BeeHubColors c, PassItemPost post) {
     final items = [
       (Icons.fact_check_outlined, 'Tình trạng', post.condition.label),
       (Icons.category_outlined, 'Danh mục', post.category),
@@ -341,7 +341,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     );
   }
 
-  Widget _buyerFlowSteps(UniMoveColors c, PassItemPost post) {
+  Widget _buyerFlowSteps(BeeHubColors c, PassItemPost post) {
     final steps = [
       (Icons.chat_bubble_outline, 'Chat thỏa giá đồ'),
       (Icons.handshake_outlined, 'Người bán chốt đơn trong chat'),
@@ -383,7 +383,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     );
   }
 
-  Widget _buyerTransportCard(UniMoveColors c, PassItemPost post) {
+  Widget _buyerTransportCard(BeeHubColors c, PassItemPost post) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -431,7 +431,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     ).animate().fadeIn(duration: 260.ms).slideY(begin: 0.12, end: 0, curve: Curves.easeOut);
   }
 
-  Widget _buyerAwaitDealCard(UniMoveColors c) {
+  Widget _buyerAwaitDealCard(BeeHubColors c) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -474,7 +474,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     );
   }
 
-  Widget _sellerLogisticsInfoCard(UniMoveColors c, PassItemPost post) {
+  Widget _sellerLogisticsInfoCard(BeeHubColors c, PassItemPost post) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -524,7 +524,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     );
   }
 
-  Widget _interestedBuyersSection(UniMoveColors c, PassItemPost post) {
+  Widget _interestedBuyersSection(BeeHubColors c, PassItemPost post) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -586,7 +586,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     );
   }
 
-  Widget _ownerTipsCard(UniMoveColors c, PassItemPost post) {
+  Widget _ownerTipsCard(BeeHubColors c, PassItemPost post) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -642,7 +642,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
       }
       return;
     }
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final yes = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -671,7 +671,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     }
   }
 
-  Widget _confirmReceivedCard(UniMoveColors c, PassItemPost post) {
+  Widget _confirmReceivedCard(BeeHubColors c, PassItemPost post) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -743,7 +743,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     }
   }
 
-  Widget _ratingCard(UniMoveColors c, PassItemPost post) {
+  Widget _ratingCard(BeeHubColors c, PassItemPost post) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -776,7 +776,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     );
   }
 
-  Widget _ratedDoneCard(UniMoveColors c) {
+  Widget _ratedDoneCard(BeeHubColors c) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
@@ -868,7 +868,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     commentCtrl.dispose();
   }
 
-  Widget _sellerCard(UniMoveColors c, PassItemPost post) {
+  Widget _sellerCard(BeeHubColors c, PassItemPost post) {
     final hasAvatar = post.posterAvatarUrl != null && post.posterAvatarUrl!.isNotEmpty;
     return Container(
       padding: const EdgeInsets.all(14),
@@ -924,7 +924,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     );
   }
 
-  Widget _statusBadge(UniMoveColors c, PassItemStatus status) {
+  Widget _statusBadge(BeeHubColors c, PassItemStatus status) {
     final tint = switch (status) {
       PassItemStatus.open => c.primary,
       PassItemStatus.reserved => c.primaryLight,
@@ -938,7 +938,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     );
   }
 
-  Widget _sellerManageBar(UniMoveColors c, PassItemPost post) {
+  Widget _sellerManageBar(BeeHubColors c, PassItemPost post) {
     return SafeArea(
       top: false,
       child: Container(
@@ -1004,7 +1004,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     );
   }
 
-  Widget _buyerBottomBar(UniMoveColors c, PassItemPost post) {
+  Widget _buyerBottomBar(BeeHubColors c, PassItemPost post) {
     // Đã chốt đơn → ưu tiên CTA "Đặt chuyển đồ"
     if (post.dealConfirmed) {
       return SafeArea(
@@ -1148,7 +1148,7 @@ class _PassItemDetailPageState extends State<PassItemDetailPage> {
     }
   }
 
-  Widget _compactIconBtn(UniMoveColors c, IconData icon, {required VoidCallback onTap}) {
+  Widget _compactIconBtn(BeeHubColors c, IconData icon, {required VoidCallback onTap}) {
     return SizedBox(
       width: 44,
       height: 44,

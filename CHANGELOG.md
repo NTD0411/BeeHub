@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to UniMove project will be documented in this file.
+All notable changes to BeeHub project will be documented in this file.
 
 ## [1.0.0] - 2024-06-01
 

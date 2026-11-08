@@ -92,7 +92,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Scaffold(
       backgroundColor: c.background,
@@ -136,7 +136,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _browseTab(UniMoveColors c) {
+  Widget _browseTab(BeeHubColors c) {
     return Column(
       children: [
         Padding(
@@ -200,7 +200,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _provinceSelector(UniMoveColors c) {
+  Widget _provinceSelector(BeeHubColors c) {
     return GestureDetector(
       onTap: _pickProvince,
       child: Container(
@@ -227,7 +227,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _filterLabel(UniMoveColors c, String text) {
+  Widget _filterLabel(BeeHubColors c, String text) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
       child: Align(
@@ -240,7 +240,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _categoryChip(UniMoveColors c, String label) {
+  Widget _categoryChip(BeeHubColors c, String label) {
     final active = _category == label;
     return GestureDetector(
       onTap: () {
@@ -267,7 +267,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _listingCard(UniMoveColors c, PassItemPost post) {
+  Widget _listingCard(BeeHubColors c, PassItemPost post) {
     final provinceLabel = PassItemProvince.resolve(PassItemProvince.provinceIdOf(post)).label;
 
     return Padding(
@@ -365,7 +365,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _gridCard(UniMoveColors c, PassItemPost post) {
+  Widget _gridCard(BeeHubColors c, PassItemPost post) {
     const textHeight = TextHeightBehavior(
       applyHeightToFirstAscent: false,
       applyHeightToLastDescent: false,
@@ -495,7 +495,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _imageBadge(UniMoveColors c, String text) {
+  Widget _imageBadge(BeeHubColors c, String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
@@ -513,7 +513,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _tag(UniMoveColors c, String text, {bool accent = false}) {
+  Widget _tag(BeeHubColors c, String text, {bool accent = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
       decoration: BoxDecoration(
@@ -534,7 +534,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _emptyBrowse(UniMoveColors c) {
+  Widget _emptyBrowse(BeeHubColors c) {
     return ListView(
       children: [
         const SizedBox(height: 64),
@@ -560,7 +560,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
 
   // ---------------- Yêu thích ----------------
 
-  Widget _favoritesTab(UniMoveColors c) {
+  Widget _favoritesTab(BeeHubColors c) {
     if (_loading) return const Center(child: CircularProgressIndicator());
     if (_favorites.isEmpty) return _emptyFavorites(c);
     return RefreshIndicator(
@@ -579,7 +579,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _favoriteCard(UniMoveColors c, PassItemPost post) {
+  Widget _favoriteCard(BeeHubColors c, PassItemPost post) {
     final isSold = post.status == PassItemStatus.completed || post.status == PassItemStatus.hidden;
     return Stack(
       clipBehavior: Clip.antiAlias,
@@ -636,7 +636,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     }
   }
 
-  Widget _emptyFavorites(UniMoveColors c) {
+  Widget _emptyFavorites(BeeHubColors c) {
     return ListView(
       children: [
         const SizedBox(height: 80),
@@ -657,7 +657,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
   }
 
   // ---------------- Tin của tôi ----------------
-  Widget _myTab(UniMoveColors c) {
+  Widget _myTab(BeeHubColors c) {
     if (_loading) return const Center(child: CircularProgressIndicator());
     if (_mine.isEmpty) return _empty(c, 'Bạn chưa đăng tin nào');
     return RefreshIndicator(
@@ -670,7 +670,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _myCard(UniMoveColors c, PassItemPost post) {
+  Widget _myCard(BeeHubColors c, PassItemPost post) {
     final needsListingFee = !post.feePaid && !post.isFree;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -757,7 +757,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _listingCardInner(UniMoveColors c, PassItemPost post) {
+  Widget _listingCardInner(BeeHubColors c, PassItemPost post) {
     return InkWell(
       onTap: () async {
         await context.push('/pass-items/${post.id}');
@@ -805,7 +805,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _miniBadge(UniMoveColors c, String label, Color textColor, Color bgColor) {
+  Widget _miniBadge(BeeHubColors c, String label, Color textColor, Color bgColor) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(6)),
@@ -830,7 +830,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     }
   }
 
-  Widget _statusBadge(UniMoveColors c, PassItemPost post, {bool needsListingFee = false}) {
+  Widget _statusBadge(BeeHubColors c, PassItemPost post, {bool needsListingFee = false}) {
     if (needsListingFee || post.pendingListingFee) {
       return _miniBadge(c, 'Chờ thanh toán', Colors.orange, Colors.orange.withValues(alpha: 0.14));
     }
@@ -848,7 +848,7 @@ class _PassItemsPageState extends State<PassItemsPage> with SingleTickerProvider
     );
   }
 
-  Widget _empty(UniMoveColors c, String text) {
+  Widget _empty(BeeHubColors c, String text) {
     return ListView(
       children: [
         const SizedBox(height: 80),

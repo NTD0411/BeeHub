@@ -12,7 +12,7 @@ class ThemeToggleTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return BlocBuilder<ThemeModeCubit, ThemeMode>(
       builder: (context, mode) {

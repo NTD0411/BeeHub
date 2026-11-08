@@ -19,7 +19,7 @@ class PromoMessageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final n = notification;
     final isLight = c.isLight(context);
 
@@ -173,7 +173,7 @@ class _PromoHeroBanner extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6.r),
               ),
               child: Text(
-                'UniMove',
+                'BeeHub',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w800,

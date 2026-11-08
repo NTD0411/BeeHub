@@ -42,7 +42,7 @@ class _DocumentsPageState extends ConsumerState<DocumentsPage> {
     })>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: UniMoveColors.of(context).surface,
+      backgroundColor: BeeHubColors.of(context).surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -91,7 +91,7 @@ class _DocumentsPageState extends ConsumerState<DocumentsPage> {
   @override
   Widget build(BuildContext context) {
     final verificationAsync = ref.watch(providerVerificationProvider);
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -190,11 +190,11 @@ class _DocumentsPageState extends ConsumerState<DocumentsPage> {
     );
   }
 
-  Widget _sectionTitle(ShadThemeData theme, UniMoveColors c, String text) {
+  Widget _sectionTitle(ShadThemeData theme, BeeHubColors c, String text) {
     return Text(text, style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w800, color: c.onSurface));
   }
 
-  Widget _progressHero(ShadThemeData theme, UniMoveColors c, ProviderVerificationState state, int progress) {
+  Widget _progressHero(ShadThemeData theme, BeeHubColors c, ProviderVerificationState state, int progress) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -256,7 +256,7 @@ class _DocumentsPageState extends ConsumerState<DocumentsPage> {
     );
   }
 
-  Widget _statusBanner(ShadThemeData theme, UniMoveColors c, ProviderVerificationState state) {
+  Widget _statusBanner(ShadThemeData theme, BeeHubColors c, ProviderVerificationState state) {
     final (Color bg, Color fg, IconData icon, String title, String body) = switch (state.kycStatus) {
       ProviderKycStatus.approved => (
           c.success.withValues(alpha: 0.12),
@@ -315,7 +315,7 @@ class _DocumentsPageState extends ConsumerState<DocumentsPage> {
     );
   }
 
-  Widget _stepsCard(ShadThemeData theme, UniMoveColors c, ProviderVerificationState state) {
+  Widget _stepsCard(ShadThemeData theme, BeeHubColors c, ProviderVerificationState state) {
     final steps = [
       ('1', 'Tải giấy tờ', state.allRequiredUploaded),
       ('2', 'Gửi duyệt', state.kycStatus == ProviderKycStatus.pendingReview ||
@@ -376,7 +376,7 @@ class _DocumentsPageState extends ConsumerState<DocumentsPage> {
 
   Widget _bottomBar(
     ShadThemeData theme,
-    UniMoveColors c, {
+    BeeHubColors c, {
     required bool submitting,
     required VoidCallback onSubmit,
   }) {
@@ -418,7 +418,7 @@ class _DocumentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {

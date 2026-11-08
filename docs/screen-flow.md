@@ -1,4 +1,4 @@
-# UniMove — Screen Flow Diagrams
+# BeeHub — Screen Flow Diagrams
 
 > Diagrams được tổ chức theo từng role. Mỗi section chứa Mermaid diagram có thể render trực tiếp trong GitHub, VS Code (Markdown Preview Mermaid) hoặc [mermaid.live](https://mermaid.live).
 

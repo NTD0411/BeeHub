@@ -93,7 +93,7 @@ class CustomerOrdersRepository {
     if (await _useMockData()) return null;
 
     final user = await AuthTokenStorage.instance.loadUser();
-    final contactName = user?['full_name'] as String? ?? 'Khách UniMove';
+    final contactName = user?['full_name'] as String? ?? 'Khách BeeHub';
 
     final depositEnvelope = await _api.guard(
       () => _api.post('/payments/deposit', body: {
@@ -153,7 +153,7 @@ class CustomerOrdersRepository {
     String? quoteReferenceId,
   }) async {
     final user = await AuthTokenStorage.instance.loadUser();
-    final contactName = user?['full_name'] as String? ?? 'Khách UniMove';
+    final contactName = user?['full_name'] as String? ?? 'Khách BeeHub';
     final contactPhone = user?['phone'] as String? ?? '+84900000000';
 
     final pickup = _splitAddress(state.pickup);

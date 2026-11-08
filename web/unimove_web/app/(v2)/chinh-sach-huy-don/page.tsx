@@ -70,7 +70,7 @@ export default function ChinhSachHuyDonPage() {
       <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-6 flex gap-3">
         <Info size={20} className="text-blue-500 shrink-0 mt-0.5" />
         <p className="text-sm text-blue-800 leading-relaxed">
-          UniMove cho phép hủy đơn linh hoạt tùy trạng thái đơn hàng. Phí hủy được tính trên số tiền đặt cọc thực tế bạn đã thanh toán. Nếu chưa thanh toán cọc, bạn hoàn toàn không mất phí.
+          BeeHub cho phép hủy đơn linh hoạt tùy trạng thái đơn hàng. Phí hủy được tính trên số tiền đặt cọc thực tế bạn đã thanh toán. Nếu chưa thanh toán cọc, bạn hoàn toàn không mất phí.
         </p>
       </div>
 
@@ -127,7 +127,7 @@ export default function ChinhSachHuyDonPage() {
             "Bạn xác nhận hủy đơn và chọn lý do",
             "Hệ thống tự động tạo yêu cầu hoàn tiền",
             "Admin xét duyệt trong vòng 1–3 ngày làm việc",
-            "Tiền được hoàn vào ví UniMove của bạn",
+            "Tiền được hoàn vào ví BeeHub của bạn",
             "Bạn có thể rút ví về tài khoản ngân hàng bất kỳ lúc nào",
           ].map((step, i) => (
             <li key={i} className="flex items-start gap-3 text-sm text-gray-700">

@@ -56,7 +56,7 @@ class _ProviderPayoutSettingsPageState extends ConsumerState<ProviderPayoutSetti
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final orders = ref.watch(providerOrdersListProvider).asData?.value ?? const [];
     final now = DateTime.now();
     final netMonth = orders
@@ -228,7 +228,7 @@ class _ProviderPayoutSettingsPageState extends ConsumerState<ProviderPayoutSetti
     );
   }
 
-  Widget _methodTile(ShadThemeData theme, UniMoveColors c, ProviderPayoutMethod m) {
+  Widget _methodTile(ShadThemeData theme, BeeHubColors c, ProviderPayoutMethod m) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: GlassCard(
@@ -309,7 +309,7 @@ class _ProviderPayoutSettingsPageState extends ConsumerState<ProviderPayoutSetti
     );
   }
 
-  Widget _badge(ShadThemeData theme, UniMoveColors c, String text, Color fg, Color bg) {
+  Widget _badge(ShadThemeData theme, BeeHubColors c, String text, Color fg, Color bg) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
@@ -320,7 +320,7 @@ class _ProviderPayoutSettingsPageState extends ConsumerState<ProviderPayoutSetti
     );
   }
 
-  Widget _transferTile(ShadThemeData theme, UniMoveColors c, ProviderPayoutTransfer t) {
+  Widget _transferTile(ShadThemeData theme, BeeHubColors c, ProviderPayoutTransfer t) {
     final color = switch (t.status) {
       PayoutTransferStatus.completed => c.success,
       PayoutTransferStatus.pending => Colors.orange,

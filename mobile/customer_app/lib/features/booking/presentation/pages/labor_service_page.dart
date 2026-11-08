@@ -51,7 +51,7 @@ class _LaborServicePageState extends State<LaborServicePage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return BookingScaffold(
       title: 'Thêm khuân vác',
@@ -71,7 +71,7 @@ class _LaborServicePageState extends State<LaborServicePage> {
     );
   }
 
-  Widget _buildShimmer(UniMoveColors c) {
+  Widget _buildShimmer(BeeHubColors c) {
     return Shimmer.fromColors(
       baseColor: c.surfaceTint,
       highlightColor: c.surfaceHigh,
@@ -92,7 +92,7 @@ class _LaborServicePageState extends State<LaborServicePage> {
     );
   }
 
-  Widget _buildContent(UniMoveColors c) {
+  Widget _buildContent(BeeHubColors c) {
     final info = _info!;
 
     return ListView(
@@ -184,7 +184,7 @@ class _LaborServicePageState extends State<LaborServicePage> {
     );
   }
 
-  Widget _infoBanner(UniMoveColors c) {
+  Widget _infoBanner(BeeHubColors c) {
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
@@ -210,7 +210,7 @@ class _LaborServicePageState extends State<LaborServicePage> {
   }
 
   Widget _infoTile(
-    UniMoveColors c, {
+    BeeHubColors c, {
     required IconData icon,
     required String title,
     required String subtitle,

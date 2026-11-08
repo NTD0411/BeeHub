@@ -86,7 +86,7 @@ export default function LoginPage() {
               className="text-xl font-bold tracking-tight"
               style={{ color: "var(--text)" }}
             >
-              UniMove Admin
+              BeeHub Admin
             </h1>
             <p className="mt-1 text-sm" style={{ color: "var(--muted)" }}>
               Đăng nhập vào trang quản trị
@@ -178,7 +178,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center text-xs mt-6" style={{ color: "var(--muted)" }}>
-          UniMove Admin Dashboard · Chỉ dành cho quản trị viên
+          BeeHub Admin Dashboard · Chỉ dành cho quản trị viên
         </p>
       </div>
     </div>

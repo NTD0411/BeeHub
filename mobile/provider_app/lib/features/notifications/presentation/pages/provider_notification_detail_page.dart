@@ -51,7 +51,7 @@ class _ProviderNotificationDetailPageState extends ConsumerState<ProviderNotific
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {

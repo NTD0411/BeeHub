@@ -24,7 +24,7 @@ class ActiveChatContext {
     if (orderAllowsChat(order)) return null;
     return switch (order.status) {
       OrderStatus.completed =>
-        'Đơn đã hoàn thành — không nhắn tin thêm để bảo vệ giao dịch trên UniMove.',
+        'Đơn đã hoàn thành — không nhắn tin thêm để bảo vệ giao dịch trên BeeHub.',
       OrderStatus.cancelled || OrderStatus.disputed =>
         'Đơn đã kết thúc — chỉ xem lại tin nhắn.',
       OrderStatus.pending =>

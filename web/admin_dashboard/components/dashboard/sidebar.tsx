@@ -354,7 +354,7 @@ function SidebarContent({ isCollapsed, pendingVerifications }: SidebarContentPro
               className="text-base font-bold tracking-tight truncate"
               style={{ color: "var(--text)" }}
             >
-              UniMove Admin
+              BeeHub Admin
             </span>
           )}
         </div>

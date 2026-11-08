@@ -26,7 +26,7 @@ class _InsuranceSelectionPageState extends State<InsuranceSelectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return BlocBuilder<BookingFlowCubit, BookingFlowState>(
       builder: (context, state) {
@@ -106,7 +106,7 @@ class _InsuranceSelectionPageState extends State<InsuranceSelectionPage> {
     );
   }
 
-  Widget _infoBanner(UniMoveColors c) {
+  Widget _infoBanner(BeeHubColors c) {
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
@@ -121,7 +121,7 @@ class _InsuranceSelectionPageState extends State<InsuranceSelectionPage> {
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
-              'Bảo hiểm do đối tác bảo hiểm UniMove liên kết. Khiếu nại qua app trong thời hạn gói.',
+              'Bảo hiểm do đối tác bảo hiểm BeeHub liên kết. Khiếu nại qua app trong thời hạn gói.',
               style: TextStyle(fontSize: 12.sp, color: c.onSurface, height: 1.4),
             ),
           ),
@@ -133,7 +133,7 @@ class _InsuranceSelectionPageState extends State<InsuranceSelectionPage> {
   Widget _planCard(
     BuildContext context,
     CargoInsurancePlan plan,
-    UniMoveColors c, {
+    BeeHubColors c, {
     required String? selectedId,
   }) {
     final selected = selectedId == plan.id;

@@ -151,7 +151,7 @@ export default function ProviderProfilePage() {
         </Button>
 
         <p className="text-center text-xs pb-2" style={{ color: "var(--muted)" }}>
-          UniMove Provider v1.0.0
+          BeeHub Provider v1.0.0
         </p>
       </div>
     </div>

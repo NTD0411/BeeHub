@@ -23,7 +23,7 @@ class PublicProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(_publicProfileProvider(providerId));
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -45,7 +45,7 @@ class PublicProfilePage extends ConsumerWidget {
   }
 
   Widget _buildProfile(BuildContext context, WidgetRef ref, ShadThemeData theme,
-      UniMoveColors c, Map<String, dynamic> p) {
+      BeeHubColors c, Map<String, dynamic> p) {
     final name = p['full_name'] as String? ?? 'Nhà xe';
     final businessName = p['business_name'] as String? ?? '';
     final bio = p['bio'] as String? ?? '';
@@ -313,7 +313,7 @@ class PublicProfilePage extends ConsumerWidget {
     );
   }
 
-  Widget _statChip(ShadThemeData theme, UniMoveColors c, IconData icon, String value,
+  Widget _statChip(ShadThemeData theme, BeeHubColors c, IconData icon, String value,
       String label) {
     return GlassCard(
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
@@ -331,12 +331,12 @@ class PublicProfilePage extends ConsumerWidget {
     );
   }
 
-  Widget _sectionTitle(ShadThemeData theme, UniMoveColors c, String text) {
+  Widget _sectionTitle(ShadThemeData theme, BeeHubColors c, String text) {
     return Text(text,
         style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w800, color: c.onSurface));
   }
 
-  Widget _infoRow(ShadThemeData theme, UniMoveColors c, IconData icon, String label,
+  Widget _infoRow(ShadThemeData theme, BeeHubColors c, IconData icon, String label,
       String value) {
     return Row(
       children: [
@@ -351,7 +351,7 @@ class PublicProfilePage extends ConsumerWidget {
     );
   }
 
-  Widget _packageCard(ShadThemeData theme, UniMoveColors c, Map<String, dynamic> pkg) {
+  Widget _packageCard(ShadThemeData theme, BeeHubColors c, Map<String, dynamic> pkg) {
     final price = (pkg['base_price'] as num?)?.toInt() ?? 0;
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -383,7 +383,7 @@ class PublicProfilePage extends ConsumerWidget {
     );
   }
 
-  Widget _reviewTile(ShadThemeData theme, UniMoveColors c, Map<String, dynamic> r) {
+  Widget _reviewTile(ShadThemeData theme, BeeHubColors c, Map<String, dynamic> r) {
     final customerName = (r['customer'] as Map?)?['full_name'] as String? ?? 'Khách';
     final comment = r['comment'] as String? ?? '';
     final rating = (r['rating'] as num?)?.toInt() ?? 5;

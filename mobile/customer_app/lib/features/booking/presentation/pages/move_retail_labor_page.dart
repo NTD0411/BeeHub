@@ -34,7 +34,7 @@ class _MoveRetailLaborPageState extends State<MoveRetailLaborPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return BlocBuilder<BookingFlowCubit, BookingFlowState>(
       builder: (context, state) {
@@ -127,7 +127,7 @@ class _MoveRetailLaborPageState extends State<MoveRetailLaborPage> {
     );
   }
 
-  Widget _infoBanner(UniMoveColors c, ServicePackage? pkg, bool isCombo) {
+  Widget _infoBanner(BeeHubColors c, ServicePackage? pkg, bool isCombo) {
     final comboUnit = pkg?.extraLaborComboPrice;
     final retailRef = pkg?.extraLaborRetailPrice;
     return Container(
@@ -165,7 +165,7 @@ class _MoveRetailLaborPageState extends State<MoveRetailLaborPage> {
   }
 
   Widget _counterRow(
-    UniMoveColors c, {
+    BeeHubColors c, {
     required int value,
     required String label,
     required VoidCallback onMinus,
@@ -185,7 +185,7 @@ class _MoveRetailLaborPageState extends State<MoveRetailLaborPage> {
     );
   }
 
-  Widget _circleBtn(UniMoveColors c, IconData icon, VoidCallback onTap) {
+  Widget _circleBtn(BeeHubColors c, IconData icon, VoidCallback onTap) {
     return Material(
       color: c.chipBg,
       shape: const CircleBorder(),

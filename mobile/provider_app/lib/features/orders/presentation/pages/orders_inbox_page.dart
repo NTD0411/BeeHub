@@ -30,7 +30,7 @@ class OrdersInboxPage extends ConsumerWidget {
     final ordersAsync = ref.watch(providerOrdersListProvider);
     final myId = ref.watch(providerProfileProvider).asData?.value?.id;
     final selectedFilter = ref.watch(providerOrdersFilterProvider);
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -184,7 +184,7 @@ class OrdersInboxPage extends ConsumerWidget {
     );
   }
 
-  Widget _emptyAll(ShadThemeData theme, UniMoveColors c) {
+  Widget _emptyAll(ShadThemeData theme, BeeHubColors c) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -217,7 +217,7 @@ class OrdersInboxPage extends ConsumerWidget {
     );
   }
 
-  Widget _emptyFilter(ShadThemeData theme, UniMoveColors c, String label) {
+  Widget _emptyFilter(ShadThemeData theme, BeeHubColors c, String label) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),

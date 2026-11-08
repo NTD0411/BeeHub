@@ -199,7 +199,7 @@ class _AddProviderPayoutMethodPageState extends ConsumerState<AddProviderPayoutM
 
   Future<bool> _showPayOsOtpSheet() async {
     _otp.clear();
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return showModalBottomSheet<bool>(
       context: context,
@@ -413,7 +413,7 @@ class _AddProviderPayoutMethodPageState extends ConsumerState<AddProviderPayoutM
     );
   }
 
-  Widget _lookupHint(ShadThemeData theme, UniMoveColors c) {
+  Widget _lookupHint(ShadThemeData theme, BeeHubColors c) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -434,7 +434,7 @@ class _AddProviderPayoutMethodPageState extends ConsumerState<AddProviderPayoutM
     );
   }
 
-  Widget? _lookupTrailing(UniMoveColors c) {
+  Widget? _lookupTrailing(BeeHubColors c) {
     return switch (_lookupStatus) {
       AccountLookupStatus.loading => Padding(
           padding: const EdgeInsets.only(right: 8),
@@ -456,7 +456,7 @@ class _AddProviderPayoutMethodPageState extends ConsumerState<AddProviderPayoutM
     };
   }
 
-  Widget _accountNameField(BuildContext shadContext, ShadThemeData theme, UniMoveColors c) {
+  Widget _accountNameField(BuildContext shadContext, ShadThemeData theme, BeeHubColors c) {
     final isAutoLookup = _kind == ProviderPayoutKind.bank;
 
     return Column(
@@ -498,7 +498,7 @@ class _AddProviderPayoutMethodPageState extends ConsumerState<AddProviderPayoutM
   @override
   Widget build(BuildContext context) {
     _prefillFromProfile();
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (shadContext, theme) {
@@ -528,7 +528,7 @@ class _AddProviderPayoutMethodPageState extends ConsumerState<AddProviderPayoutM
                     children: [
                       PayoutFormSection(
                         title: 'Loại phương thức',
-                        subtitle: 'Chọn kênh giải ngân thu nhập từ UniMove',
+                        subtitle: 'Chọn kênh giải ngân thu nhập từ BeeHub',
                         child: Column(
                           children: [
                             PayoutMethodTypeCard(
@@ -721,7 +721,7 @@ class _AddProviderPayoutMethodPageState extends ConsumerState<AddProviderPayoutM
                       const SizedBox(height: 24),
                       PayoutFormSection(
                         title: 'Thông tin nhà xe',
-                        subtitle: 'Khớp hồ sơ provider đã duyệt trên UniMove',
+                        subtitle: 'Khớp hồ sơ provider đã duyệt trên BeeHub',
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -758,7 +758,7 @@ class _AddProviderPayoutMethodPageState extends ConsumerState<AddProviderPayoutM
                           activeColor: c.primary,
                           controlAffinity: ListTileControlAffinity.leading,
                           title: Text(
-                            'Tôi xác nhận thông tin chính xác và đồng ý UniMove / PayOS xác minh tài khoản trước khi giải ngân.',
+                            'Tôi xác nhận thông tin chính xác và đồng ý BeeHub / PayOS xác minh tài khoản trước khi giải ngân.',
                             style: theme.textTheme.small.copyWith(color: c.onSurface, height: 1.4),
                           ),
                           subtitle: Padding(

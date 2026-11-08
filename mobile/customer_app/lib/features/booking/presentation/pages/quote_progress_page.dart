@@ -102,7 +102,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     if (_loading) {
       return Scaffold(
@@ -165,7 +165,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _refCard(UniMoveColors c, QuoteRequestSnapshot snap) {
+  Widget _refCard(BeeHubColors c, QuoteRequestSnapshot snap) {
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
@@ -214,7 +214,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _scheduleHeroCard(UniMoveColors c, QuoteRequestSnapshot snap) {
+  Widget _scheduleHeroCard(BeeHubColors c, QuoteRequestSnapshot snap) {
     final countdown = snap.daysUntilMoveLabel;
     return Container(
       padding: EdgeInsets.all(16.w),
@@ -256,7 +256,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _timeline(UniMoveColors c, QuoteProgressStatus current) {
+  Widget _timeline(BeeHubColors c, QuoteProgressStatus current) {
     final idx = quoteTimelineIndex(current);
 
     return SingleChildScrollView(
@@ -309,7 +309,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _statusContent(UniMoveColors c, QuoteRequestSnapshot snap) {
+  Widget _statusContent(BeeHubColors c, QuoteRequestSnapshot snap) {
     return switch (snap.status) {
       QuoteProgressStatus.waitingQuotes => _waitingBox(c),
       QuoteProgressStatus.quotesReady => _quotesSection(c, snap),
@@ -324,7 +324,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     };
   }
 
-  Widget _waitingBox(UniMoveColors c) {
+  Widget _waitingBox(BeeHubColors c) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(color: c.chipBg, borderRadius: BorderRadius.circular(14.r)),
@@ -348,7 +348,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _quotesSection(UniMoveColors c, QuoteRequestSnapshot snap) {
+  Widget _quotesSection(BeeHubColors c, QuoteRequestSnapshot snap) {
     final exact = _exactQuotes;
     final alternate = _alternateQuotes;
     final unavailable = _unavailableQuotes;
@@ -415,7 +415,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _quoteTabChip(UniMoveColors c, String label, int count, int index) {
+  Widget _quoteTabChip(BeeHubColors c, String label, int count, int index) {
     final active = _quoteTabIndex == index;
     return Material(
       color: active ? c.primary : c.surface,
@@ -455,7 +455,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _emptyTabHint(UniMoveColors c, String title, String subtitle) {
+  Widget _emptyTabHint(BeeHubColors c, String title, String subtitle) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
@@ -471,7 +471,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _exactQuoteCard(UniMoveColors c, ProviderQuoteResponse q) {
+  Widget _exactQuoteCard(BeeHubColors c, ProviderQuoteResponse q) {
     return _quoteCard(
       c,
       q,
@@ -482,7 +482,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _alternateQuoteCard(UniMoveColors c, ProviderQuoteResponse q) {
+  Widget _alternateQuoteCard(BeeHubColors c, ProviderQuoteResponse q) {
     return _quoteCard(
       c,
       q,
@@ -494,7 +494,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _sortChip(UniMoveColors c, String label, int index) {
+  Widget _sortChip(BeeHubColors c, String label, int index) {
     final active = _sortIndex == index;
     return ChoiceChip(
       label: Text(label, style: TextStyle(fontSize: 12.sp)),
@@ -506,7 +506,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
   }
 
   Widget _quoteCard(
-    UniMoveColors c,
+    BeeHubColors c,
     ProviderQuoteResponse q, {
     bool showAction = false,
     bool viewOnly = false,
@@ -632,7 +632,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _scheduleFitChip(UniMoveColors c, ProviderQuoteResponse q) {
+  Widget _scheduleFitChip(BeeHubColors c, ProviderQuoteResponse q) {
     final (bg, fg) = switch (q.scheduleFit) {
       QuoteScheduleFit.exactMatch => (c.primary.withValues(alpha: 0.12), c.primary),
       QuoteScheduleFit.alternateProposed => (Colors.orange.withValues(alpha: 0.12), Colors.orange.shade800),
@@ -658,7 +658,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _alternateScheduleSection(UniMoveColors c, QuoteRequestSnapshot snap) {
+  Widget _alternateScheduleSection(BeeHubColors c, QuoteRequestSnapshot snap) {
     final q = snap.confirmedQuote;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -711,7 +711,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _pickScheduleSection(UniMoveColors c, QuoteRequestSnapshot snap) {
+  Widget _pickScheduleSection(BeeHubColors c, QuoteRequestSnapshot snap) {
     final q = snap.confirmedQuote;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -733,7 +733,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _awaitingProviderSection(UniMoveColors c, QuoteRequestSnapshot snap) {
+  Widget _awaitingProviderSection(BeeHubColors c, QuoteRequestSnapshot snap) {
     final q = snap.confirmedQuote;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -777,7 +777,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _providerAcceptedSection(UniMoveColors c, QuoteRequestSnapshot snap) {
+  Widget _providerAcceptedSection(BeeHubColors c, QuoteRequestSnapshot snap) {
     final q = snap.confirmedQuote;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -812,7 +812,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _depositPaidSection(UniMoveColors c, QuoteRequestSnapshot snap) {
+  Widget _depositPaidSection(BeeHubColors c, QuoteRequestSnapshot snap) {
     final q = snap.confirmedQuote;
     final confirmed = snap.providerTripConfirmed;
     return Column(
@@ -922,7 +922,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
   }
 
   Future<void> _showDepositSuccess(QuoteRequestSnapshot snap) async {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -966,7 +966,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _scheduleInfoCard(UniMoveColors c, String label) {
+  Widget _scheduleInfoCard(BeeHubColors c, String label) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.w),
@@ -990,7 +990,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _inProgressSection(UniMoveColors c, QuoteRequestSnapshot snap) {
+  Widget _inProgressSection(BeeHubColors c, QuoteRequestSnapshot snap) {
     final q = snap.confirmedQuote;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1024,7 +1024,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     );
   }
 
-  Widget _completedSection(UniMoveColors c) {
+  Widget _completedSection(BeeHubColors c) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(color: c.surface, borderRadius: BorderRadius.circular(14.r), border: Border.all(color: c.border)),
@@ -1113,7 +1113,7 @@ class _QuoteProgressPageState extends State<QuoteProgressPage> {
     }.toList()
       ..sort();
 
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     return showModalBottomSheet<DateTime>(
       context: context,
       backgroundColor: c.surface,

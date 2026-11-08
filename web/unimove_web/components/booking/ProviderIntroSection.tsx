@@ -78,7 +78,7 @@ function buildIntroText(provider: ProviderIntroData): string {
   const trips = provider.completed_trips ?? 0;
 
   const parts: string[] = [
-    `${name} là đối tác vận chuyển trọ chuyên nghiệp trên UniMove với ${vehicle.toLowerCase()}, cam kết an toàn đồ đạc và tối ưu chi phí cho sinh viên.`,
+    `${name} là đối tác vận chuyển trọ chuyên nghiệp trên BeeHub với ${vehicle.toLowerCase()}, cam kết an toàn đồ đạc và tối ưu chi phí cho sinh viên.`,
   ];
 
   if (trips >= 10) {
@@ -135,7 +135,7 @@ export function ProviderIntroBlock({ provider }: { provider: ProviderIntroData }
       </div>
       {provider.is_verified && (
         <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-100">
-          <BadgeCheck size={14} /> Đã xác minh bởi UniMove
+          <BadgeCheck size={14} /> Đã xác minh bởi BeeHub
         </div>
       )}
     </SectionCard>

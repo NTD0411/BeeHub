@@ -74,7 +74,7 @@ class _OrdersHistoryPageState extends State<OrdersHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final bg = c.isLight(context) ? Colors.white : c.background;
 
     return Scaffold(
@@ -121,7 +121,7 @@ class _OrdersHistoryPageState extends State<OrdersHistoryPage> {
     );
   }
 
-  Widget _buildShimmer(UniMoveColors c) {
+  Widget _buildShimmer(BeeHubColors c) {
     return Shimmer.fromColors(
       baseColor: c.surfaceTint,
       highlightColor: c.surfaceHigh,
@@ -151,7 +151,7 @@ class _OrdersHistoryPageState extends State<OrdersHistoryPage> {
     );
   }
 
-  Widget _buildList(UniMoveColors c) {
+  Widget _buildList(BeeHubColors c) {
     if (_orders.isEmpty) {
       return Center(
         child: Padding(

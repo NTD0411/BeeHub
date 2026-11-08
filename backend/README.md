@@ -1,4 +1,4 @@
-# UniMove Backend API
+# BeeHub Backend API
 
 Node.js Express API server with Supabase integration.
 

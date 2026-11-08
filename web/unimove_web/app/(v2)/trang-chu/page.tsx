@@ -202,7 +202,7 @@ export default function TrangChuPage() {
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900" suppressHydrationWarning>
             {greetText}, {nameText}! 👋
           </h1>
-          <p className="mt-1 text-base text-gray-500">So sánh báo giá nhà xe · Đặt cọc an toàn qua UniMove</p>
+          <p className="mt-1 text-base text-gray-500">So sánh báo giá nhà xe · Đặt cọc an toàn qua BeeHub</p>
           <div className="mt-4 flex gap-3">
             <div className="flex-1 rounded-2xl border border-blue-100 bg-gradient-to-br from-[#EFF6FF] to-white px-4 py-3 shadow-sm">
               <p className="text-2xl font-extrabold text-[#0047FF]">90+</p>

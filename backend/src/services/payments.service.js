@@ -302,7 +302,7 @@ async function deletePaymentMethod(userId, paymentMethodId) {
 const PAYMENT_METHOD_LABELS = {
   payos: 'PayOS',
   momo: 'MoMo',
-  wallet: 'Ví UniMove',
+  wallet: 'Ví BeeHub',
   cash: 'Tiền mặt',
   bank_transfer: 'Chuyển khoản',
   credit_card: 'Thẻ tín dụng',
@@ -694,7 +694,7 @@ async function createRefund(customerId, body) {
 }
 
 /**
- * Xử lý hoàn tiền vào ví UniMove — cộng balance, cập nhật payment & refund
+ * Xử lý hoàn tiền vào ví BeeHub — cộng balance, cập nhật payment & refund
  */
 async function ensureWallet(userId) {
   const { data: existing, error: fetchError } = await supabaseAdmin
@@ -806,7 +806,7 @@ async function completeRefund(refundId, processedByUserId) {
     customerId,
     'payment_received',
     'Hoàn tiền thành công',
-    `Đã hoàn ${refundAmount.toLocaleString('vi-VN')}đ vào ví UniMove của bạn.`,
+    `Đã hoàn ${refundAmount.toLocaleString('vi-VN')}đ vào ví BeeHub của bạn.`,
     { priority: 'high', actionData: { order_id: refund.order_id, refund_id: refundId } },
   );
 

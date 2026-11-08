@@ -16,7 +16,7 @@ class ChatEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     final (icon, title, subtitle, cta) = switch (variant) {
       ChatEmptyVariant.noActiveOrder => (

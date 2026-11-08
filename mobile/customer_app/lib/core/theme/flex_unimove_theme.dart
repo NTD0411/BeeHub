@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 import 'uni_move_colors.dart';
 
-abstract final class FlexUniMoveTheme {
+abstract final class FlexBeeHubTheme {
   static ThemeData material({required bool isDark}) {
     final base = isDark
         ? FlexThemeData.dark(
@@ -29,7 +29,7 @@ abstract final class FlexUniMoveTheme {
 
     return base.copyWith(
       scaffoldBackgroundColor: isDark ? AppColors.background : const Color(0xFFF0F4FF),
-      extensions: [isDark ? UniMoveColors.dark : UniMoveColors.light],
+      extensions: [isDark ? BeeHubColors.dark : BeeHubColors.light],
     );
   }
 }

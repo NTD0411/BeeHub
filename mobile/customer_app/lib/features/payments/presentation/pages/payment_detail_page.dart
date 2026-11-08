@@ -39,7 +39,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Scaffold(
       backgroundColor: c.background,
@@ -64,7 +64,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
     );
   }
 
-  Widget _buildBody(PaymentDetail d, UniMoveColors c) {
+  Widget _buildBody(PaymentDetail d, BeeHubColors c) {
     final p = d.payment;
 
     return ListView(
@@ -203,7 +203,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
     );
   }
 
-  Widget _grabCard(UniMoveColors c, {required List<Widget> children, EdgeInsetsGeometry? padding}) {
+  Widget _grabCard(BeeHubColors c, {required List<Widget> children, EdgeInsetsGeometry? padding}) {
     return Container(
       padding: padding ?? EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -215,7 +215,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
     );
   }
 
-  List<Widget> _paymentMethodRows(PaymentDetail d, UniMoveColors c) {
+  List<Widget> _paymentMethodRows(PaymentDetail d, BeeHubColors c) {
     final rows = <Widget>[];
     for (var i = 0; i < d.breakdown.length; i++) {
       if (i > 0) rows.add(Divider(height: 1, color: c.border));
@@ -231,7 +231,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
     return rows;
   }
 
-  Widget _grabRow(UniMoveColors c, String label, String value, {Widget? trailing}) {
+  Widget _grabRow(BeeHubColors c, String label, String value, {Widget? trailing}) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 14.h),
       child: Row(
@@ -252,7 +252,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
     );
   }
 
-  Widget _grabStacked(UniMoveColors c, String label, String value, {bool mono = false}) {
+  Widget _grabStacked(BeeHubColors c, String label, String value, {bool mono = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -282,7 +282,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
       children: [
         Text(
           method,
-          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: UniMoveColors.of(context).onSurface),
+          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: BeeHubColors.of(context).onSurface),
         ),
         SizedBox(width: 6.w),
         Icon(icon, size: 18.sp, color: iconColor),

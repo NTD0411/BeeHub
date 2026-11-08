@@ -131,7 +131,7 @@ class _ListingFeePayPageState extends State<ListingFeePayPage> {
     }
   }
 
-  Widget _qrSection(UniMoveColors c) {
+  Widget _qrSection(BeeHubColors c) {
     if (_busy && _payosInfo == null) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 48),
@@ -256,7 +256,7 @@ class _ListingFeePayPageState extends State<ListingFeePayPage> {
     );
   }
 
-  Widget _qrWidget(DepositPaymentInfo info, UniMoveColors c) {
+  Widget _qrWidget(DepositPaymentInfo info, BeeHubColors c) {
     final qr = info.qrCode;
     if (qr == null || qr.isEmpty) {
       return Container(
@@ -296,7 +296,7 @@ class _ListingFeePayPageState extends State<ListingFeePayPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Scaffold(
       backgroundColor: c.background,
@@ -336,7 +336,7 @@ class _ListingFeePayPageState extends State<ListingFeePayPage> {
     );
   }
 
-  Widget _feeRow(UniMoveColors c, String label, String value) {
+  Widget _feeRow(BeeHubColors c, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(

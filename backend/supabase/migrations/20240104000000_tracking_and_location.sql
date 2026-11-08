@@ -1,4 +1,4 @@
--- UniMove Database Schema - Tracking & Location
+-- BeeHub Database Schema - Tracking & Location
 -- Description: Real-time location tracking, route history, and geospatial features
 
 -- Enable PostGIS for geospatial queries

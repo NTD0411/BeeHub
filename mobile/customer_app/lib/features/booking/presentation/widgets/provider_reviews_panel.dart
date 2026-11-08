@@ -54,7 +54,7 @@ class GoogleStyleReviewSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final maxBar = stats.starCounts.values.fold<int>(0, (m, v) => v > m ? v : m);
 
     return Row(
@@ -87,7 +87,7 @@ class GoogleStyleReviewSummary extends StatelessWidget {
     );
   }
 
-  Widget _barRow(UniMoveColors c, {required int star, required int count, required int max}) {
+  Widget _barRow(BeeHubColors c, {required int star, required int count, required int max}) {
     final ratio = max == 0 ? 0.0 : count / max;
     return Padding(
       padding: EdgeInsets.only(bottom: 4.h),
@@ -135,7 +135,7 @@ class _GoogleStyleReviewCardState extends State<GoogleStyleReviewCard> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final r = widget.review;
     final isLong = r.comment.length > 120;
 
@@ -212,7 +212,7 @@ class GoogleStyleReviewsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     if (stats.reviews.isEmpty) {
       return Padding(
@@ -257,7 +257,7 @@ Future<void> showProviderReviewsSheet(
   required ProviderReviewStats stats,
   String? subtitle,
 }) {
-  final c = UniMoveColors.of(context);
+  final c = BeeHubColors.of(context);
 
   return showModalBottomSheet<void>(
     context: context,

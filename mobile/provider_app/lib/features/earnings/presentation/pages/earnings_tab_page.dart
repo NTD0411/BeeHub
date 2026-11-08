@@ -40,7 +40,7 @@ class _EarningsTabPageState extends ConsumerState<EarningsTabPage> {
   @override
   Widget build(BuildContext context) {
     final earningsAsync = ref.watch(_earningsProvider(_period));
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -130,7 +130,7 @@ class _EarningsTabPageState extends ConsumerState<EarningsTabPage> {
     );
   }
 
-  Widget _body(ShadThemeData theme, UniMoveColors c, EarningsSummary s) {
+  Widget _body(ShadThemeData theme, BeeHubColors c, EarningsSummary s) {
     final net = (s.totalEarned * 0.85).round();
     final fee = s.totalEarned - net;
     final periodLabel = _periods
@@ -248,7 +248,7 @@ class _EarningsTabPageState extends ConsumerState<EarningsTabPage> {
     );
   }
 
-  Widget _row(ShadThemeData theme, UniMoveColors c, String label, String value,
+  Widget _row(ShadThemeData theme, BeeHubColors c, String label, String value,
       {bool highlight = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -265,7 +265,7 @@ class _EarningsTabPageState extends ConsumerState<EarningsTabPage> {
     );
   }
 
-  Widget _dayTile(ShadThemeData theme, UniMoveColors c, EarningsDay d) {
+  Widget _dayTile(ShadThemeData theme, BeeHubColors c, EarningsDay d) {
     final parts = d.date.split('-');
     final label = parts.length == 3 ? '${parts[2]}/${parts[1]}' : d.date;
     return Padding(

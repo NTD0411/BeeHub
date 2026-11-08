@@ -1,4 +1,4 @@
--- UniMove Database Schema - Payments
+-- BeeHub Database Schema - Payments
 -- Description: Payment processing, transactions, and financial records
 
 -- Create ENUM types for payments

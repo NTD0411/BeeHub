@@ -111,9 +111,9 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                               width: 92,
                               height: 92,
                               decoration: BoxDecoration(
-                                color: UniMoveShadTheme.glassCard,
+                                color: BeeHubShadTheme.glassCard,
                                 borderRadius: BorderRadius.circular(22),
-                                border: Border.all(color: UniMoveShadTheme.glassBorderStrong),
+                                border: Border.all(color: BeeHubShadTheme.glassBorderStrong),
                                 boxShadow: const [
                                   BoxShadow(
                                     color: Color(0x50000000),
@@ -135,7 +135,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                                 color: AppColors.primaryLight.withValues(alpha: 0.2),
                               ),
                           const SizedBox(height: 28),
-                          const UniMoveLogoAccent(fontSize: 40),
+                          const BeeHubLogoAccent(fontSize: 40),
                           const SizedBox(height: 20),
                           Text(
                             'Chuyển trọ sinh viên — minh bạch giá, tracking realtime, tiết kiệm tới 40%.',

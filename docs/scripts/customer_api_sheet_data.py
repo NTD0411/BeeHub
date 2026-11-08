@@ -30,7 +30,7 @@ ENDPOINTS = [
          dev_task='Tách lỗi 401 vs 403 cho message rõ.'),
 
     dict(stt=4, module='Xác thực', be='BE-004', uc='UC-02', title='Đăng nhập Google', method='POST', path='/api/auth/google', auth='Public', status='Đã có',
-         api_desc='Đổi Google id_token lấy session UniMove. User mới → tạo profile từ metadata Google.',
+         api_desc='Đổi Google id_token lấy session BeeHub. User mới → tạo profile từ metadata Google.',
          when_call='login_page — nút “Tiếp tục với Google” sau google_sign_in lấy id_token.',
          ui_flow='1) Mở Google picker.\n2) Có id_token → POST /auth/google.\n3) OK như login email.\n4) Hủy Google → không gọi API.',
          after_success='Giống login — /home.',
@@ -103,7 +103,7 @@ ENDPOINTS = [
          dev_task='Giới hạn 2MB; compress ảnh trước upload nếu cần.'),
 
     dict(stt=13, module='Thanh toán/Ví', be='BE-034', uc='UC-12', title='Số dư ví', method='GET', path='/api/customers/me/wallet', auth='Bearer', status='Chưa có',
-         api_desc='Trả balance ví UniMove + loyalty_points (có thể trùng field profile).',
+         api_desc='Trả balance ví BeeHub + loyalty_points (có thể trùng field profile).',
          when_call='Mở tab Thanh toán (payments_tab_page).',
          ui_flow='Tab init → hero card “Số dư ví” + điểm thưởng.\nLỗi → hiện 0 hoặc retry.',
          after_success='Hiển thị số tiền format VND.',

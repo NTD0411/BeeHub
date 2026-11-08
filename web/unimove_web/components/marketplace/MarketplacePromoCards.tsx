@@ -17,7 +17,7 @@ export function MarketplacePromoCards() {
             </span>
             <p className="mt-2 text-sm font-bold text-gray-900">Săn đồ hời từ bạn bè?</p>
             <p className="mt-1 text-xs leading-relaxed text-gray-500">
-              Theo dõi tin yêu thích và nhắn tin thương lượng trực tiếp trên UniMove.
+              Theo dõi tin yêu thích và nhắn tin thương lượng trực tiếp trên BeeHub.
             </p>
           </div>
         </div>

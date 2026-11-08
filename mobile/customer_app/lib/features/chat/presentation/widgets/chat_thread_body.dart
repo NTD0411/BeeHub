@@ -89,7 +89,7 @@ class _ChatThreadBodyState extends State<ChatThreadBody> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (_loading) {
@@ -158,7 +158,7 @@ class _ChatThreadBodyState extends State<ChatThreadBody> {
     );
   }
 
-  Widget _bubble(ChatMessage m, UniMoveColors c, Color peerBubble) {
+  Widget _bubble(ChatMessage m, BeeHubColors c, Color peerBubble) {
     final mine = m.isMine;
     return Padding(
       padding: EdgeInsets.only(bottom: 12.h),
@@ -202,7 +202,7 @@ class _ChatThreadBodyState extends State<ChatThreadBody> {
     );
   }
 
-  Widget _systemLine(String text, UniMoveColors c) {
+  Widget _systemLine(String text, BeeHubColors c) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Center(
@@ -222,7 +222,7 @@ class _ChatThreadBodyState extends State<ChatThreadBody> {
     );
   }
 
-  Widget _quickReplyRow(UniMoveColors c) {
+  Widget _quickReplyRow(BeeHubColors c) {
     return SizedBox(
       height: 40.h,
       child: ListView.separated(
@@ -243,7 +243,7 @@ class _ChatThreadBodyState extends State<ChatThreadBody> {
     );
   }
 
-  Widget _composer(UniMoveColors c) {
+  Widget _composer(BeeHubColors c) {
     return Material(
       color: c.surface,
       elevation: 8,
@@ -319,7 +319,7 @@ class ChatHeaderBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Material(
       color: c.surface,

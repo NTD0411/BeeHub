@@ -10,7 +10,7 @@ import { useToast } from "@/components/ui/toast";
 import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 import { handleGoogleAuthResponse } from "@/lib/handle-google-auth";
 
-function UniMoveLogo() {
+function BeeHubLogo() {
   return (
     <div className="flex items-center gap-0.5 text-4xl font-extrabold leading-none tracking-tight">
       <span className="bg-[#FFCC00] text-white rounded-xl px-2.5 py-1">Uni</span>
@@ -83,7 +83,7 @@ function LoginForm() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-5 py-10">
       <Link href="/" className="flex flex-col items-center mb-8 gap-2.5 no-underline">
-        <UniMoveLogo />
+        <BeeHubLogo />
         <p className="text-sm text-gray-500 font-medium">Chuyển trọ thông minh cho sinh viên</p>
       </Link>
 

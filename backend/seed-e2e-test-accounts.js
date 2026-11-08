@@ -29,7 +29,7 @@ const ACCOUNTS = {
     full_name: 'Nguyễn Văn Provider',
     phone: '0909000002',
     role: 'provider',
-    business_name: 'UniMove Test Transport',
+    business_name: 'BeeHub Test Transport',
     vehicle_type: 'medium_truck',
     vehicle_plate: '43A-12345',
   },

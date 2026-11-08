@@ -18,7 +18,7 @@ class AddPaymentOptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final icon = option.icon ?? Icons.account_balance_wallet_outlined;
 
     return PressableScale(

@@ -28,7 +28,7 @@ abstract final class PaymentsApiMapper {
       payment: payment,
       paymentCode: j['payment_code'] as String? ?? payment.id,
       transactionId: j['payos_order_id'] as String? ?? j['id'] as String,
-      serviceLabel: j['description'] as String? ?? 'Thanh toán UniMove',
+      serviceLabel: j['description'] as String? ?? 'Thanh toán BeeHub',
       serviceCategory: 'Thanh toán',
       paidAt: DateTime.parse(paidAtRaw).toLocal(),
       escrowStatus: j['escrow_status'] as String?,

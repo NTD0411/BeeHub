@@ -22,7 +22,7 @@ BR-20,Pass đồ listing fee is calculated as 2% of listing price with a minimum
 BR-21,Only a buyer who has expressed interest in a listing may be selected by the seller to confirm a Pass đồ deal.
 BR-22,A seller may confirm a Pass đồ deal with only one buyer at a time and the listing status becomes reserved after deal confirmation.
 BR-23,A seller may cancel a confirmed Pass đồ deal only if the buyer has not yet marked transport as booked.
-BR-24,Only the confirmed buyer may book UniMove transport for a Pass đồ item after deal confirmation.
+BR-24,Only the confirmed buyer may book BeeHub transport for a Pass đồ item after deal confirmation.
 BR-25,Pass đồ pickup location is fixed to the listing area and the buyer selects only the delivery address for transport booking.
 BR-26,A seller may bump their own listing to the top of browse results at most once every 24 hours.
 BR-27,Customers may rate a provider only after the related transport order is completed.

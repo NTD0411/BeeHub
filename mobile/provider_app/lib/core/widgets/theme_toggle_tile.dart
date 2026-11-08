@@ -11,7 +11,7 @@ class ThemeToggleTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final mode = ref.watch(themeModeProvider);
     final isDark = mode == ThemeMode.dark;
 

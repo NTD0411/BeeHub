@@ -47,7 +47,7 @@ class _LaborConfigurePageState extends State<LaborConfigurePage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return BlocBuilder<BookingFlowCubit, BookingFlowState>(
       builder: (context, state) {
@@ -197,7 +197,7 @@ class _LaborConfigurePageState extends State<LaborConfigurePage> {
     );
   }
 
-  Widget _transportLaborCard(UniMoveColors c, LaborProviderQuote quote) {
+  Widget _transportLaborCard(BeeHubColors c, LaborProviderQuote quote) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(14.w),
@@ -249,7 +249,7 @@ class _LaborConfigurePageState extends State<LaborConfigurePage> {
     );
   }
 
-  Widget _needAddressHint(UniMoveColors c) {
+  Widget _needAddressHint(BeeHubColors c) {
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
@@ -263,7 +263,7 @@ class _LaborConfigurePageState extends State<LaborConfigurePage> {
     );
   }
 
-  Widget _linkedOrderBanner(UniMoveColors c, BookingFlowState state) {
+  Widget _linkedOrderBanner(BeeHubColors c, BookingFlowState state) {
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
@@ -297,7 +297,7 @@ class _LaborConfigurePageState extends State<LaborConfigurePage> {
     );
   }
 
-  Widget _addressCard(UniMoveColors c, String address) {
+  Widget _addressCard(BeeHubColors c, String address) {
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
@@ -324,7 +324,7 @@ class _LaborConfigurePageState extends State<LaborConfigurePage> {
   }
 
   Widget _counterRow(
-    UniMoveColors c, {
+    BeeHubColors c, {
     required int value,
     required String label,
     required VoidCallback onMinus,
@@ -344,7 +344,7 @@ class _LaborConfigurePageState extends State<LaborConfigurePage> {
     );
   }
 
-  Widget _circleBtn(UniMoveColors c, IconData icon, VoidCallback onTap) {
+  Widget _circleBtn(BeeHubColors c, IconData icon, VoidCallback onTap) {
     return Material(
       color: c.chipBg,
       shape: const CircleBorder(),

@@ -50,7 +50,7 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
     final verification = ref.watch(providerVerificationProvider).asData?.value;
     final canGoOnline = verification?.canGoOnline ?? false;
     final unreadNotifications = ref.watch(providerUnreadNotificationsProvider).asData?.value ?? 0;
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -169,7 +169,7 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
   // ---------- Header ----------
   Widget _header(
     ShadThemeData theme,
-    UniMoveColors c,
+    BeeHubColors c,
     String name,
     String? business,
     int unreadNotifications,
@@ -207,7 +207,7 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
     );
   }
 
-  Widget _notificationButton(UniMoveColors c, int unread) {
+  Widget _notificationButton(BeeHubColors c, int unread) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -239,7 +239,7 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
     );
   }
 
-  Widget _iconButton(UniMoveColors c, IconData icon, VoidCallback onTap) {
+  Widget _iconButton(BeeHubColors c, IconData icon, VoidCallback onTap) {
     return Material(
       color: c.surface,
       shape: RoundedRectangleBorder(
@@ -257,7 +257,7 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
     );
   }
 
-  Widget _kycBanner(ShadThemeData theme, UniMoveColors c, String statusLabel) {
+  Widget _kycBanner(ShadThemeData theme, BeeHubColors c, String statusLabel) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -294,7 +294,7 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
   }
 
   // ---------- Online toggle ----------
-  Widget _onlineCard(ShadThemeData theme, UniMoveColors c, {required bool canGoOnline}) {
+  Widget _onlineCard(ShadThemeData theme, BeeHubColors c, {required bool canGoOnline}) {
     final effectiveOnline = canGoOnline && _online;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -354,7 +354,7 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
   }
 
   // ---------- Earnings hero ----------
-  Widget _earningsHero(ShadThemeData theme, UniMoveColors c, int earnings, int trips) {
+  Widget _earningsHero(ShadThemeData theme, BeeHubColors c, int earnings, int trips) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -432,7 +432,7 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
     );
   }
 
-  Widget _quickStatsRow(ShadThemeData theme, UniMoveColors c, int trips, double rating) {
+  Widget _quickStatsRow(ShadThemeData theme, BeeHubColors c, int trips, double rating) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
@@ -454,7 +454,7 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
     );
   }
 
-  Widget _inlineStat(ShadThemeData theme, UniMoveColors c, IconData icon, String value, String label, Color tint) {
+  Widget _inlineStat(ShadThemeData theme, BeeHubColors c, IconData icon, String value, String label, Color tint) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -479,7 +479,7 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
     );
   }
 
-  Widget _sectionTitle(ShadThemeData theme, UniMoveColors c, String text, {String? trailing}) {
+  Widget _sectionTitle(ShadThemeData theme, BeeHubColors c, String text, {String? trailing}) {
     return Row(
       children: [
         Expanded(
@@ -493,7 +493,7 @@ class _ProviderDashboardPageState extends ConsumerState<ProviderDashboardPage> {
 
   Widget _ordersHub(
     ShadThemeData theme,
-    UniMoveColors c, {
+    BeeHubColors c, {
     required String? myId,
     required int ready,
     required int quotes,

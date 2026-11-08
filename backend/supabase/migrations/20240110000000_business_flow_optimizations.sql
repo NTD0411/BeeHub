@@ -1,4 +1,4 @@
--- UniMove Database Schema - Business Flow Optimizations
+-- BeeHub Database Schema - Business Flow Optimizations
 -- Description: Bổ sung bảng/cột còn thiếu cho flow Customer, Provider, Admin, Payment Escrow
 -- Run AFTER migration 20240109000000
 

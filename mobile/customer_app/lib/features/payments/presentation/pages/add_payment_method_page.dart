@@ -9,7 +9,7 @@ import '../widgets/add_payment_option_tile.dart';
 import 'add_card_page.dart';
 import 'link_payment_method_page.dart';
 
-/// Thêm phương thức khác — Thẻ, MoMo, PayOS (UniMove).
+/// Thêm phương thức khác — Thẻ, MoMo, PayOS (BeeHub).
 class AddPaymentMethodPage extends StatefulWidget {
   const AddPaymentMethodPage({super.key});
 
@@ -58,7 +58,7 @@ class _AddPaymentMethodPageState extends State<AddPaymentMethodPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Scaffold(
       backgroundColor: c.isLight(context) ? Colors.white : c.background,

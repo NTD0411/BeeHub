@@ -83,7 +83,7 @@ class _DocumentUploadSheetState extends State<DocumentUploadSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final type = widget.record.type;
 
     return ShadScreenScope(

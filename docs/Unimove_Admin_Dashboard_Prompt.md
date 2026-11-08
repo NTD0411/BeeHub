@@ -1,13 +1,13 @@
-# PROMPT — Build Admin Dashboard cho UniMove (copy vào Claude trong VS Code)
+# PROMPT — Build Admin Dashboard cho BeeHub (copy vào Claude trong VS Code)
 
 > Copy toàn bộ phần dưới đây (từ "Bạn là..." đến hết) và dán vào Claude trong VS Code.
 
 ---
 
-Bạn là senior fullstack engineer. Hãy xây dựng **Admin Web Dashboard** cho dự án **UniMove** theo chuẩn **production-ready**.
+Bạn là senior fullstack engineer. Hãy xây dựng **Admin Web Dashboard** cho dự án **BeeHub** theo chuẩn **production-ready**.
 
 ## 1. Bối cảnh dự án
-UniMove là một **marketplace kết nối sinh viên cần chuyển trọ với các đơn vị vận chuyển (provider)**. Có 3 actor: Customer (mobile app), Provider (mobile app), và **Admin (web dashboard — chính là cái cần build)**. Admin quản lý người dùng, xác minh provider, theo dõi đơn hàng, xử lý refund/khiếu nại, kiểm duyệt review, xem analytics doanh thu/GMV, gửi thông báo hệ thống và xem activity logs.
+BeeHub là một **marketplace kết nối sinh viên cần chuyển trọ với các đơn vị vận chuyển (provider)**. Có 3 actor: Customer (mobile app), Provider (mobile app), và **Admin (web dashboard — chính là cái cần build)**. Admin quản lý người dùng, xác minh provider, theo dõi đơn hàng, xử lý refund/khiếu nại, kiểm duyệt review, xem analytics doanh thu/GMV, gửi thông báo hệ thống và xem activity logs.
 
 ## 2. Tech stack (BẮT BUỘC)
 - **Next.js (App Router)** + **TypeScript**
@@ -31,7 +31,7 @@ Các thực thể dự kiến cần đọc (tên thật lấy từ migration): u
 `lib/supabase/` (client.ts cho browser dùng anon key, server.ts cho server dùng `@supabase/ssr`). `lib/queries/` chứa hàm fetch/mutation theo domain, **đặt tên cột đúng theo schema thật** (không bịa). RLS đã có sẵn trong `rls_policies` → chỉ cần đăng nhập đúng admin, không tự thêm policy. Nếu một bảng không trả data → **empty state**, không crash.
 
 ## 4. Layout tổng thể
-- **Sidebar trái** (collapse được trên desktop, ẩn sau drawer/hamburger trên mobile/tablet), gồm các mục map đúng nghiệp vụ UniMove:
+- **Sidebar trái** (collapse được trên desktop, ẩn sau drawer/hamburger trên mobile/tablet), gồm các mục map đúng nghiệp vụ BeeHub:
   - **Dashboard** — tổng quan
   - **Users** — quản lý customer + provider (tab hoặc 2 submenu Customers / Providers), search, ban/unban
   - **Verifications** — duyệt provider: approve/reject, xem ảnh CCCD/bằng lái/thông tin xe
@@ -63,7 +63,7 @@ Các thực thể dự kiến cần đọc (tên thật lấy từ migration): u
 - **Tablet**: sidebar thu gọn thành icon-only hoặc drawer.
 - **Mobile**: sidebar ẩn sau hamburger (drawer overlay), cards xếp dọc, bảng cho phép scroll ngang hoặc chuyển sang card-list.
 
-## 8. Design system — ĐỒNG BỘ với UniMove mobile app (BẮT BUỘC)
+## 8. Design system — ĐỒNG BỘ với BeeHub mobile app (BẮT BUỘC)
 Admin web phải cùng ngôn ngữ thiết kế với app (tham khảo screenshot app: Home, Payment, Pricing). Tinh thần: **fintech/SaaS hiện đại, xanh dương chủ đạo, bo góc lớn, sạch sẽ, nhiều khoảng trắng** — KHÔNG tím/indigo, KHÔNG xám trung tính lạnh.
 
 **Màu (định nghĩa làm CSS variable + Tailwind theme):**

@@ -288,7 +288,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
   @override
   Widget build(BuildContext context) {
     final orderAsync = ref.watch(providerOrderDetailProvider(widget.orderId));
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -461,7 +461,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            'Khách đã đặt cọc qua UniMove. Nhận đơn để bắt đầu chuẩn bị lấy hàng.',
+                            'Khách đã đặt cọc qua BeeHub. Nhận đơn để bắt đầu chuẩn bị lấy hàng.',
                             style: theme.textTheme.small.copyWith(color: c.onSurfaceMuted, height: 1.35),
                           ),
                         ] else if (order.isPending && !order.quoteRequest) ...[
@@ -549,7 +549,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 
-  Widget _quoteRequestSection(UniMoveColors c, ShadThemeData theme, ProviderOrder order, String? myId) {
+  Widget _quoteRequestSection(BeeHubColors c, ShadThemeData theme, ProviderOrder order, String? myId) {
     if (_loadingQuote) {
       return const Center(child: Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator()));
     }
@@ -669,7 +669,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
   }
 
   Widget _confirmedPricingCard(
-    UniMoveColors c,
+    BeeHubColors c,
     ShadThemeData theme,
     ProviderOrder order,
     String? myId,
@@ -685,7 +685,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
         children: [
           _priceRow(c, theme, 'Giá chốt với khách', order.totalPrice, highlight: true),
           if (order.depositPaid) ...[
-            _priceRow(c, theme, 'Khách đã cọc (UniMove giữ)', deposit, valueColor: c.success),
+            _priceRow(c, theme, 'Khách đã cọc (BeeHub giữ)', deposit, valueColor: c.success),
             _priceRow(c, theme, 'Còn lại sau chuyến', remaining),
           ],
           const Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Divider(height: 1)),
@@ -709,7 +709,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 
-  Widget _bookingStatusCard(UniMoveColors c, ShadThemeData theme, ProviderOrder order, String? myId) {
+  Widget _bookingStatusCard(BeeHubColors c, ShadThemeData theme, ProviderOrder order, String? myId) {
     final steps = <({String title, String subtitle, bool done})>[
       (
         title: 'Khách chốt báo giá của bạn',
@@ -717,7 +717,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
         done: true,
       ),
       (
-        title: 'Khách đặt cọc qua UniMove',
+        title: 'Khách đặt cọc qua BeeHub',
         subtitle: order.depositPaid
             ? 'Đã cọc ${ProviderOrder.formatMoney(order.depositAmount > 0 ? order.depositAmount : (order.totalPrice * 0.3).round())}'
             : 'Chờ khách quét QR đặt cọc 30%',
@@ -771,7 +771,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 
-  Widget _sectionTitle(UniMoveColors c, String text) {
+  Widget _sectionTitle(BeeHubColors c, String text) {
     return Text(
       text,
       style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: c.onSurface),
@@ -793,7 +793,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     return '—';
   }
 
-  Widget _quickStats(UniMoveColors c, ProviderOrder order, {String? myId, int? myQuoteTotal}) {
+  Widget _quickStats(BeeHubColors c, ProviderOrder order, {String? myId, int? myQuoteTotal}) {
     final revenueLabel = order.isAssignedTo(myId) && order.totalPrice > 0
         ? ProviderOrder.formatMoney(order.totalPrice)
         : _revenueLabel(order, myQuoteTotal: myQuoteTotal);
@@ -830,7 +830,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
   }
 
   Widget _statTile(
-    UniMoveColors c,
+    BeeHubColors c,
     IconData icon,
     String label,
     String value, {
@@ -865,7 +865,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 
-  Widget _routeCard(UniMoveColors c, ProviderOrder order) {
+  Widget _routeCard(BeeHubColors c, ProviderOrder order) {
     final pickup = order.pickupPoint;
     final delivery = order.deliveryPoint;
 
@@ -931,7 +931,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
   }
 
   Widget _routeStop(
-    UniMoveColors c, {
+    BeeHubColors c, {
     required Color color,
     required IconData icon,
     required String title,
@@ -969,7 +969,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 
-  Widget _customerCard(UniMoveColors c, ShadThemeData theme, String name, ProviderOrder order) {
+  Widget _customerCard(BeeHubColors c, ShadThemeData theme, String name, ProviderOrder order) {
     final phone = order.pickupPoint.contactPhone;
     return GlassCard(
       padding: const EdgeInsets.all(16),
@@ -1025,7 +1025,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 
-  Widget _serviceCard(UniMoveColors c, ShadThemeData theme, ProviderOrder order) {
+  Widget _serviceCard(BeeHubColors c, ShadThemeData theme, ProviderOrder order) {
     return GlassCard(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -1051,7 +1051,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 
-  Widget _itemsCard(UniMoveColors c, ShadThemeData theme, ProviderOrder order) {
+  Widget _itemsCard(BeeHubColors c, ShadThemeData theme, ProviderOrder order) {
     return GlassCard(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -1105,7 +1105,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 
-  Widget _pricingCard(UniMoveColors c, ShadThemeData theme, ProviderOrder order) {
+  Widget _pricingCard(BeeHubColors c, ShadThemeData theme, ProviderOrder order) {
     final p = order.priceBreakdown;
     return GlassCard(
       padding: const EdgeInsets.all(16),
@@ -1182,7 +1182,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 
-  Widget _timingCard(UniMoveColors c, ShadThemeData theme, ProviderOrder order) {
+  Widget _timingCard(BeeHubColors c, ShadThemeData theme, ProviderOrder order) {
     return GlassCard(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -1206,7 +1206,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 
-  Widget _infoRow(UniMoveColors c, ShadThemeData theme, IconData icon, String label, String value) {
+  Widget _infoRow(BeeHubColors c, ShadThemeData theme, IconData icon, String label, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1227,7 +1227,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
   }
 
   Widget _priceRow(
-    UniMoveColors c,
+    BeeHubColors c,
     ShadThemeData theme,
     String label,
     int amount, {
@@ -1253,7 +1253,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 
-  Widget _badge(UniMoveColors c, String text, Color color) {
+  Widget _badge(BeeHubColors c, String text, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(

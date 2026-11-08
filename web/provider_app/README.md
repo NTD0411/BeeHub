@@ -1,6 +1,6 @@
-# UniMove Provider Web App
+# BeeHub Provider Web App
 
-Web app dành cho **nhà vận chuyển** (provider) của nền tảng UniMove.
+Web app dành cho **nhà vận chuyển** (provider) của nền tảng BeeHub.
 
 ## Các trang
 

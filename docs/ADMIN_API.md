@@ -1,8 +1,8 @@
-# UniMove Admin API Documentation
+# BeeHub Admin API Documentation
 
 ## Tổng quan
 
-API Admin cho phép quản trị viên đăng nhập và truy cập các chức năng quản lý hệ thống UniMove.
+API Admin cho phép quản trị viên đăng nhập và truy cập các chức năng quản lý hệ thống BeeHub.
 
 ## Authentication & Authorization
 
@@ -12,6 +12,22 @@ API Admin cho phép quản trị viên đăng nhập và truy cập các chức 
 - **Unauthenticated**: Gọi `/api/admin/*` (trừ login) sẽ trả về `401 Unauthorized`
 
 ## Endpoints
+
+### Database Browser (read-only)
+
+Các endpoint tra cứu database chỉ dành cho admin, chỉ đọc các bảng trong schema `public`.
+Các cột có tên liên quan đến mật khẩu, secret, token, credential, API/access key,
+private key, authorization hoặc OTP được ẩn giá trị.
+
+- **GET** `/api/admin/data/tables` — danh sách bảng.
+- **GET** `/api/admin/data/tables/:table/schema` — kiểu dữ liệu, nullable, default,
+  khóa chính (PK) và khóa ngoại (FK) của từng cột.
+- **GET** `/api/admin/data/tables/:table/rows` — dữ liệu phân trang.
+
+Tham số truy vấn của endpoint rows: `page` (mặc định `1`), `pageSize` (`10`, `25`,
+`50` hoặc `100`), `search`, `sortBy`, `sortOrder` (`asc`/`desc`), `filterColumn`,
+`filterValue`, và `filterMode` (`contains`/`exact`). Từ khóa tìm kiếm và lọc không
+áp dụng lên các cột nhạy cảm.
 
 ### 1. Admin Login
 
@@ -36,7 +52,7 @@ API Admin cho phép quản trị viên đăng nhập và truy cập các chức 
     "user": {
       "id": "uuid",
       "email": "admin@unimove.com",
-      "full_name": "UniMove Admin",
+      "full_name": "BeeHub Admin",
       "role": "admin",
       "avatar_url": null,
       "created_at": "2024-01-01T00:00:00Z"
@@ -84,7 +100,7 @@ Authorization: Bearer <access_token>
   "data": {
     "id": "uuid",
     "email": "admin@unimove.com",
-    "full_name": "UniMove Admin",
+    "full_name": "BeeHub Admin",
     "role": "admin",
     "avatar_url": null,
     "phone": null,
@@ -241,7 +257,7 @@ curl -X GET http://localhost:3000/api/admin/dashboard/stats \
 ### Admin User trong `profiles`:
 ```sql
 INSERT INTO profiles (id, email, full_name, role, status) VALUES
-('uuid', 'admin@unimove.com', 'UniMove Admin', 'admin', 'active');
+('uuid', 'admin@unimove.com', 'BeeHub Admin', 'admin', 'active');
 ```
 
 ### Required Tables:
@@ -276,4 +292,4 @@ Sau khi API admin hoạt động:
 
 ---
 
-*UniMove Admin API — WDP301 Group 4*
+*BeeHub Admin API — WDP301 Group 4*

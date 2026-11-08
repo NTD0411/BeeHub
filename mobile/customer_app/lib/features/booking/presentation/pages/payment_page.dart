@@ -112,7 +112,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return BlocBuilder<BookingFlowCubit, BookingFlowState>(
       builder: (context, state) {
@@ -622,7 +622,7 @@ class _PaymentPageState extends State<PaymentPage> {
     }
   }
 
-  Widget _marketplaceNote(UniMoveColors c, {required String partnerName, required bool isCombo}) {
+  Widget _marketplaceNote(BeeHubColors c, {required String partnerName, required bool isCombo}) {
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
@@ -638,8 +638,8 @@ class _PaymentPageState extends State<PaymentPage> {
           Expanded(
             child: Text(
               isCombo
-                  ? 'Combo niêm yết — $partnerName thực hiện theo giá app. UniMove giữ cọc an toàn.'
-                  : 'Chuyến linh hoạt — $partnerName báo giá theo tuyến của bạn. UniMove giữ cọc an toàn.',
+                  ? 'Combo niêm yết — $partnerName thực hiện theo giá app. BeeHub giữ cọc an toàn.'
+                  : 'Chuyến linh hoạt — $partnerName báo giá theo tuyến của bạn. BeeHub giữ cọc an toàn.',
               style: TextStyle(fontSize: 12.sp, height: 1.4, color: c.onSurface),
             ),
           ),
@@ -648,7 +648,7 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  Widget _dormDetailsCard(UniMoveColors c, BookingFlowState state) {
+  Widget _dormDetailsCard(BeeHubColors c, BookingFlowState state) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.w),
@@ -705,7 +705,7 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   Widget _payosQrCard(
-    UniMoveColors c,
+    BeeHubColors c,
     DepositPaymentInfo info, {
     required bool paymentCompleted,
     required bool polling,
@@ -857,7 +857,7 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  Widget _qrDataImage(String dataUrl, UniMoveColors c, {required double size}) {
+  Widget _qrDataImage(String dataUrl, BeeHubColors c, {required double size}) {
     try {
       final base64 = dataUrl.contains(',') ? dataUrl.split(',').last : dataUrl;
       final bytes = base64Decode(base64);
@@ -870,7 +870,7 @@ class _PaymentPageState extends State<PaymentPage> {
     }
   }
 
-  Widget _escrowTrustCard(UniMoveColors c, {required int deposit}) {
+  Widget _escrowTrustCard(BeeHubColors c, {required int deposit}) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -886,7 +886,7 @@ class _PaymentPageState extends State<PaymentPage> {
               Icon(Icons.account_balance_wallet_outlined, color: c.primary, size: 22.sp),
               SizedBox(width: 8.w),
               Text(
-                'Cam kết UniMove (trung gian)',
+                'Cam kết BeeHub (trung gian)',
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w800, color: c.onSurface),
               ),
             ],
@@ -902,7 +902,7 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  Widget _trustLine(IconData icon, String text, UniMoveColors c) {
+  Widget _trustLine(IconData icon, String text, BeeHubColors c) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -915,7 +915,7 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  Widget _sectionCard(UniMoveColors c, {required String title, required Widget child}) {
+  Widget _sectionCard(BeeHubColors c, {required String title, required Widget child}) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -934,7 +934,7 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  Widget _tripRow(IconData icon, Color color, String text, UniMoveColors c) {
+  Widget _tripRow(IconData icon, Color color, String text, BeeHubColors c) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -947,7 +947,7 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  Widget _chip(String text, IconData icon, UniMoveColors c) {
+  Widget _chip(String text, IconData icon, BeeHubColors c) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
@@ -971,7 +971,7 @@ class _PaymentPageState extends State<PaymentPage> {
     PaymentMethod method,
     String title,
     String? subtitle,
-    UniMoveColors c, {
+    BeeHubColors c, {
     required bool selected,
   }) {
     return Padding(
@@ -1015,7 +1015,7 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  Widget _priceRow(String label, String value, UniMoveColors c, {bool highlight = false}) {
+  Widget _priceRow(String label, String value, BeeHubColors c, {bool highlight = false}) {
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
       child: Row(

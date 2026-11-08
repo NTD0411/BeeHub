@@ -46,13 +46,13 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
     });
   }
 
-  Color _channelBackground(UniMoveColors c, BuildContext context) {
+  Color _channelBackground(BeeHubColors c, BuildContext context) {
     return c.isLight(context) ? const Color(0xFFF3F4F6) : c.background;
   }
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final focused = _focused;
     final isPromo = focused?.type == AppNotificationType.promotion;
 
@@ -99,7 +99,7 @@ class _PromoChannelAppBarTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Row(
       children: [
@@ -114,7 +114,7 @@ class _PromoChannelAppBarTitle extends StatelessWidget {
             children: [
               Flexible(
                 child: Text(
-                  'Ưu đãi UniMove',
+                  'Ưu đãi BeeHub',
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 16.sp,
@@ -181,7 +181,7 @@ class _SystemMessageBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final n = notification;
 
     return ListView(
@@ -211,7 +211,7 @@ class _SystemMessageBody extends StatelessWidget {
 class _ChannelFooter extends StatelessWidget {
   const _ChannelFooter({required this.colors});
 
-  final UniMoveColors colors;
+  final BeeHubColors colors;
 
   @override
   Widget build(BuildContext context) {
@@ -229,7 +229,7 @@ class _ChannelFooter extends StatelessWidget {
           children: [
             const TextSpan(text: 'Chỉ '),
             TextSpan(
-              text: 'UniMove',
+              text: 'BeeHub',
               style: TextStyle(fontWeight: FontWeight.w700, color: c.onSurface),
             ),
             const TextSpan(text: ' mới có thể gửi tin nhắn.'),

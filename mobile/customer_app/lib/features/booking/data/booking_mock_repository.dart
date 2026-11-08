@@ -287,7 +287,7 @@ class BookingMockRepository {
         benefits: [
           'Bồi thường tối đa 10 triệu',
           'Hư hỏng do va chạm, rơi vỡ',
-          'Xử lý qua UniMove trong 7 ngày',
+          'Xử lý qua BeeHub trong 7 ngày',
         ],
       ),
       CargoInsurancePlan(
@@ -330,7 +330,7 @@ class BookingMockRepository {
     return [
       const PartnerOffer(
         id: 'p1',
-        name: 'UniMove Test Transport',
+        name: 'BeeHub Test Transport',
         distanceKm: 1.2,
         rating: 4.9,
         reviewCount: 148,

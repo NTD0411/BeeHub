@@ -87,7 +87,7 @@ class _PassItemTransportOptionsPageState extends State<PassItemTransportOptionsP
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return BlocListener<BookingFlowCubit, BookingFlowState>(
       listenWhen: (prev, curr) => prev.destination != curr.destination,
@@ -169,7 +169,7 @@ class _PassItemTransportOptionsPageState extends State<PassItemTransportOptionsP
     );
   }
 
-  Widget _distanceCard(UniMoveColors c, BookingFlowState state, double? km) {
+  Widget _distanceCard(BeeHubColors c, BookingFlowState state, double? km) {
     final busy = state.resolvingDestination || state.loadingPlaceSuggestions;
     return Container(
       padding: EdgeInsets.all(14.w),
@@ -220,7 +220,7 @@ class _PassItemTransportOptionsPageState extends State<PassItemTransportOptionsP
   }
 
   Widget _optionCard({
-    required UniMoveColors c,
+    required BeeHubColors c,
     required IconData icon,
     required String title,
     required String subtitle,
@@ -295,7 +295,7 @@ class _PassItemTransportOptionsPageState extends State<PassItemTransportOptionsP
     );
   }
 
-  Widget _routeCard(BuildContext context, BookingFlowState state, UniMoveColors c) {
+  Widget _routeCard(BuildContext context, BookingFlowState state, BeeHubColors c) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -352,7 +352,7 @@ class _PassItemTransportOptionsPageState extends State<PassItemTransportOptionsP
     );
   }
 
-  Widget _suggestionTile(BuildContext context, PlaceSuggestion suggestion, UniMoveColors c) {
+  Widget _suggestionTile(BuildContext context, PlaceSuggestion suggestion, BeeHubColors c) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -394,7 +394,7 @@ class _PassItemTransportOptionsPageState extends State<PassItemTransportOptionsP
   }
 
   Widget _routeRow(IconData icon, Color color, String text, {bool muted = false}) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     return Row(
       children: [
         Container(

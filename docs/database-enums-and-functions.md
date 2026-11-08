@@ -1,4 +1,4 @@
-# UniMove Database - Part 3: ENUMs, Views & Functions
+# BeeHub Database - Part 3: ENUMs, Views & Functions
 
 ## 🏷️ PHẦN 7: ENUM TYPES (10 types)
 

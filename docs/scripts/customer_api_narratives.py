@@ -40,7 +40,7 @@ NARRATIVES = {
     ),
     4: (
         'Cùng màn Đăng nhập: người dùng bấm «Tiếp tục với Google» → chọn tài khoản Google trên điện thoại. '
-        'App lấy token Google gửi API này. Lần đầu: tạo tài khoản UniMove từ thông tin Google. Lần sau: đăng nhập như email. '
+        'App lấy token Google gửi API này. Lần đầu: tạo tài khoản BeeHub từ thông tin Google. Lần sau: đăng nhập như email. '
         'Thành công → Trang chủ. Hủy chọn Google → không gọi API, vẫn ở màn Đăng nhập.'
     ),
     5: (

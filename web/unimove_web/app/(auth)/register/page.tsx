@@ -20,7 +20,7 @@ const VEHICLES = [
   ["truck_5t", "Xe tải 5 tấn+"],
 ];
 
-function UniMoveLogo() {
+function BeeHubLogo() {
   return (
     <div className="flex items-center gap-0.5 text-4xl font-extrabold leading-none tracking-tight">
       <span className="bg-[#FFCC00] text-white rounded-xl px-2.5 py-1">Uni</span>
@@ -60,7 +60,7 @@ export default function RegisterPage() {
       if (!res.success || !res.data) { setError((res as { message?: string }).message || "Đăng ký thất bại"); return; }
       const { accessToken, user } = res.data as { accessToken: string; user: AuthUser };
       storeAuth(user, accessToken);
-      toast("Đăng ký thành công! Chào mừng đến với UniMove", "success");
+      toast("Đăng ký thành công! Chào mừng đến với BeeHub", "success");
       window.location.href = user.role === "provider" ? "/dang-ky-tai-xe" : getRoleHome(user.role);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Lỗi kết nối");
@@ -89,13 +89,13 @@ export default function RegisterPage() {
       <div className="min-h-screen bg-white flex flex-col items-center justify-center px-5 py-10">
         {/* Logo */}
         <Link href="/" className="flex flex-col items-center mb-8 gap-2.5 no-underline">
-          <UniMoveLogo />
+          <BeeHubLogo />
           <p className="text-sm text-gray-500 font-medium">Chuyển trọ thông minh cho sinh viên</p>
         </Link>
 
         <div className="w-full max-w-sm">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Tạo tài khoản</h1>
-          <p className="text-sm text-gray-500 mb-6">Bạn muốn dùng UniMove với tư cách nào?</p>
+          <p className="text-sm text-gray-500 mb-6">Bạn muốn dùng BeeHub với tư cách nào?</p>
 
           <div className="space-y-3">
             {/* Customer */}

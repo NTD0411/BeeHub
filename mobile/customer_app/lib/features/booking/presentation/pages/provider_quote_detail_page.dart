@@ -120,7 +120,7 @@ class _ProviderQuoteDetailPageState extends State<ProviderQuoteDetailPage> {
     }.toList()
       ..sort();
 
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     return showModalBottomSheet<DateTime>(
       context: context,
       backgroundColor: c.surface,
@@ -159,7 +159,7 @@ class _ProviderQuoteDetailPageState extends State<ProviderQuoteDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     if (_loading) {
       return Scaffold(body: Center(child: CircularProgressIndicator(color: c.primary)));
@@ -268,7 +268,7 @@ class _ProviderQuoteDetailPageState extends State<ProviderQuoteDetailPage> {
     );
   }
 
-  Widget _scheduleFitBanner(UniMoveColors c, ProviderQuoteResponse q) {
+  Widget _scheduleFitBanner(BeeHubColors c, ProviderQuoteResponse q) {
     final (bg, fg, icon) = switch (q.scheduleFit) {
       QuoteScheduleFit.exactMatch => (c.primary.withValues(alpha: 0.12), c.primary, Icons.check_circle_outline),
       QuoteScheduleFit.alternateProposed =>
@@ -300,7 +300,7 @@ class _ProviderQuoteDetailPageState extends State<ProviderQuoteDetailPage> {
     );
   }
 
-  Widget _priceRow(UniMoveColors c, String label, int amount, {bool bold = false, bool highlight = false}) {
+  Widget _priceRow(BeeHubColors c, String label, int amount, {bool bold = false, bool highlight = false}) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 6.h),
       child: Row(

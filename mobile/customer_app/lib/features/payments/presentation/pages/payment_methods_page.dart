@@ -46,7 +46,7 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return Scaffold(
       backgroundColor: c.background,
@@ -117,7 +117,7 @@ class _MethodCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return PressableScale(
       onTap: onTap,

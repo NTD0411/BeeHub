@@ -1,5 +1,5 @@
 ﻿/**
- * API Client for UniMove Admin Dashboard
+ * API Client for BeeHub Admin Dashboard
  * Connects to Node.js backend instead of direct Supabase
  */
 

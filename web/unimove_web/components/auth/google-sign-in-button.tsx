@@ -139,7 +139,7 @@ export function GoogleSignInButton({
         className,
       )}
     >
-      {/* Lớp hiển thị — khớp giao diện UniMove */}
+      {/* Lớp hiển thị — khớp giao diện BeeHub */}
       <div
         className={cn(
           "absolute inset-0 z-0 flex items-center justify-center gap-2.5 rounded-full border-2 border-gray-200 bg-white text-sm font-bold text-gray-800 shadow-sm transition-colors",

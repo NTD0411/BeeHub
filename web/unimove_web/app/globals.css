@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================
-   TAILWIND v4 THEME — UniMove Customer Design System
+   TAILWIND v4 THEME — BeeHub Customer Design System
    Pattern: @theme inline maps CSS vars → Tailwind utilities.
    Static tokens use direct values; dark-mode-aware tokens
    reference :root vars overridden in .dark {}.
@@ -45,7 +45,7 @@
   --color-brand-subtle:   #EFF4FE;
   --color-brand-accent:   #FACC15;
 
-  /* ── UniMove brand yellow ─────────────────────────────── */
+  /* ── BeeHub brand yellow ─────────────────────────────── */
   --color-brand-yellow:        #FFCC00;
   --color-brand-yellow-dark:   #E6B800;
   --color-brand-yellow-light:  #FFFBEB;

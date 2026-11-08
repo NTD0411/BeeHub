@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// UniMove dark theme — aligned with product UI mockups.
+/// BeeHub dark theme — aligned with product UI mockups.
 abstract final class AppColors {
   static const primary = Color(0xFF3B82F6);
   static const primaryDark = Color(0xFF1D4ED8);

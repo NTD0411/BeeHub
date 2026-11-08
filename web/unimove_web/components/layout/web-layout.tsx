@@ -207,7 +207,7 @@ export function WebLayout({ children }: { children: React.ReactNode }) {
 
 function PageTitle({ pathname, nav }: { pathname: string; nav: NavItem[] }) {
   const current = nav.find(n => pathname === n.href || pathname.startsWith(n.href + "/"));
-  if (!current) return <span className="text-base font-semibold text-gray-900">UniMove</span>;
+  if (!current) return <span className="text-base font-semibold text-gray-900">BeeHub</span>;
   const Icon = current.icon;
   return (
     <div className="flex items-center gap-2">

@@ -8,10 +8,10 @@ import 'core/theme/flex_unimove_theme.dart';
 import 'core/theme/shad_unimove_theme.dart';
 import 'core/theme/theme_mode_notifier.dart';
 
-const _appName = 'UniMove Provider';
+const _appName = 'BeeHub Provider';
 
-class UniMoveProviderApp extends ConsumerWidget {
-  const UniMoveProviderApp({super.key});
+class BeeHubProviderApp extends ConsumerWidget {
+  const BeeHubProviderApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,13 +26,13 @@ class UniMoveProviderApp extends ConsumerWidget {
         return MaterialApp.router(
           title: _appName,
           debugShowCheckedModeBanner: false,
-          theme: FlexUniMoveTheme.material(isDark: false),
-          darkTheme: FlexUniMoveTheme.material(isDark: true),
+          theme: FlexBeeHubTheme.material(isDark: false),
+          darkTheme: FlexBeeHubTheme.material(isDark: true),
           themeMode: themeMode,
           routerConfig: router,
           builder: (context, child) {
             return ShadTheme(
-              data: UniMoveShadTheme.forThemeMode(themeMode),
+              data: BeeHubShadTheme.forThemeMode(themeMode),
               child: ShadToaster(
                 child: child ?? const SizedBox.shrink(),
               ),

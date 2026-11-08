@@ -20,7 +20,7 @@ void main() {
           ),
           builder: (context, child) {
             return ShadTheme(
-              data: UniMoveShadTheme.dark,
+              data: BeeHubShadTheme.dark,
               child: ShadToaster(child: child ?? const SizedBox.shrink()),
             );
           },

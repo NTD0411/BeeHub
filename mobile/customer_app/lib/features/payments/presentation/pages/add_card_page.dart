@@ -29,7 +29,7 @@ class _AddCardPageState extends State<AddCardPage> {
   }
 
   void _showScanSheet() {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: c.surface,
@@ -128,7 +128,7 @@ class _AddCardPageState extends State<AddCardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final bg = c.isLight(context) ? Colors.white : c.background;
 
     return Scaffold(
@@ -222,7 +222,7 @@ class _AddCardPageState extends State<AddCardPage> {
                   text: 'điều khoản và điều kiện',
                   style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
                 ),
-                const TextSpan(text: ' của UniMove.'),
+                const TextSpan(text: ' của BeeHub.'),
               ],
             ),
           ),

@@ -40,7 +40,7 @@ class _ChatInboxTabPageState extends State<ChatInboxTabPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final theme = ShadTheme.of(context);
 
     if (_loading) {
@@ -107,7 +107,7 @@ class _ChatInboxTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final conv = entry.conversation;
     final muted = !entry.isActive;
     final titleColor = muted ? c.onSurfaceMuted : c.onSurface;

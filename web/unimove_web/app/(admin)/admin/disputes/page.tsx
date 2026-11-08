@@ -318,6 +318,12 @@ function DisputeDetailDialog({ disputeId, open, onClose, onResolved }: DisputeDe
                   <span style={{ color: "var(--muted)" }}>Trạng thái: </span>
                   <StatusBadge type="dispute" status={detail.status} />
                 </div>
+                <div className="col-span-2 pt-1 border-t" style={{ borderColor: "var(--border)" }}>
+                  <span style={{ color: "var(--muted)" }}>TK ngân hàng / PT nhận hoàn tiền (UC 27): </span>
+                  <span className="font-semibold" style={{ color: "var(--primary)" }}>
+                    {((detail as any)?.customer_payment_methods?.[0]?.label) ?? "Hoàn trực tiếp vào Ví BeeHub (chưa lưu TK ngân hàng)"}
+                  </span>
+                </div>
               </div>
 
               {/* Subject & Description */}
@@ -447,7 +453,7 @@ function DisputeDetailDialog({ disputeId, open, onClose, onResolved }: DisputeDe
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[600]">
                         <SelectItem value="no_action">Không xử phạt</SelectItem>
                         <SelectItem value="refund">Hoàn tiền toàn bộ</SelectItem>
                         <SelectItem value="partial_refund">Hoàn tiền một phần</SelectItem>

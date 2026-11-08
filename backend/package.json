@@ -1,7 +1,7 @@
 {
   "name": "unimove-backend",
   "version": "1.0.0",
-  "description": "UniMove Node.js REST API — Express + Supabase",
+  "description": "BeeHub Node.js REST API — Express + Supabase",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
@@ -25,7 +25,7 @@
     "unimove",
     "nodejs"
   ],
-  "author": "UniMove Team",
+  "author": "BeeHub Team",
   "license": "MIT",
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
@@ -42,11 +42,11 @@
     "node-cron": "^4.4.1",
     "node-fetch": "^2.7.0",
     "nodemailer": "^8.0.10",
+    "pg": "^8.21.0",
     "unimove-monorepo": "file:..",
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14",
-    "pg": "^8.21.0"
+    "nodemon": "^3.1.14"
   }
 }

@@ -37,7 +37,7 @@ export default function ProviderLoginPage() {
             style={{ background: "linear-gradient(135deg, #16a34a, #22c55e)" }}>
             <Truck size={28} className="text-white" />
           </div>
-          <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>UniMove Provider</h1>
+          <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>BeeHub Provider</h1>
           <p className="mt-2 text-sm" style={{ color: "var(--muted)" }}>Dành cho nhà vận chuyển</p>
         </div>
 

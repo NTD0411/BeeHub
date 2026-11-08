@@ -21,7 +21,7 @@ class _ProviderEarningsHistoryPageState extends ConsumerState<ProviderEarningsHi
   @override
   Widget build(BuildContext context) {
     final ordersAsync = ref.watch(providerOrdersListProvider);
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -247,7 +247,7 @@ class _ProviderEarningsHistoryPageState extends ConsumerState<ProviderEarningsHi
     );
   }
 
-  Widget _summaryChip(UniMoveColors c, IconData icon, String value, String label, Color tint) {
+  Widget _summaryChip(BeeHubColors c, IconData icon, String value, String label, Color tint) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
       decoration: BoxDecoration(
@@ -269,7 +269,7 @@ class _ProviderEarningsHistoryPageState extends ConsumerState<ProviderEarningsHi
   Widget _tripTile(
     BuildContext context,
     ShadThemeData theme,
-    UniMoveColors c,
+    BeeHubColors c,
     ProviderOrder o,
     int index,
   ) {
@@ -405,7 +405,7 @@ class _ProviderEarningsHistoryPageState extends ConsumerState<ProviderEarningsHi
     );
   }
 
-  Widget _miniRoute(UniMoveColors c, String address, {required bool isPickup}) {
+  Widget _miniRoute(BeeHubColors c, String address, {required bool isPickup}) {
     return Row(
       children: [
         Icon(

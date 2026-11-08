@@ -67,7 +67,7 @@ export default function LoginPage() {
           >
             <Truck size={28} className="text-white" />
           </div>
-          <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>UniMove</h1>
+          <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>BeeHub</h1>
           <p className="mt-2 text-sm" style={{ color: "var(--muted)" }}>Chuyển trọ thông minh cho sinh viên</p>
         </div>
 
@@ -143,7 +143,7 @@ export default function LoginPage() {
 
         <p className="text-center text-xs mt-6" style={{ color: "var(--muted)" }}>
           Bằng cách tiếp tục, bạn đồng ý với{" "}
-          <span className="underline">Điều khoản dịch vụ</span> của UniMove
+          <span className="underline">Điều khoản dịch vụ</span> của BeeHub
         </p>
       </motion.div>
     </div>

@@ -2,6 +2,7 @@ const express = require('express');
 const { requireAuth, requireRole } = require('../middleware/auth.middleware');
 const { handleAvatarUpload } = require('../middleware/upload.middleware');
 const adminController = require('../controllers/admin.controller');
+const databaseBrowserController = require('../controllers/database-browser.controller');
 
 const router = express.Router();
 
@@ -11,6 +12,11 @@ router.post('/auth/login', adminController.login);
 // Protected admin routes (Node JWT + admin role)
 router.use(requireAuth);
 router.use(requireRole('admin'));
+
+// Read-only database browser
+router.get('/data/tables', databaseBrowserController.getTables);
+router.get('/data/tables/:table/schema', databaseBrowserController.getTableSchema);
+router.get('/data/tables/:table/rows', databaseBrowserController.getTableRows);
 
 // Dashboard
 router.get('/auth/profile', adminController.getProfile);

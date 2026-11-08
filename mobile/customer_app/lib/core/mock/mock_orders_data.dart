@@ -14,7 +14,7 @@ abstract final class MockOrdersData {
   static const completedConversationId = 'c1000000-0000-4000-8000-000000000002';
   static const providerId = 'p1000000-0000-4000-8000-000000000001';
 
-  static const providerName = 'UniMove Test Transport';
+  static const providerName = 'BeeHub Test Transport';
   static const providerPlate = '43A-12345';
   static const providerRating = 4.85;
 

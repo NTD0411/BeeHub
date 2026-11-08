@@ -27,7 +27,7 @@ class _ProviderNotificationsPageState extends ConsumerState<ProviderNotification
   @override
   Widget build(BuildContext context) {
     final notificationsAsync = ref.watch(providerNotificationsProvider);
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -155,7 +155,7 @@ class _ProviderNotificationsPageState extends ConsumerState<ProviderNotification
     );
   }
 
-  Widget _emptyState(ShadThemeData theme, UniMoveColors c) {
+  Widget _emptyState(ShadThemeData theme, BeeHubColors c) {
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       children: [
@@ -205,7 +205,7 @@ class _NotificationTile extends StatelessWidget {
         ProviderNotificationType.system => LucideIcons.info,
       };
 
-  Color _accent(ProviderNotificationType type, UniMoveColors c) => switch (type) {
+  Color _accent(ProviderNotificationType type, BeeHubColors c) => switch (type) {
         ProviderNotificationType.newOrder => c.primaryLight,
         ProviderNotificationType.orderUpdate => c.success,
         ProviderNotificationType.message => const Color(0xFF8B5CF6),
@@ -216,7 +216,7 @@ class _NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final n = notification;
     final unread = !n.isRead;
     final accent = _accent(n.type, c);

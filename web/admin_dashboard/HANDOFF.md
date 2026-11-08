@@ -1,4 +1,4 @@
-# UniMove Admin Dashboard — Tài liệu bàn giao API
+# BeeHub Admin Dashboard — Tài liệu bàn giao API
 
 > Dành cho dev lắp API vào UI đã có sẵn.  
 > UI đã hoàn chỉnh, responsive, dark mode. Dev chỉ cần **điền data thật** vào các hàm trong `lib/queries/`.
@@ -256,7 +256,7 @@ getRefundHistory({ page, pageSize })
 **Bảng `platform_settings` — các key đã dùng:**
 | key | Mô tả | Ví dụ value |
 |---|---|---|
-| `platform_name` | Tên nền tảng | `"UniMove"` |
+| `platform_name` | Tên nền tảng | `"BeeHub"` |
 | `commission_rate` | % hoa hồng | `15` |
 | `support_email` | Email hỗ trợ | `"support@unimove.com"` |
 

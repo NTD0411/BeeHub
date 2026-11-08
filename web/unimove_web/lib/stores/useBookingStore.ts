@@ -70,7 +70,7 @@ interface BookingState {
   selectedService: ServiceOption | null
   isSharedMove: boolean
 
-  // Pre-fill from marketplace "Đặt UniMove chuyển giúp bạn"
+  // Pre-fill from marketplace "Đặt BeeHub chuyển giúp bạn"
   prefillFromListing: (sellerLocation: BookingLocation) => void
 
   // Step navigation

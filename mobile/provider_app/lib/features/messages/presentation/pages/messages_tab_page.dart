@@ -23,7 +23,7 @@ class _MessagesTabPageState extends ConsumerState<MessagesTabPage> {
   @override
   Widget build(BuildContext context) {
     final threadsAsync = ref.watch(providerChatThreadsProvider);
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (_, theme) {
@@ -116,7 +116,7 @@ class _MessagesTabPageState extends ConsumerState<MessagesTabPage> {
     );
   }
 
-  Widget _emptyState(ShadThemeData theme, UniMoveColors c) {
+  Widget _emptyState(ShadThemeData theme, BeeHubColors c) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -149,7 +149,7 @@ class _MessagesTabPageState extends ConsumerState<MessagesTabPage> {
     );
   }
 
-  Widget _emptyFilter(ShadThemeData theme, UniMoveColors c, String label) {
+  Widget _emptyFilter(ShadThemeData theme, BeeHubColors c, String label) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -183,7 +183,7 @@ class _ThreadTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final theme = ShadTheme.of(context);
     final initial = thread.customerName.isNotEmpty ? thread.customerName[0].toUpperCase() : 'K';
 

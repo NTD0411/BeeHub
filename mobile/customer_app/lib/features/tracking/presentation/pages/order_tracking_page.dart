@@ -71,7 +71,7 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     if (_loading) {
       return Scaffold(
@@ -189,7 +189,7 @@ class _StatusHeroCard extends StatelessWidget {
   const _StatusHeroCard({required this.snapshot, required this.colors});
 
   final TrackingSnapshot snapshot;
-  final UniMoveColors colors;
+  final BeeHubColors colors;
 
   @override
   Widget build(BuildContext context) {
@@ -305,7 +305,7 @@ class _OrderInfoCard extends StatelessWidget {
   const _OrderInfoCard({required this.order, required this.colors});
 
   final CustomerOrder order;
-  final UniMoveColors colors;
+  final BeeHubColors colors;
 
   @override
   Widget build(BuildContext context) {
@@ -340,7 +340,7 @@ class _OrderInfoCard extends StatelessWidget {
     );
   }
 
-  Widget _routeLine(IconData icon, String text, Color iconColor, UniMoveColors c) {
+  Widget _routeLine(IconData icon, String text, Color iconColor, BeeHubColors c) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -361,7 +361,7 @@ class _DriverCard extends StatelessWidget {
   const _DriverCard({required this.order, required this.colors});
 
   final CustomerOrder order;
-  final UniMoveColors colors;
+  final BeeHubColors colors;
 
   @override
   Widget build(BuildContext context) {
@@ -441,7 +441,7 @@ class _LiveMapStrip extends StatelessWidget {
   const _LiveMapStrip({required this.snapshot, required this.colors});
 
   final TrackingSnapshot snapshot;
-  final UniMoveColors colors;
+  final BeeHubColors colors;
 
   @override
   Widget build(BuildContext context) {
@@ -506,7 +506,7 @@ class _TrackingTimeline extends StatelessWidget {
   const _TrackingTimeline({required this.steps, required this.colors});
 
   final List<TrackingStep> steps;
-  final UniMoveColors colors;
+  final BeeHubColors colors;
 
   @override
   Widget build(BuildContext context) {
@@ -555,7 +555,7 @@ class _TimelineRow extends StatelessWidget {
   final TrackingStep step;
   final bool reached;
   final bool isLast;
-  final UniMoveColors colors;
+  final BeeHubColors colors;
 
   @override
   Widget build(BuildContext context) {

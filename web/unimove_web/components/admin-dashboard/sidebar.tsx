@@ -17,6 +17,7 @@ import {
   Activity,
   RotateCcw,
   Wallet,
+  Database,
   Settings,
   Truck,
   ChevronDown,
@@ -123,6 +124,11 @@ function buildNavItems(pendingVerifications?: number): NavItem[] {
       label: "Nhật ký hoạt động",
       href: "/admin/activity-logs",
       icon: History,
+    },
+    {
+      label: "Dữ liệu hệ thống",
+      href: "/admin/database",
+      icon: Database,
     },
     {
       label: "Cài đặt",
@@ -378,7 +384,7 @@ function SidebarContent({ isCollapsed, pendingVerifications }: SidebarContentPro
               className="text-base font-bold tracking-tight truncate"
               style={{ color: "var(--text)" }}
             >
-              UniMove Admin
+              BeeHub Admin
             </span>
           )}
         </div>

@@ -298,7 +298,7 @@ function OrderSummarySidebar({
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-white/60">Cần hỗ trợ?</p>
             <p className="text-sm font-semibold mt-1 leading-snug">
-              Chat ngay với đội ngũ UniMove
+              Chat ngay với đội ngũ BeeHub
             </p>
             <Link
               href="/ho-tro"

@@ -159,7 +159,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
   Widget build(BuildContext context) {
     return ShadScreenScope(
       builder: (shadContext, theme) {
-        final c = UniMoveColors.of(shadContext);
+        final c = BeeHubColors.of(shadContext);
 
         return Scaffold(
           backgroundColor: Colors.transparent,
@@ -187,7 +187,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                                     onPressed: () => context.pop(),
                                   ),
                                   const Spacer(),
-                                  const UniMoveLogoAccent(fontSize: 22),
+                                  const BeeHubLogoAccent(fontSize: 22),
                                 ],
                               ),
                             ),

@@ -117,7 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadToaster(
       child: Scaffold(
@@ -139,7 +139,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  List<Widget> _stagger(UniMoveColors c) {
+  List<Widget> _stagger(BeeHubColors c) {
     final items = <Widget>[
       _header(c),
       SizedBox(height: 16.h),
@@ -167,7 +167,7 @@ class _ProfilePageState extends State<ProfilePage> {
     ];
   }
 
-  Widget _header(UniMoveColors c) {
+  Widget _header(BeeHubColors c) {
     return Row(
       children: [
         if (context.canPop())
@@ -197,7 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _identityCard(UniMoveColors c) {
+  Widget _identityCard(BeeHubColors c) {
     final p = _profile;
     final active = (p?.status ?? 'active') == 'active';
     return UniSurfaceCard(
@@ -212,7 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      p?.fullName.isNotEmpty == true ? p!.fullName : 'Sinh viên UniMove',
+                      p?.fullName.isNotEmpty == true ? p!.fullName : 'Sinh viên BeeHub',
                       style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w800, color: c.onSurface),
                     ),
                     SizedBox(height: 4.h),
@@ -281,7 +281,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _avatar(CustomerProfile? p, UniMoveColors c) {
+  Widget _avatar(CustomerProfile? p, BeeHubColors c) {
     final url = p?.avatarUrl;
     final hasUrl = url != null && url.isNotEmpty;
     return GestureDetector(
@@ -330,7 +330,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _statsRow(UniMoveColors c) {
+  Widget _statsRow(BeeHubColors c) {
     final p = _profile;
     return Row(
       children: [
@@ -343,7 +343,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _statCard(UniMoveColors c, IconData icon, String label, String value) {
+  Widget _statCard(BeeHubColors c, IconData icon, String label, String value) {
     return Expanded(
       child: UniSurfaceCard(
         padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 8.w),
@@ -369,7 +369,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _studentSection(UniMoveColors c) {
+  Widget _studentSection(BeeHubColors c) {
     final p = _profile;
     return _section(c, 'Thông tin sinh viên', [
       _infoRow(c, LucideIcons.idCard, 'Mã số sinh viên', p?.studentId),
@@ -378,7 +378,7 @@ class _ProfilePageState extends State<ProfilePage> {
     ]);
   }
 
-  Widget _personalSection(UniMoveColors c) {
+  Widget _personalSection(BeeHubColors c) {
     final p = _profile;
     return _section(c, 'Thông tin cá nhân', [
       _infoRow(c, LucideIcons.phone, 'Số điện thoại', p?.phone),
@@ -388,13 +388,13 @@ class _ProfilePageState extends State<ProfilePage> {
     ]);
   }
 
-  Widget _accountSection(UniMoveColors c) {
+  Widget _accountSection(BeeHubColors c) {
     return _section(c, 'Tài khoản', [
       _tappableRow(c, LucideIcons.lockKeyhole, 'Đổi mật khẩu', () => context.push('/change-password')),
     ]);
   }
 
-  Widget _section(UniMoveColors c, String title, List<Widget> rows) {
+  Widget _section(BeeHubColors c, String title, List<Widget> rows) {
     final children = <Widget>[];
     for (var i = 0; i < rows.length; i++) {
       children.add(rows[i]);
@@ -420,7 +420,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _infoRow(UniMoveColors c, IconData icon, String label, String? value) {
+  Widget _infoRow(BeeHubColors c, IconData icon, String label, String? value) {
     final shown = (value == null || value.isEmpty) ? 'Chưa cập nhật' : value;
     final muted = value == null || value.isEmpty;
     return Padding(
@@ -448,7 +448,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _tappableRow(UniMoveColors c, IconData icon, String label, VoidCallback onTap) {
+  Widget _tappableRow(BeeHubColors c, IconData icon, String label, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8.r),

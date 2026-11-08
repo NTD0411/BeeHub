@@ -90,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return ShadScreenScope(
       builder: (shadContext, theme) {
-        final c = UniMoveColors.of(shadContext);
+        final c = BeeHubColors.of(shadContext);
 
         return Scaffold(
           backgroundColor: Colors.transparent,
@@ -136,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                                 const SizedBox(width: 12),
-                                const UniMoveLogoAccent(fontSize: 26),
+                                const BeeHubLogoAccent(fontSize: 26),
                               ],
                             ),
                           ),
@@ -404,7 +404,7 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                     const SizedBox(height: 14),
                                     Text(
-                                      'Bằng việc tiếp tục, bạn đồng ý với Điều khoản và Chính sách bảo mật của UniMove.',
+                                      'Bằng việc tiếp tục, bạn đồng ý với Điều khoản và Chính sách bảo mật của BeeHub.',
                                       textAlign: TextAlign.center,
                                       style: theme.textTheme.small.copyWith(
                                         color: theme.colorScheme.mutedForeground.withValues(alpha: 0.85),

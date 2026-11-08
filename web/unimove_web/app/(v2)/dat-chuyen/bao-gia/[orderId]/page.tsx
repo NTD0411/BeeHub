@@ -263,7 +263,7 @@ export default function BaoGiaPage() {
             <div className="text-xs leading-relaxed text-gray-600">
               <p className="mb-0.5 text-sm font-semibold text-gray-900">Mẹo nhỏ cho bạn:</p>
               <p>
-                Bạn có thể đợi thêm để nhận được nhiều báo giá từ các nhà xe khác nhau. UniMove
+                Bạn có thể đợi thêm để nhận được nhiều báo giá từ các nhà xe khác nhau. BeeHub
                 luôn đảm bảo bạn nhận được mức giá cạnh tranh nhất trên thị trường sinh viên.
               </p>
             </div>

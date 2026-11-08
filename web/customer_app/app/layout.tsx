@@ -6,7 +6,7 @@ const themeScript = `
 (function(){try{var s=localStorage.getItem('unimove-theme');var d=window.matchMedia('(prefers-color-scheme: dark)').matches;if(s==='dark'||(s!=='light'&&(s==='system'||!s)&&d)){document.documentElement.classList.add('dark');}}catch(_){}})()`
 
 export const metadata: Metadata = {
-  title: "UniMove - Chuyển trọ thông minh",
+  title: "BeeHub - Chuyển trọ thông minh",
   description: "Nền tảng vận chuyển và chuyển trọ dành cho sinh viên",
 };
 

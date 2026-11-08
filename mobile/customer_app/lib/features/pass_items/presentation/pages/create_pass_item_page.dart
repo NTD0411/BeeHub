@@ -67,7 +67,7 @@ class _CreatePassItemPageState extends State<CreatePassItemPage> {
 
   Future<void> _confirmAndSubmit() async {
     if (!_valid || _submitting) return;
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final ok = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
@@ -78,7 +78,7 @@ class _CreatePassItemPageState extends State<CreatePassItemPage> {
     if (ok == true) _submit();
   }
 
-  Widget _feeSheet(BuildContext ctx, UniMoveColors c) {
+  Widget _feeSheet(BuildContext ctx, BeeHubColors c) {
     final fee = _listingFee;
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 14, 20, 20 + MediaQuery.of(ctx).padding.bottom),
@@ -134,7 +134,7 @@ class _CreatePassItemPageState extends State<CreatePassItemPage> {
     );
   }
 
-  Widget _feeRow(UniMoveColors c, String label, String value) {
+  Widget _feeRow(BeeHubColors c, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -216,7 +216,7 @@ class _CreatePassItemPageState extends State<CreatePassItemPage> {
   }
 
   Future<void> _showImageSourceSheet() async {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
       backgroundColor: c.surface,
@@ -271,7 +271,7 @@ class _CreatePassItemPageState extends State<CreatePassItemPage> {
 
   @override
   Widget build(BuildContext context) {
-    final c = UniMoveColors.of(context);
+    final c = BeeHubColors.of(context);
 
     return ShadScreenScope(
       builder: (shadContext, theme) {
@@ -400,11 +400,11 @@ class _CreatePassItemPageState extends State<CreatePassItemPage> {
     );
   }
 
-  Widget _sectionLabel(UniMoveColors c, String text) {
+  Widget _sectionLabel(BeeHubColors c, String text) {
     return Text(text, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: c.onSurface));
   }
 
-  Widget _feeCard(UniMoveColors c) {
+  Widget _feeCard(BeeHubColors c) {
     final fee = _listingFee;
     return Container(
       padding: const EdgeInsets.all(14),
@@ -436,7 +436,7 @@ class _CreatePassItemPageState extends State<CreatePassItemPage> {
     );
   }
 
-  Widget _imageUploadSection(UniMoveColors c) {
+  Widget _imageUploadSection(BeeHubColors c) {
     const maxImages = 5;
 
     // Empty state
@@ -496,7 +496,7 @@ class _CreatePassItemPageState extends State<CreatePassItemPage> {
     );
   }
 
-  Widget _imageThumb(UniMoveColors c, String path, int index) {
+  Widget _imageThumb(BeeHubColors c, String path, int index) {
     return Stack(
       children: [
         PassItemImage(
@@ -536,7 +536,7 @@ class _CreatePassItemPageState extends State<CreatePassItemPage> {
     );
   }
 
-  Widget _addImageBtn(UniMoveColors c) {
+  Widget _addImageBtn(BeeHubColors c) {
     return GestureDetector(
       onTap: _showImageSourceSheet,
       child: Container(
@@ -559,7 +559,7 @@ class _CreatePassItemPageState extends State<CreatePassItemPage> {
     );
   }
 
-  Widget _choiceChip(UniMoveColors c, String label, bool selected, VoidCallback onTap) {
+  Widget _choiceChip(BeeHubColors c, String label, bool selected, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -582,7 +582,7 @@ class _CreatePassItemPageState extends State<CreatePassItemPage> {
     );
   }
 
-  Widget _switchTile(UniMoveColors c, String title, String subtitle, bool value, ValueChanged<bool>? onChanged) {
+  Widget _switchTile(BeeHubColors c, String title, String subtitle, bool value, ValueChanged<bool>? onChanged) {
     final disabled = onChanged == null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
@@ -606,7 +606,7 @@ class _CreatePassItemPageState extends State<CreatePassItemPage> {
     );
   }
 
-  Widget _preview(UniMoveColors c) {
+  Widget _preview(BeeHubColors c) {
     final priceLabel = _free
         ? 'Miễn phí'
         : (() {

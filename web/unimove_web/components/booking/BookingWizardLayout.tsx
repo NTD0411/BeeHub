@@ -202,7 +202,7 @@ export function BookingInsuranceCard({ compact }: { compact?: boolean }) {
       </div>
       <h3 className="text-base font-bold">Bảo hiểm 100%</h3>
       <p className="mt-1.5 text-xs leading-relaxed text-blue-100 sm:text-sm">
-        Mọi chuyến đi của UniMove đều được bảo hiểm trọn gói.
+        Mọi chuyến đi của BeeHub đều được bảo hiểm trọn gói.
       </p>
     </div>
   );

@@ -83,7 +83,7 @@ export default function HomePage() {
                 )}
               </PressableScale>
             </Link>
-            <span className="text-2xl font-bold tracking-tight gradient-text truncate">UniMove</span>
+            <span className="text-2xl font-bold tracking-tight gradient-text truncate">BeeHub</span>
           </div>
         </div>
       </header>
@@ -94,7 +94,7 @@ export default function HomePage() {
             {greeting()}, {firstName(user?.full_name)}! 👋
           </h1>
           <p className="text-base mt-1" style={{ color: "var(--muted)" }}>
-            So sánh báo giá nhà xe · Đặt cọc an toàn qua UniMove
+            So sánh báo giá nhà xe · Đặt cọc an toàn qua BeeHub
           </p>
         </FadeSlideIn>
 

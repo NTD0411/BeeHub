@@ -88,7 +88,7 @@ const V_STEPS = [
   { key: "accepted",    label: "Đặt cọc thành công",    sub: "Nhà xe đã xác nhận chuyến hàng",    icon: "💳" },
   { key: "picking_up",  label: "Nhà xe đang đến lấy",   sub: "Vui lòng chuẩn bị hàng hoá sẵn sàng", icon: "🚚" },
   { key: "in_progress", label: "Đang vận chuyển",       sub: "Hàng hoá đang trên đường đến bạn",   icon: "📦" },
-  { key: "completed",   label: "Giao hàng thành công",  sub: "Cảm ơn bạn đã sử dụng UniMove!",    icon: "🎉" },
+  { key: "completed",   label: "Giao hàng thành công",  sub: "Cảm ơn bạn đã sử dụng BeeHub!",    icon: "🎉" },
 ];
 
 const STATUS_STEP: Record<string, number> = {
@@ -858,16 +858,6 @@ export default function DonHangDetailPage() {
                     Đặt cọc ngay →
                   </Button>
                 </div>
-                {process.env.NODE_ENV === "development" && (
-                  <button
-                    type="button"
-                    onClick={devSkipPayment}
-                    disabled={acting}
-                    className="w-full h-8 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-xl hover:bg-amber-100 transition-colors disabled:opacity-50"
-                  >
-                    🧪 Dev: Bỏ qua PayOS (giả lập thành công)
-                  </button>
-                )}
               </Container>
             </div>
           )}

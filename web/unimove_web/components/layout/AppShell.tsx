@@ -1,7 +1,6 @@
 import { MobileBottomNav } from "./MobileBottomNav";
 import { DesktopTopNav } from "./DesktopTopNav";
 import { CustomerFooter } from "./CustomerFooter";
-import { ChatQuickAccess } from "./ChatQuickAccess";
 import { MeshBackground } from "./mesh-background";
 import { ToastRenderer } from "@/components/shared/ToastRenderer";
 import { ActiveOrderBanner } from "@/components/shared/active-order-banner";
@@ -25,7 +24,6 @@ export function AppShell({ children }: AppShellProps) {
         aria-hidden="true"
       />
       <MobileBottomNav />
-      <ChatQuickAccess />
       <ToastRenderer />
       <ActiveOrderBanner />
     </div>

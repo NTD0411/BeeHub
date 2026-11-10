@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { Bot, MessageCircle, Send, Sparkles, UserRound, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 import { getStoredToken } from '@/lib/auth';
 
 const USE_AI_ROUTE = true;
@@ -255,6 +256,7 @@ async function getAiReply(message: string, history: ChatMessage[]) {
 }
 
 export function ChatWidget() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -384,6 +386,8 @@ export function ChatWidget() {
           left: Math.min(Math.max(12, position.x), Math.max(12, window.innerWidth - 376)),
           top: Math.min(Math.max(12, position.y), Math.max(12, window.innerHeight - 460)),
         };
+
+  if (pathname === '/login' || pathname === '/dang-nhap') return null;
 
   return (
     <div className="fixed z-[60]">

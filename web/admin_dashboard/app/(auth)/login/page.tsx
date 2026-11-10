@@ -117,7 +117,7 @@ export default function LoginPage() {
               type="email"
               autoComplete="email"
               required
-              placeholder="admin@unimove.com"
+              placeholder="admin@beehub.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               startAdornment={<Mail size={15} style={{ color: "var(--muted)" }} />}

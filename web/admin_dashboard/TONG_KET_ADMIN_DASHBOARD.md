@@ -46,7 +46,7 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api
 ### Tài khoản admin
 
 ```
-Email:    admin@unimove.com
+Email:    admin@beehub.com
 Password: Admin123!@#
 ```
 
@@ -59,7 +59,7 @@ cd backend
 npm run seed:admin
 ```
 
-Dữ liệu demo gồm: 5 khách hàng, 6 nhà vận chuyển, ~23 đơn hàng, thanh toán, đánh giá, khiếu nại, hoàn tiền, thông báo. Email demo: `*@unimove.demo`.
+Dữ liệu demo gồm: 5 khách hàng, 6 nhà vận chuyển, ~23 đơn hàng, thanh toán, đánh giá, khiếu nại, hoàn tiền, thông báo. Email demo: `*@beehub.demo`.
 
 ---
 

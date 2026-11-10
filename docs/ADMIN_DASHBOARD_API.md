@@ -1,81 +1,98 @@
-# BeeHub Admin Dashboard API
+# BeeHub – Admin Dashboard API Documentation
 
-## Tổng quan
+## 1. Overview
 
-API Admin Dashboard cung cấp các endpoint để quản lý hệ thống BeeHub, bao gồm:
-- **Dashboard KPI**: Thống kê tổng quan với 9+ KPI quan trọng
-- **Provider Management**: Duyệt và quản lý nhà cung cấp
-- **Dispute Resolution**: Xử lý khiếu nại và tranh chấp
+The **BeeHub Admin Dashboard API** provides endpoints for administrators to monitor and manage the BeeHub platform, including business performance, provider verification, and dispute resolution.
+
+### Main Modules
+
+| Module | Description |
+|---|---|
+| **Dashboard KPI** | Provides 9+ key performance indicators for monitoring business operations. |
+| **Provider Management** | Manages provider verification, approval, and rejection. |
+| **Dispute Management** | Handles customer complaints, investigates disputes, and processes resolutions. |
+
+**Base URL:** `http://localhost:3000`
+
+**Authentication:** JWT Bearer Token
+
+All endpoints require an authenticated administrator account unless otherwise specified.
 
 ---
 
-## 🎯 Dashboard KPI Endpoint
+## 2. Dashboard KPI
 
-### **GET** `/api/admin/dashboard`
+### GET `/api/admin/dashboard`
 
-Lấy tất cả KPI quan trọng cho admin morning dashboard.
+Retrieves key performance indicators (KPIs) for the administrator dashboard.
 
-#### Headers:
-```
+**Headers**
+
+```http
 Authorization: Bearer <admin_token>
 ```
 
-#### Response Success (200):
+### Success Response (200 OK)
+
 ```json
 {
   "success": true,
   "data": {
-    // Core Business KPIs
     "gmv_yesterday": 2500000,
     "new_orders_24h": 15,
     "active_customers": 1250,
     "active_providers": 45,
     "commission_total": 375000,
-    
-    // Performance KPIs
     "completion_rate_24h": 84.44,
     "average_order_value": 167000,
-    
-    // Growth KPIs
     "new_customers_24h": 8,
     "new_providers_24h": 2,
-    
-    // Admin Tasks
     "pending_tasks": {
       "verifications": 7,
       "disputes": 3,
       "withdrawals": 5,
       "total": 15
     },
-    
-    // Metadata
     "generated_at": "2024-06-01T08:30:00Z",
     "timezone": "Asia/Ho_Chi_Minh"
   }
 }
 ```
 
-#### KPI Definitions:
+### KPI Definitions
 
-| KPI | Mô tả | Tính toán |
-|-----|-------|-----------|
-| `gmv_yesterday` | Gross Merchandise Value hôm qua | SUM(orders.total_price) WHERE status='completed' AND completed_at = yesterday |
-| `new_orders_24h` | Đơn hàng mới 24h | COUNT(orders) WHERE created_at >= 24h ago |
-| `active_customers` | Khách hàng có đơn trong 30 ngày | COUNT(DISTINCT customer_id) WHERE created_at >= 30 days ago |
-| `active_providers` | Provider online và verified | COUNT(provider_profiles) WHERE is_available=true AND is_verified=true |
-| `commission_total` | Tổng hoa hồng tháng này | SUM(provider_earnings.platform_commission) WHERE created_at >= start_of_month |
-| `completion_rate_24h` | Tỷ lệ hoàn thành 24h | (completed_orders / total_orders) * 100 |
-| `average_order_value` | Giá trị đơn hàng trung bình | AVG(orders.total_price) WHERE status='completed' |
+| KPI | Description | Calculation |
+|---|---|---|
+| `gmv_yesterday` | Total transaction value yesterday | SUM of completed order values yesterday |
+| `new_orders_24h` | New orders within 24 hours | COUNT of orders created within the last 24 hours |
+| `active_customers` | Customers active within 30 days | COUNT DISTINCT customer IDs with orders in the last 30 days |
+| `active_providers` | Available and verified providers | COUNT of providers where `is_available = true` and `is_verified = true` |
+| `commission_total` | Total platform commission this month | SUM of platform commissions since the beginning of the month |
+| `completion_rate_24h` | Order completion rate | (Completed orders / Total orders) × 100 |
+| `average_order_value` | Average completed order value | AVG of completed order values |
+| `new_customers_24h` | Newly registered customers | COUNT of customers registered within 24 hours |
+| `new_providers_24h` | Newly registered providers | COUNT of providers registered within 24 hours |
 
 ---
 
-## 👥 Provider Management
+## 3. Provider Management
 
-### **GET** `/api/admin/providers/pending`
+This module allows administrators to review provider registration information and verify submitted documents before approving or rejecting provider accounts.
 
-Lấy danh sách provider chờ duyệt.
+### 3.1. Get Pending Providers
 
-#### Response:
+**GET** `/api/admin/providers/pending`
+
+Retrieves the list of providers awaiting verification.
+
+**Headers**
+
+```http
+Authorization: Bearer <admin_token>
+```
+
+### Success Response (200 OK)
+
 ```json
 {
   "success": true,
@@ -110,23 +127,40 @@ Lấy danh sách provider chờ duyệt.
 }
 ```
 
-### **PUT** `/api/admin/providers/:id/verify`
+### 3.2. Verify Provider
 
-Duyệt hoặc từ chối provider.
+**PUT** `/api/admin/providers/:id/verify`
 
-#### Request Body:
+Allows administrators to approve or reject a provider's verification request.
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `id` | UUID | Provider ID |
+
+**Request Body**
+
 ```json
 {
-  "action": "approve", // "approve" | "reject"
-  "notes": "Tài liệu đầy đủ và hợp lệ"
+  "action": "approve",
+  "notes": "All submitted documents are complete and valid."
 }
 ```
 
-#### Response:
+**Supported Actions**
+
+| Action | Description |
+|---|---|
+| `approve` | Approves the provider's verification request. |
+| `reject` | Rejects the provider's verification request. |
+
+### Success Response (200 OK)
+
 ```json
 {
   "success": true,
-  "message": "Duyệt provider thành công",
+  "message": "Provider verified successfully",
   "data": {
     "id": "uuid",
     "verification_status": "approved",
@@ -139,18 +173,33 @@ Duyệt hoặc từ chối provider.
 
 ---
 
-## ⚖️ Dispute Management
+## 4. Dispute Management
 
-### **GET** `/api/admin/disputes`
+This module enables administrators to review customer complaints, investigate service-related issues, and make appropriate resolution decisions.
 
-Lấy danh sách khiếu nại với phân trang.
+### 4.1. Get Dispute List
 
-#### Query Parameters:
-- `status`: `all` | `open` | `investigating` | `resolved` (default: `all`)
-- `page`: Trang (default: `1`)
-- `limit`: Số lượng/trang (default: `20`)
+**GET** `/api/admin/disputes`
 
-#### Response:
+Retrieves a paginated list of customer disputes.
+
+**Query Parameters**
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `status` | String | `all` | Filter disputes by status. |
+| `page` | Integer | `1` | Current page number. |
+| `limit` | Integer | `20` | Number of records per page. |
+
+**Supported Statuses**
+
+- `all`
+- `open`
+- `investigating`
+- `resolved`
+
+### Success Response (200 OK)
+
 ```json
 {
   "success": true,
@@ -158,11 +207,14 @@ Lấy danh sách khiếu nại với phân trang.
     {
       "id": "uuid",
       "dispute_type": "service_quality",
-      "subject": "Nhà cung cấp đến muộn 2 tiếng",
-      "description": "Provider hẹn 8h sáng nhưng đến 10h mới tới...",
+      "subject": "Provider arrived two hours late",
+      "description": "The provider was scheduled to arrive at 8 AM but arrived at 10 AM.",
       "status": "open",
       "priority": "normal",
-      "evidence_images": ["https://image1.jpg", "https://image2.jpg"],
+      "evidence_images": [
+        "https://image1.jpg",
+        "https://image2.jpg"
+      ],
       "refund_amount": null,
       "created_at": "2024-06-01T08:00:00Z",
       "orders": {
@@ -191,33 +243,60 @@ Lấy danh sách khiếu nại với phân trang.
 }
 ```
 
-### **GET** `/api/admin/disputes/:id`
+### 4.2. Get Dispute Details
 
-Lấy chi tiết khiếu nại bao gồm messages.
+**GET** `/api/admin/disputes/:id`
 
-### **PUT** `/api/admin/disputes/:id/resolve`
+Retrieves detailed information about a specific dispute, including:
 
-Xử lý khiếu nại.
+- Dispute information and current status.
+- Related order details.
+- Customer and provider information.
+- Submitted evidence and images.
+- Dispute conversation messages.
 
-#### Request Body:
+**Path Parameters**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `id` | UUID | Dispute ID |
+
+### 4.3. Resolve Dispute
+
+**PUT** `/api/admin/disputes/:id/resolve`
+
+Allows administrators to resolve a dispute and determine the appropriate action.
+
+**Request Body**
+
 ```json
 {
-  "resolution": "Sau khi xem xét, chúng tôi quyết định hoàn tiền 50% cho khách hàng do dịch vụ không đạt yêu cầu.",
-  "resolution_type": "partial_refund", // "no_action" | "full_refund" | "partial_refund" | "provider_penalty"
+  "resolution": "After reviewing the evidence, we have decided to issue a 50% refund because the service did not meet the agreed requirements.",
+  "resolution_type": "partial_refund",
   "refund_amount": 150000,
-  "internal_notes": "Provider đã thừa nhận lỗi, customer hợp lý"
+  "internal_notes": "The provider acknowledged the issue, and the customer's complaint is justified."
 }
 ```
 
-#### Response:
+**Supported Resolution Types**
+
+| Resolution Type | Description |
+|---|---|
+| `no_action` | No further action is required. |
+| `full_refund` | Issues a full refund to the customer. |
+| `partial_refund` | Issues a partial refund to the customer. |
+| `provider_penalty` | Applies a penalty to the provider. |
+
+### Success Response (200 OK)
+
 ```json
 {
   "success": true,
-  "message": "Xử lý khiếu nại thành công",
+  "message": "Dispute resolved successfully",
   "data": {
     "id": "uuid",
     "status": "resolved",
-    "resolution": "Sau khi xem xét...",
+    "resolution": "After reviewing the evidence...",
     "refund_amount": 150000,
     "resolved_by": "admin_uuid",
     "resolved_at": "2024-06-01T11:00:00Z"
@@ -227,90 +306,181 @@ Xử lý khiếu nại.
 
 ---
 
-## 🔧 Database Performance
+## 5. Database Performance Optimization
 
-### Required Indexes:
+### 5.1. Required Database Indexes
+
+Execute the SQL script `admin_dashboard_indexes.sql` to improve query performance.
+
 ```sql
--- Run admin_dashboard_indexes.sql for optimal performance
-CREATE INDEX idx_orders_created_at_desc ON orders(created_at DESC);
-CREATE INDEX idx_orders_completed_at_status ON orders(completed_at, status);
-CREATE INDEX idx_provider_profiles_verification ON provider_profiles(verification_status);
-CREATE INDEX idx_disputes_status_created ON disputes(status, created_at DESC);
+CREATE INDEX idx_orders_created_at_desc
+ON orders(created_at DESC);
+
+CREATE INDEX idx_orders_completed_at_status
+ON orders(completed_at, status);
+
+CREATE INDEX idx_provider_profiles_verification
+ON provider_profiles(verification_status);
+
+CREATE INDEX idx_disputes_status_created
+ON disputes(status, created_at DESC);
 ```
 
-### Query Performance:
-- Dashboard KPI: ~200ms (với indexes)
-- Provider list: ~50ms
-- Dispute list: ~100ms (với pagination)
+### 5.2. Expected Query Performance
+
+| Endpoint / Operation | Expected Response Time |
+|---|---:|
+| Dashboard KPI | ~200 ms |
+| Pending Provider List | ~50 ms |
+| Dispute List | ~100 ms |
+
+*Note: These are estimated performance targets under suitable database indexing and normal workloads, not guaranteed measurements.*
 
 ---
 
-## 🚀 Testing với Postman
+## 6. API Testing with Postman
 
-### Import Collection:
+### 6.1. Import Postman Collection
+
+Import the following files into Postman:
+
 1. `BeeHub_Admin_API.postman_collection.json`
 2. `BeeHub_Environment.postman_environment.json`
 
-### Test Sequence:
-1. **Admin Login** → Lưu token
-2. **Dashboard KPI** → Xem tất cả metrics
-3. **Pending Providers** → Danh sách chờ duyệt
-4. **Approve Provider** → Duyệt provider (cần provider_id)
-5. **Get Disputes** → Danh sách khiếu nại
-6. **Resolve Dispute** → Xử lý khiếu nại (cần dispute_id)
+### 6.2. Recommended Testing Sequence
 
-### Environment Variables:
+| Step | Test Case | Description |
+|---|---|---|
+| 1 | Admin Login | Authenticate as an administrator and save the JWT token. |
+| 2 | Dashboard KPI | Retrieve dashboard statistics and business metrics. |
+| 3 | Pending Providers | Retrieve providers awaiting verification. |
+| 4 | Approve Provider | Approve or reject a provider using `provider_id`. |
+| 5 | Get Disputes | Retrieve the dispute list. |
+| 6 | Resolve Dispute | Resolve a dispute using `dispute_id`. |
+
+### 6.3. Environment Variables
+
+| Variable | Value | Description |
+|---|---|---|
+| `base_url` | `http://localhost:3000` | Backend API URL |
+| `admin_token` | Auto-saved after login | Administrator JWT token |
+| `provider_id` | Manual input | Provider ID for verification |
+| `dispute_id` | Manual input | Dispute ID for resolution |
+
+---
+
+## 7. Business Logic and Workflows
+
+### 7.1. Provider Verification Workflow
+
+```text
+Provider Registration
+        |
+        v
+Document Upload
+        |
+        v
+Admin Reviews Documents
+        |
+        v
+Approve / Reject
+        |
+        v
+Update Verification Status
+        |
+        v
+Send Notification to Provider
 ```
-base_url: http://localhost:3000
-admin_token: (auto-saved after login)
-provider_id: (manual input for testing)
-dispute_id: (manual input for testing)
+
+### 7.2. Dispute Resolution Workflow
+
+```text
+Customer Raises a Dispute
+        |
+        v
+Admin Receives Dispute
+        |
+        v
+Admin Investigates the Case
+        |
+        v
+Resolution Decision
+        |
+        v
+Refund / Penalty / No Action
+        |
+        v
+Update Dispute Status
+        |
+        v
+Notify Relevant Parties
+```
+
+### 7.3. Platform Commission Calculation
+
+- **Default Platform Commission:** 15%.
+- **Configuration:** Managed through the `platform_settings` table.
+- **Calculation:** Automatically calculated when payment is completed.
+
+Example:
+
+```text
+Order Total:       1,000,000 VND
+Commission Rate:   15%
+Platform Revenue:    150,000 VND
+Provider Earnings:  850,000 VND
 ```
 
 ---
 
-## 📊 Business Logic
+## 8. Security Features
 
-### Provider Verification Flow:
-```
-Provider registers → Documents uploaded → Admin reviews → Approve/Reject → Notification sent
-```
+All administrative endpoints should implement the following security mechanisms:
 
-### Dispute Resolution Flow:
-```
-User raises dispute → Admin investigates → Resolution decision → Refund processed (if applicable) → Notification sent
-```
-
-### Commission Calculation:
-- Default: 15% platform commission
-- Configurable via `platform_settings` table
-- Auto-calculated when payment completed
+| Security Feature | Description |
+|---|---|
+| Admin-only Access | Restricts access to users with the `admin` role. |
+| JWT Authentication | Validates access tokens through Bearer authentication. |
+| Input Validation | Validates request parameters and body data. |
+| Audit Trail | Records administrative actions together with the administrator's ID. |
+| Rate Limiting | Limits excessive API requests to protect the system. |
 
 ---
 
-## 🔒 Security Features
+## 9. Monitoring and Alerts
 
-- **Admin-only access**: All endpoints require `role = 'admin'`
-- **JWT authentication**: Bearer token validation
-- **Input validation**: Request body validation
-- **Audit trail**: All actions logged with admin ID
-- **Rate limiting**: Recommended for production
+### 9.1. Recommended Monitoring Rules
 
----
+| Condition | Alert | Description |
+|---|---|---|
+| `pending_tasks.total > 20` | High Workload | Too many pending administrative tasks. |
+| `completion_rate_24h < 70%` | Service Quality Warning | Order completion rate is below the expected threshold. |
+| `new_orders_24h = 0` | No New Orders | No new orders have been created within 24 hours. |
+| `active_providers < 10` | Supply Shortage | Insufficient active providers on the platform. |
 
-## 📈 Monitoring & Alerts
+### 9.2. Dashboard Refresh Mechanisms
 
-### Recommended Alerts:
-- `pending_tasks.total > 20` → High workload
-- `completion_rate_24h < 70%` → Service quality issue
-- `new_orders_24h = 0` → System problem
-- `active_providers < 10` → Supply shortage
-
-### Dashboard Refresh:
-- Real-time: WebSocket updates
-- Polling: Every 30 seconds
-- Manual: Pull-to-refresh
+| Method | Description |
+|---|---|
+| Real-time Updates | WebSocket-based updates when dashboard data changes. |
+| Automatic Polling | Refreshes dashboard data every 30 seconds. |
+| Manual Refresh | Allows administrators to manually refresh dashboard statistics. |
 
 ---
 
-*BeeHub Admin Dashboard API — WDP301 Group 4*
+## 10. API Summary
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/admin/dashboard` | Retrieve dashboard KPIs. |
+| GET | `/api/admin/providers/pending` | Get providers awaiting verification. |
+| PUT | `/api/admin/providers/:id/verify` | Approve or reject a provider. |
+| GET | `/api/admin/disputes` | Get paginated dispute list. |
+| GET | `/api/admin/disputes/:id` | Get dispute details and messages. |
+| PUT | `/api/admin/disputes/:id/resolve` | Resolve a dispute. |
+
+---
+
+**BeeHub Admin Dashboard API**  
+*WDP301 – Group 4*  
+*Admin Dashboard | Provider Management | Dispute Resolution*

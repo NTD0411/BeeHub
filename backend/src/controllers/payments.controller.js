@@ -106,9 +106,11 @@ async function createDeposit(req, res, next) {
       return next(httpError(400, 'Hiện chỉ hỗ trợ thanh toán PayOS', 'unsupported_payment_method'));
     }
 
+    await paymentsService.syncOrderDepositPayments(order_id);
+
     const { data: order, error: orderError } = await supabaseAdmin
       .from('orders')
-      .select('id, customer_id, service_type')
+      .select('id, customer_id, service_type, deposit_paid, status')
       .eq('id', order_id)
       .single();
 
@@ -118,6 +120,19 @@ async function createDeposit(req, res, next) {
 
     if (order.customer_id !== req.user.id) {
       return next(httpError(403, 'Không có quyền truy cập đơn hàng này', 'access_denied'));
+    }
+
+    if (order.deposit_paid) {
+      return res.status(200).json({
+        success: true,
+        data: {
+          order_id,
+          already_paid: true,
+          status: 'completed',
+          checkout_url: `${env.APP_URL}/don-hang/${order_id}`,
+        },
+        message: 'Đơn hàng đã được thanh toán đặt cọc.',
+      });
     }
 
     const paymentCode = payosService.generatePaymentCode();
@@ -145,8 +160,8 @@ async function createDeposit(req, res, next) {
       return next(httpError(500, 'Lỗi tạo payment record', 'db_error'));
     }
 
-    const payosReturnUrl = `${env.API_URL}/api/payments/payos/return?payment_code=${encodeURIComponent(paymentCode)}`;
-    const payosCancelUrl = `${env.API_URL}/api/payments/payos/cancel?payment_code=${encodeURIComponent(paymentCode)}`;
+    const payosReturnUrl = `${env.API_URL}/api/payments/payos/return?payment_code=${encodeURIComponent(paymentCode)}&order_id=${encodeURIComponent(order_id)}`;
+    const payosCancelUrl = `${env.API_URL}/api/payments/payos/cancel?payment_code=${encodeURIComponent(paymentCode)}&order_id=${encodeURIComponent(order_id)}`;
 
     const payosPayload = {
       paymentCode,
@@ -156,7 +171,7 @@ async function createDeposit(req, res, next) {
       returnUrl: payosReturnUrl,
       cancelUrl: payosCancelUrl,
       customerName: customer_name || req.user.name || 'Customer',
-      customerEmail: customer_email || req.user.email || 'noreply@unimove.com',
+      customerEmail: customer_email || req.user.email || 'noreply@beehub.com',
     };
 
     const payosResponse = await payosService.createPaymentLink(payosPayload);
@@ -217,10 +232,12 @@ async function syncPayment(req, res, next) {
  */
 async function payosReturn(req, res) {
   const paymentCode = req.query.payment_code;
+  const fallbackOrderId = req.query.order_id;
 
   try {
     const data = await paymentsService.syncPaymentByCode(paymentCode);
     const status = data.payment?.status || 'pending';
+    const orderId = data.payment?.order_id || fallbackOrderId;
 
     if (req.query.format === 'json') {
       return res.json({ success: true, message: data.message, data });
@@ -229,8 +246,8 @@ async function payosReturn(req, res) {
     const redirectUrl = new URL('/payment-success', env.APP_URL);
     redirectUrl.searchParams.set('payment_code', paymentCode);
     redirectUrl.searchParams.set('status', status);
-    if (data.payment?.order_id) {
-      redirectUrl.searchParams.set('order_id', data.payment.order_id);
+    if (orderId) {
+      redirectUrl.searchParams.set('order_id', orderId);
     }
     return res.redirect(302, redirectUrl.toString());
   } catch (error) {
@@ -246,6 +263,9 @@ async function payosReturn(req, res) {
     const redirectUrl = new URL('/payment-success', env.APP_URL);
     redirectUrl.searchParams.set('payment_code', paymentCode || '');
     redirectUrl.searchParams.set('status', 'pending');
+    if (fallbackOrderId) {
+      redirectUrl.searchParams.set('order_id', fallbackOrderId);
+    }
     return res.redirect(302, redirectUrl.toString());
   }
 }
@@ -253,17 +273,29 @@ async function payosReturn(req, res) {
 /** GET /api/payments/payos/cancel — PayOS redirect khi khách hủy thanh toán */
 async function payosCancel(req, res) {
   const paymentCode = req.query.payment_code || '';
+  const orderId = req.query.order_id || '';
+
+  if (paymentCode) {
+    try {
+      await paymentsService.syncPaymentByCode(paymentCode);
+    } catch {
+      /* ignore */
+    }
+  }
 
   if (req.query.format === 'json') {
     return res.json({
       success: true,
       message: 'Đã hủy thanh toán',
-      data: { payment_code: paymentCode, status: 'cancelled' },
+      data: { payment_code: paymentCode, order_id: orderId, status: 'cancelled' },
     });
   }
 
   const redirectUrl = new URL('/payment-cancel', env.APP_URL);
   redirectUrl.searchParams.set('payment_code', paymentCode);
+  if (orderId) {
+    redirectUrl.searchParams.set('order_id', orderId);
+  }
   return res.redirect(302, redirectUrl.toString());
 }
 

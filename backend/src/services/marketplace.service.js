@@ -430,7 +430,7 @@ async function payListingFeeWithPayos(userId, listingId, fee, body = {}) {
       returnUrl: `${env.APP_URL}/payment-success?payment_code=${paymentCode}`,
       cancelUrl: `${env.APP_URL}/payment-cancel?payment_code=${paymentCode}`,
       customerName: body.customer_name || 'Customer',
-      customerEmail: body.customer_email || 'noreply@unimove.com',
+      customerEmail: body.customer_email || 'noreply@beehub.com',
     });
   } catch (payosError) {
     if (!existing) {
@@ -1047,6 +1047,9 @@ async function sendMessage(listingId, buyerId, userId, body) {
     mediaName: msg.media_name,
   });
   const previewShort = preview.length > 60 ? `${preview.slice(0, 60)}…` : preview;
+  require('./chat-events.service').notify([recipientId, userId], {
+    kind: 'marketplace', listing_id: listingId, buyer_id: buyerId, message_id: msg.id,
+  });
   createNotification(recipientId, 'marketplace_message', 'Tin nhắn mới trong Chợ sinh viên', previewShort, {
     listingId,
     actionData: { listing_id: listingId, buyer_id: buyerId },

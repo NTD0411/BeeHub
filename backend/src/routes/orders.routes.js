@@ -1,14 +1,22 @@
-const fs = require('fs');
-const path = require('path');
 const express = require('express');
 const ordersController = require('../controllers/orders.controller');
-const orderQuotesController = fs.existsSync(path.join(__dirname, '../controllers/order_quotes.controller.js'))
-  ? require('../controllers/order_quotes.controller')
-  : null;
+const orderQuotesController = require('../controllers/order_quotes.controller');
+const sharedMovesController = require('../controllers/shared-moves.controller');
 const { requireAuth, requireRole } = require('../middleware/auth.middleware');
 const { handleDeliveryPhotoUpload } = require('../middleware/upload.middleware');
 
+const tracking = require('../controllers/order-tracking.controller');
 const router = express.Router();
+
+router.get('/:id/tracking/stream', requireAuth, requireRole('customer', 'provider'), tracking.stream);
+router.get('/:id/tracking', requireAuth, requireRole('customer', 'provider'), tracking.read);
+router.post('/:id/tracking/location', requireAuth, requireRole('provider'), tracking.publish);
+router.delete('/:id/tracking/location', requireAuth, requireRole('provider'), tracking.stop);
+
+// Shared moving routes for drivers
+router.get('/shared/available', requireAuth, requireRole('provider'), sharedMovesController.listAvailableSharedGroups);
+router.post('/shared/groups/:id/accept', requireAuth, requireRole('provider'), sharedMovesController.acceptSharedGroup);
+router.post('/shared/propose-pair', requireAuth, requireRole('provider'), sharedMovesController.proposePair);
 
 router.get('/', requireAuth, ordersController.listOrders);
 router.get('/my-schedule', requireAuth, requireRole('provider'), ordersController.getProviderSchedule);
@@ -16,21 +24,19 @@ router.post('/', requireAuth, requireRole('customer'), ordersController.createOr
 router.post('/:id/cancel-timeout', requireAuth, requireRole('customer'), ordersController.cancelByCustomerTimeout);
 router.get('/:id/cancel-estimate', requireAuth, requireRole('customer'), ordersController.cancelEstimate);
 router.get('/:id', requireAuth, ordersController.getOrder);
-if (orderQuotesController) {
-  router.get('/:id/quotes', requireAuth, orderQuotesController.listQuotes);
-  router.post(
-    '/:id/quotes',
-    requireAuth,
-    requireRole('provider'),
-    orderQuotesController.submitQuote,
-  );
-  router.post(
-    '/:id/quotes/:quoteId/select',
-    requireAuth,
-    requireRole('customer'),
-    orderQuotesController.selectQuote,
-  );
-}
+router.get('/:id/quotes', requireAuth, orderQuotesController.listQuotes);
+router.post(
+  '/:id/quotes',
+  requireAuth,
+  requireRole('provider'),
+  orderQuotesController.submitQuote,
+);
+router.post(
+  '/:id/quotes/:quoteId/select',
+  requireAuth,
+  requireRole('customer'),
+  orderQuotesController.selectQuote,
+);
 router.post(
   '/:id/respond',
   requireAuth,

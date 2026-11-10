@@ -1,7 +1,5 @@
 const providersService = require('../services/providers.service');
-const { httpError } = require('../services/auth.helpers');
 
-/** GET /api/providers/browse — Tìm kiếm danh sách nhà xe công khai */
 async function browse(req, res, next) {
   try {
     const providers = await providersService.browseProviders({
@@ -15,7 +13,6 @@ async function browse(req, res, next) {
   }
 }
 
-/** GET /api/providers/:id — Xem profile công khai của một nhà xe */
 async function getById(req, res, next) {
   try {
     const reviewsLimit = req.query.reviews_limit
@@ -28,70 +25,63 @@ async function getById(req, res, next) {
   }
 }
 
-/** GET /api/providers/me — Xem profile provider hiện tại */
-async function getMe(req, res, next) {
-  try {
-    const data = await providersService.getMyProfile(req.user.id);
-    res.json({ success: true, data });
-  } catch (error) {
-    next(error);
-  }
-}
-
-/** GET /api/providers/me/documents — Xem danh sách giấy tờ đã tải lên */
-async function getMyDocuments(req, res, next) {
-  try {
-    const data = await providersService.getMyDocuments(req.user.id);
-    res.json({ success: true, data });
-  } catch (error) {
-    next(error);
-  }
-}
-
-/** POST /api/providers/me/documents — Tải giấy tờ xác minh lên */
-async function uploadDocuments(req, res, next) {
-  try {
-    if (!req.files || Object.keys(req.files).length === 0) {
-      return next(httpError(400, 'Không có file được upload', 'missing_files'));
-    }
-    const data = await providersService.uploadProviderDocuments(req.user.id, req.files);
-    res.json({ success: true, data });
-  } catch (error) {
-    next(error);
-  }
-}
-
-/** POST /api/providers/me/request-verification — Gửi yêu cầu xét duyệt */
-async function requestVerification(req, res, next) {
-  try {
-    const data = await providersService.requestVerification(req.user.id);
-    res.json({ success: true, data });
-  } catch (error) {
-    next(error);
-  }
-}
-
-/** GET /api/providers/me/dashboard — Xem dashboard */
-async function getDashboard(req, res, next) {
-  try {
-    const data = await providersService.getDashboard(req.user.id);
-    res.json({ success: true, data });
-  } catch (error) {
-    next(error);
-  }
-}
-
-/** GET /api/providers/me/earnings — Xem thu nhập */
 async function getEarnings(req, res, next) {
   try {
-    const data = await providersService.getEarnings(req.user.id, req.query.period || 'month');
+    const data = await providersService.getEarnings(req.user.id, req.query.period || 'week');
     res.json({ success: true, data });
   } catch (error) {
     next(error);
   }
 }
 
-/** GET /api/providers/me/schedule — Xem lịch làm việc */
+async function getWithdrawals(req, res, next) {
+  try {
+    const data = await providersService.getMyWithdrawals(req.user.id);
+    res.json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function createWithdrawal(req, res, next) {
+  try {
+    const data = await providersService.createWithdrawal(req.user.id, req.body || {});
+    res.status(201).json({
+      success: true,
+      message: 'Đã gửi yêu cầu rút tiền thành công. Admin sẽ xét duyệt và chuyển khoản sớm.',
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function cancelWithdrawal(req, res, next) {
+  try {
+    const data = await providersService.cancelWithdrawal(req.user.id, req.params.id);
+    res.json({
+      success: true,
+      message: 'Đã hủy yêu cầu rút tiền',
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function updateBankInfo(req, res, next) {
+  try {
+    const data = await providersService.updateBankInfo(req.user.id, req.body || {});
+    res.json({
+      success: true,
+      message: 'Đã lưu thông tin tài khoản ngân hàng',
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function getSchedule(req, res, next) {
   try {
     const data = await providersService.getSchedule(req.user.id);
@@ -101,7 +91,6 @@ async function getSchedule(req, res, next) {
   }
 }
 
-/** PATCH /api/providers/me/schedule — Cập nhật lịch làm việc */
 async function updateSchedule(req, res, next) {
   try {
     const data = await providersService.updateSchedule(req.user.id, req.body.slots);
@@ -111,7 +100,24 @@ async function updateSchedule(req, res, next) {
   }
 }
 
-/** GET /api/providers/me/quoted-orders — Xem các đơn đã báo giá */
+async function uploadDocuments(req, res, next) {
+  try {
+    const data = await providersService.uploadProviderDocuments(req.user.id, req.files || {});
+    res.json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getMyDocuments(req, res, next) {
+  try {
+    const data = await providersService.getMyDocuments(req.user.id);
+    res.json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function getQuotedOrders(req, res, next) {
   try {
     const data = await providersService.getQuotedOrders(req.user.id);
@@ -121,16 +127,27 @@ async function getQuotedOrders(req, res, next) {
   }
 }
 
+async function requestVerification(req, res, next) {
+  try {
+    const data = await providersService.requestVerification(req.user.id);
+    res.json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   browse,
   getById,
-  getMe,
-  getMyDocuments,
-  uploadDocuments,
-  requestVerification,
-  getDashboard,
   getEarnings,
+  getWithdrawals,
+  createWithdrawal,
+  cancelWithdrawal,
+  updateBankInfo,
   getSchedule,
   updateSchedule,
+  uploadDocuments,
+  getMyDocuments,
   getQuotedOrders,
+  requestVerification,
 };

@@ -2,7 +2,7 @@ const express = require('express');
 const { requireAuth, requireRole } = require('../middleware/auth.middleware');
 const { handleAvatarUpload } = require('../middleware/upload.middleware');
 const adminController = require('../controllers/admin.controller');
-const databaseBrowserController = require('../controllers/database-browser.controller');
+const sharedMovesController = require('../controllers/shared-moves.controller');
 
 const router = express.Router();
 
@@ -12,11 +12,6 @@ router.post('/auth/login', adminController.login);
 // Protected admin routes (Node JWT + admin role)
 router.use(requireAuth);
 router.use(requireRole('admin'));
-
-// Read-only database browser
-router.get('/data/tables', databaseBrowserController.getTables);
-router.get('/data/tables/:table/schema', databaseBrowserController.getTableSchema);
-router.get('/data/tables/:table/rows', databaseBrowserController.getTableRows);
 
 // Dashboard
 router.get('/auth/profile', adminController.getProfile);
@@ -53,6 +48,14 @@ router.patch('/users/:id/status', adminController.updateUserStatus);
 router.get('/orders', adminController.getOrders);
 router.get('/orders/:id', adminController.getOrderById);
 router.put('/orders/:id/cancel', adminController.forceCancelOrder);
+
+// Shared Moving (Ghép đơn sinh viên) Management
+router.get('/shared-groups', sharedMovesController.adminListGroups);
+router.get('/shared-groups/:id', sharedMovesController.adminGetGroup);
+router.post('/shared-groups/:id/add-order', sharedMovesController.adminAddOrder);
+router.post('/shared-groups/:id/remove-order', sharedMovesController.adminRemoveOrder);
+router.put('/shared-groups/:id/assign-provider', sharedMovesController.adminAssignProvider);
+router.put('/shared-groups/:id/cancel', sharedMovesController.adminCancelGroup);
 
 // Reviews Management
 router.get('/reviews', adminController.getReviews);

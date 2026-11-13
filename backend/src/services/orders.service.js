@@ -4,6 +4,25 @@ const { createNotification } = require('./notification.service');
 const paymentsService = require('./payments.service');
 const { isDaNangCity, isDaNangDistrict, isDaNangOrder, textMentionsDaNang } = require('../utils/da_nang');
 
+// Send only after a successful state transition, to the order's customer.
+async function notifyCustomerOrderStatus(order, previousStatus) {
+  if (!order.customer_id || order.status === previousStatus) return;
+  const messages = {
+    accepted: ['order_accepted', 'Nhà xe đã nhận đơn', 'Nhà xe đã xác nhận nhận đơn của bạn.'],
+    picking_up: ['order_started', 'Nhà xe đang đến lấy hàng', 'Nhà xe đang di chuyển đến điểm lấy hàng.'],
+    in_progress: ['order_started', 'Đơn hàng đang được vận chuyển', 'Nhà xe đã lấy hàng và đang vận chuyển đến điểm giao.'],
+    completed: ['order_completed', 'Nhà xe đã hoàn thành đơn hàng', 'Hãy mở đơn hàng để kiểm tra ảnh giao hàng và đánh giá dịch vụ.'],
+  };
+  const message = messages[order.status];
+  if (!message) return;
+  await createNotification(order.customer_id, message[0], message[1],
+    `Đơn ${order.order_number || order.id}: ${message[2]}`, {
+      actionData: { order_id: order.id, from_status: previousStatus, status: order.status },
+      actionUrl: `/don-hang/${order.id}`,
+      icon: order.status === 'completed' ? 'check-circle' : 'truck',
+    });
+}
+
 const CANCELLABLE_STATUSES = ['pending', 'matched', 'accepted', 'scheduled'];
 
 function calcOrderExpiresAt(scheduledPickupTime) {
@@ -15,7 +34,7 @@ function calcOrderExpiresAt(scheduledPickupTime) {
   if (hoursUntilPickup <= 24) return new Date(pickup - 2 * 60 * 60 * 1000).toISOString();
   return new Date(pickup - 24 * 60 * 60 * 1000).toISOString();
 }
-const PROVIDER_CANCELLABLE_STATUSES = ['accepted', 'picking_up', 'in_progress'];
+const PROVIDER_CANCELLABLE_STATUSES = ['accepted', 'scheduled', 'picking_up', 'in_progress'];
 const POINTS_PER_VIOLATION = 2;
 
 const DELIVERY_PHOTOS_BUCKET = 'delivery-photos';
@@ -141,7 +160,7 @@ async function enrichOrderWithProvider(order) {
   const { data: profile } = await supabaseAdmin
     .from('provider_profiles')
     .select(
-      'business_name, vehicle_type, rating, license_plate, profiles!provider_profiles_id_fkey(full_name, avatar_url, phone)',
+      'business_name, vehicle_type, rating, vehicle_plate, profiles!provider_profiles_id_fkey(full_name, avatar_url, phone)',
     )
     .eq('id', order.provider_id)
     .maybeSingle();
@@ -155,7 +174,7 @@ async function enrichOrderWithProvider(order) {
     provider_phone: nestedProfile?.phone || null,
     provider_avatar_url: nestedProfile?.avatar_url || null,
     provider_rating: profile?.rating ?? null,
-    provider_plate: profile?.license_plate || null,
+    provider_plate: profile?.vehicle_plate || null,
     provider: {
       id: order.provider_id,
       full_name: profile?.business_name || nestedProfile?.full_name || 'Nhà xe',
@@ -163,6 +182,7 @@ async function enrichOrderWithProvider(order) {
       avatar_url: nestedProfile?.avatar_url || null,
       rating: profile?.rating ?? null,
       vehicle_type: profile?.vehicle_type || null,
+      vehicle_plate: profile?.vehicle_plate || null,
     },
   };
 }
@@ -197,6 +217,7 @@ async function enrichProviderOrdersList(orders, providerId) {
 }
 
 async function listOrdersForUser(userId, role, queryParams = {}) {
+  await paymentsService.autoSyncUserPendingPayments(userId, role);
   let query = supabaseAdmin.from('orders').select('*').order('created_at', { ascending: false });
 
   if (role === 'customer') {
@@ -285,6 +306,17 @@ async function createOrder(customerId, payload) {
     ? p.dorm_image_urls.filter((u) => typeof u === 'string' && u.trim())
     : [];
 
+  const isShared = Boolean(p.is_shared === true || p.is_shared === 'true');
+  const sharedDiscountPercent = isShared ? Number(p.shared_discount_percent || 25) : 0;
+  let finalTotalPrice = p.quote_request === true ? 0 : Number(p.total_price || 0);
+  let finalDiscount = p.quote_request === true ? 0 : Number(p.discount_amount || 0);
+
+  if (isShared && finalTotalPrice > 0) {
+    const discountVal = Math.round((finalTotalPrice * sharedDiscountPercent) / 100);
+    finalDiscount += discountVal;
+    finalTotalPrice = Math.max(0, finalTotalPrice - discountVal);
+  }
+
   const baseRow = {
     customer_id: customerId,
     vehicle_size: p.vehicle_size,
@@ -313,31 +345,45 @@ async function createOrder(customerId, payload) {
     distance_price: p.quote_request === true ? 0 : p.distance_price || 0,
     floor_price: p.quote_request === true ? 0 : p.floor_price || 0,
     service_fee: p.quote_request === true ? 0 : p.service_fee || 0,
-    total_price: p.quote_request === true ? 0 : p.total_price,
+    discount_amount: finalDiscount,
+    total_price: finalTotalPrice,
     scheduled_pickup_time: p.scheduled_pickup_time,
     number_of_rooms: p.number_of_rooms || 1,
     requires_helpers: p.requires_helpers ?? false,
     number_of_helpers: p.number_of_helpers ?? 0,
+    is_shared: isShared,
+    shared_status: isShared ? 'waiting_match' : 'none',
+    shared_discount_percent: sharedDiscountPercent,
     status: 'pending',
     order_expires_at: calcOrderExpiresAt(p.scheduled_pickup_time),
     ...(photoUrls.length > 0 ? { dorm_image_urls: photoUrls } : {}),
   };
 
   let insertRow = { ...baseRow, quote_request: p.quote_request === true };
-  let data = null;
-  let error = null;
-  for (let attempt = 0; attempt < 6; attempt++) {
-    ({ data, error } = await supabaseAdmin.from('orders').insert(insertRow).select('*').single());
-    if (!error) break;
-    const m = String(error.message || '').match(/Could not find the '([^']+)' column/i);
-    if (m && m[1] && Object.prototype.hasOwnProperty.call(insertRow, m[1])) {
-      delete insertRow[m[1]];
-      continue;
+  let { data, error } = await supabaseAdmin.from('orders').insert(insertRow).select('*').single();
+
+  for (const col of ['order_expires_at', 'lock_expires_at', 'slot_locked_until', 'quote_request', 'dorm_image_urls', 'is_shared', 'shared_status', 'shared_discount_percent']) {
+    if (error && new RegExp(col, 'i').test(error.message) && col in insertRow) {
+      delete insertRow[col];
+      ({ data, error } = await supabaseAdmin.from('orders').insert(insertRow).select('*').single());
     }
-    break;
   }
 
   if (error) throw Object.assign(new Error(error.message), { status: 400 });
+
+  if (isShared && data && data.id) {
+    try {
+      const sharedMovesService = require('./shared-moves.service');
+      const matchRes = await sharedMovesService.matchOrCreateGroupForOrder(data);
+      if (matchRes?.groupId) {
+        data.shared_move_group_id = matchRes.groupId;
+        data.shared_status = matchRes.matched ? 'matched' : 'waiting_match';
+      }
+    } catch (e) {
+      console.error('Shared move auto match error:', e);
+    }
+  }
+
   await notifyDaNangProvidersNewOrder(data);
   return data;
 }
@@ -385,21 +431,13 @@ async function providerRespond(orderId, providerId, response, declineReason) {
         provider_accepted_at: new Date().toISOString(),
       })
       .eq('id', orderId)
+      .eq('status', order.status)
       .select('*')
       .single();
 
     if (error) throw Object.assign(new Error(error.message), { status: 400 });
 
-    await createNotification(
-      order.customer_id,
-      'order_accepted',
-      'Nhà xe đã nhận đơn',
-      `${order.pickup_address || 'Điểm lấy'} → ${order.delivery_address || 'Điểm giao'}`,
-      {
-        actionData: { order_id: orderId },
-        icon: 'check-circle',
-      },
-    );
+    await notifyCustomerOrderStatus(data, order.status);
 
     return enrichOrderWithProvider(data);
   }
@@ -408,8 +446,16 @@ async function providerRespond(orderId, providerId, response, declineReason) {
 }
 
 async function getOrderById(orderId) {
-  const { data, error } = await supabaseAdmin.from('orders').select('*').eq('id', orderId).single();
+  let { data, error } = await supabaseAdmin.from('orders').select('*').eq('id', orderId).single();
   if (error) throw Object.assign(new Error(error.message), { status: 404 });
+
+  if (!data.deposit_paid || data.status === 'matched' || data.status === 'pending') {
+    const syncRes = await paymentsService.syncOrderDepositPayments(orderId);
+    if (syncRes.synced || (syncRes.completedPayment && (!data.deposit_paid || data.status === 'matched'))) {
+      const { data: refreshed } = await supabaseAdmin.from('orders').select('*').eq('id', orderId).single();
+      if (refreshed) data = refreshed;
+    }
+  }
 
   const enriched = await enrichOrderWithProvider(data);
 
@@ -465,6 +511,7 @@ async function acceptOrder(orderId, providerId) {
   if (error) throw Object.assign(new Error(error.message), { status: 500 });
   if (!data)
     throw Object.assign(new Error('Đơn hàng vừa được nhận bởi provider khác'), { status: 409 });
+  await notifyCustomerOrderStatus(data, order.status);
   return enrichOrderWithProvider(data);
 }
 
@@ -492,10 +539,12 @@ async function startOrder(orderId, providerId) {
     .from('orders')
     .update({ status: nextStatus, ...extra })
     .eq('id', orderId)
+    .eq('status', order.status)
     .select('*')
     .single();
 
   if (error) throw Object.assign(new Error(error.message), { status: 500 });
+  await notifyCustomerOrderStatus(data, order.status);
   return data;
 }
 
@@ -564,7 +613,7 @@ async function completeOrder(orderId, providerId) {
 
   const now = new Date().toISOString();
 
-  const { data, error } = await supabaseAdmin
+  let { data, error } = await supabaseAdmin
     .from('orders')
     .update({
       status: 'completed',
@@ -574,15 +623,74 @@ async function completeOrder(orderId, providerId) {
       slot_locked_until: null, // xóa lock khung giờ khi đơn hoàn thành
     })
     .eq('id', orderId)
+    .eq('status', order.status)
     .select('*')
     .single();
 
+  if (error && /slot_locked_until/i.test(error.message)) {
+    ({ data, error } = await supabaseAdmin
+      .from('orders')
+      .update({
+        status: 'completed',
+        completed_at: now,
+        payment_released: true,
+        payment_released_at: now,
+      })
+      .eq('id', orderId)
+      .eq('status', order.status)
+      .select('*')
+      .single());
+  }
+
   if (error) throw Object.assign(new Error(error.message), { status: 500 });
+  await notifyCustomerOrderStatus(data, order.status);
   await supabaseAdmin
     .from('payments')
     .update({ escrow_status: 'released' })
     .eq('order_id', orderId)
     .eq('escrow_status', 'held');
+
+  try {
+    const orderTotal = Number(data.total_price ?? data.base_price) || 0;
+    if (orderTotal > 0 && providerId) {
+      const commissionRate = 10;
+      const platformCommission = Math.round(orderTotal * 0.1);
+      const netEarnings = Math.round(orderTotal * 0.9);
+      const { data: existingEarning } = await supabaseAdmin
+        .from('provider_earnings')
+        .select('id, status')
+        .eq('order_id', orderId)
+        .eq('provider_id', providerId)
+        .maybeSingle();
+
+      if (existingEarning) {
+        if (existingEarning.status !== 'withdrawn') {
+          await supabaseAdmin
+            .from('provider_earnings')
+            .update({
+              order_amount: orderTotal,
+              commission_rate: commissionRate,
+              platform_commission: platformCommission,
+              net_earnings: netEarnings,
+              status: 'available',
+            })
+            .eq('id', existingEarning.id);
+        }
+      } else {
+        await supabaseAdmin.from('provider_earnings').insert({
+          provider_id: providerId,
+          order_id: orderId,
+          order_amount: orderTotal,
+          commission_rate: commissionRate,
+          platform_commission: platformCommission,
+          net_earnings: netEarnings,
+          status: 'available',
+        });
+      }
+    }
+  } catch (err) {
+    console.warn('[completeOrder] provider_earnings sync failed:', err.message);
+  }
 
   return enrichOrderWithProvider(data);
 }
@@ -631,18 +739,30 @@ async function cancelOrder(orderId, userId, reason) {
 
   const previousStatus = order.status;
 
-  const { data: updated, error: updateError } = await supabaseAdmin
+  const cancelPayload = {
+    status: 'cancelled',
+    cancellation_reason: trimmedReason || null,
+    cancelled_by: userId,
+    cancelled_at: new Date().toISOString(),
+    slot_locked_until: null, // xóa lock khung giờ khi đơn bị hủy
+  };
+
+  let { data: updated, error: updateError } = await supabaseAdmin
     .from('orders')
-    .update({
-      status: 'cancelled',
-      cancellation_reason: trimmedReason || null,
-      cancelled_by: userId,
-      cancelled_at: new Date().toISOString(),
-      slot_locked_until: null, // xóa lock khung giờ khi đơn bị hủy
-    })
+    .update(cancelPayload)
     .eq('id', orderId)
     .select('*')
     .single();
+
+  if (updateError && /slot_locked_until/i.test(updateError.message)) {
+    delete cancelPayload.slot_locked_until;
+    ({ data: updated, error: updateError } = await supabaseAdmin
+      .from('orders')
+      .update(cancelPayload)
+      .eq('id', orderId)
+      .select('*')
+      .single());
+  }
 
   if (updateError) {
     if (isCustomer) throw httpError(500, updateError.message, 'db_error');
@@ -667,6 +787,13 @@ async function cancelOrder(orderId, userId, reason) {
     );
 
     await applyProviderViolation(userId, orderId, order.order_number);
+
+    try {
+      const sharedMovesService = require('./shared-moves.service');
+      await sharedMovesService.handleOrderCancellationInGroup(orderId, userId, trimmedReason);
+    } catch (err) {
+      console.error('Error updating shared group on provider cancel:', err);
+    }
 
     return enrichOrderWithProvider(updated);
   }
@@ -720,6 +847,13 @@ async function cancelOrder(orderId, userId, reason) {
     } else {
       throw err;
     }
+  }
+
+  try {
+    const sharedMovesService = require('./shared-moves.service');
+    await sharedMovesService.handleOrderCancellationInGroup(orderId, userId, trimmedReason);
+  } catch (err) {
+    console.error('Error updating shared group on customer cancel:', err);
   }
 
   return {
@@ -910,7 +1044,7 @@ async function getProviderSchedule(providerId, fromDate, toDate) {
   const from = fromDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const to   = toDate   || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
-  const { data, error } = await supabaseAdmin
+  let { data, error } = await supabaseAdmin
     .from('orders')
     .select(`
       id, order_number, status,
@@ -924,6 +1058,23 @@ async function getProviderSchedule(providerId, fromDate, toDate) {
     .gte('scheduled_pickup_time', from)
     .lte('scheduled_pickup_time', to)
     .order('scheduled_pickup_time', { ascending: true });
+
+  if (error && /estimated_duration|scheduled/i.test(error.message)) {
+    ({ data, error } = await supabaseAdmin
+      .from('orders')
+      .select(`
+        id, order_number, status,
+        pickup_address, delivery_address,
+        scheduled_pickup_time,
+        total_price, deposit_amount,
+        customer:customer_id ( id, full_name, phone, avatar_url )
+      `)
+      .eq('provider_id', providerId)
+      .in('status', ['accepted', 'picking_up', 'picked_up', 'in_progress', 'delivering', 'completed'])
+      .gte('scheduled_pickup_time', from)
+      .lte('scheduled_pickup_time', to)
+      .order('scheduled_pickup_time', { ascending: true }));
+  }
 
   if (error) throw httpError(500, error.message, 'db_error');
   return data || [];
@@ -989,14 +1140,28 @@ async function cancelByCustomerTimeout(orderId, customerId) {
       .maybeSingle();
 
     if (payment) {
-      await supabaseAdmin.from('refunds').insert({
+      const { data: newRefund } = await supabaseAdmin.from('refunds').insert({
         order_id: orderId,
         payment_id: payment.id,
         requested_by: customerId,
         refund_amount: order.deposit_amount,
         refund_reason: 'Nhà xe không bắt đầu chuyến sau 6 giờ xác nhận',
         status: 'pending',
-      });
+      }).select().single();
+
+      const { notifyAdmins } = require('./notification.service');
+      if (newRefund) {
+        await notifyAdmins(
+          'system_announcement',
+          'Yêu cầu hoàn tiền mới',
+          `Đơn ${order.order_number || ''}: yêu cầu hoàn ${Number(order.deposit_amount).toLocaleString('vi-VN')}đ do nhà xe không bắt đầu chuyến.`,
+          {
+            priority: 'high',
+            actionData: { order_id: orderId, refund_id: newRefund.id, type: 'refund_approval' },
+            actionUrl: `/admin/refunds?id=${newRefund.id}`,
+          },
+        ).catch(() => {});
+      }
     }
   }
 

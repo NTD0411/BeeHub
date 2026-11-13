@@ -1,3 +1,4 @@
+const { getUserMetrics } = require('../services/admin-user-metrics.service');
 const { supabaseAdmin } = require('../services/supabase.service');
 const authService = require('../services/auth.service');
 const customersService = require('../services/customers.service');
@@ -565,14 +566,6 @@ async function getDisputeDetails(req, res) {
       });
     }
 
-    const { data: pms } = await supabaseAdmin
-      .from('payment_methods')
-      .select('id, kind, label, is_default, metadata')
-      .eq('customer_id', dispute.raised_by)
-      .eq('is_active', true)
-      .order('is_default', { ascending: false });
-    dispute.customer_payment_methods = pms || [];
-
     res.json({
       success: true,
       data: dispute,
@@ -650,34 +643,15 @@ async function resolveDispute(req, res) {
     if (refund_amount && refund_amount > 0) {
       const paymentsService = require('../services/payments.service');
 
-            // Tìm payment của đơn để link refund đúng (nếu đơn mẫu chưa có payment thì tự khởi tạo)
-      let { data: payment } = await supabaseAdmin
+      // Tìm payment của đơn để link refund đúng
+      const { data: payment } = await supabaseAdmin
         .from('payments')
         .select('id')
         .eq('order_id', updatedDispute.order_id)
-        .in('status', ['completed', 'partially_refunded'])
+        .eq('status', 'completed')
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
-
-      if (!payment) {
-        const { data: createdPay } = await supabaseAdmin
-          .from('payments')
-          .insert({
-            order_id: updatedDispute.order_id,
-            customer_id: updatedDispute.raised_by,
-            payment_code: 'PAY-SEED-' + Date.now().toString().slice(-6),
-            amount: Math.max(Number(refund_amount) || 0, 150000),
-            payment_method: 'payos',
-            payment_purpose: 'deposit',
-            status: 'completed',
-            escrow_status: 'held',
-            paid_at: new Date().toISOString(),
-          })
-          .select('id')
-          .single();
-        payment = createdPay;
-      }
 
       if (payment) {
         // Tạo refund record rồi gọi completeRefund để cộng ví + notify
@@ -726,10 +700,12 @@ async function getUsers(req, res) {
       role = 'all', 
       search = '', 
       status = 'all', 
-      page = 1, 
-      pageSize = 20 
+      page: requestedPage = 1, 
+      pageSize: requestedPageSize = 20 
     } = req.query;
     
+    const page = Math.max(1, parseInt(requestedPage, 10) || 1);
+    const pageSize = Math.min(100, Math.max(1, parseInt(requestedPageSize, 10) || 20));
     const offset = (page - 1) * pageSize;
 
     let query = supabaseAdmin
@@ -762,7 +738,8 @@ async function getUsers(req, res) {
         )
       `)
       .range(offset, offset + pageSize - 1)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: true });
 
     if (role !== 'all') {
       query = query.eq('role', role);
@@ -779,6 +756,8 @@ async function getUsers(req, res) {
     const { data: users, error } = await query;
     if (error) throw error;
 
+    const metrics = await getUserMetrics(supabaseAdmin, users || []);
+
     const flattened = (users || []).map((user) => {
       const cp = Array.isArray(user.customer_profiles)
         ? user.customer_profiles[0]
@@ -790,14 +769,14 @@ async function getUsers(req, res) {
       return {
         ...base,
         university: cp?.university ?? null,
-        total_orders: cp?.total_orders ?? pp?.total_orders ?? 0,
-        total_spent: cp?.total_spent ?? 0,
+        total_orders: metrics.get(user.id).total_orders,
+        total_spent: metrics.get(user.id).total_spent,
         business_name: pp?.business_name ?? null,
         vehicle_type: pp?.vehicle_type ?? null,
         vehicle_plate: pp?.vehicle_plate ?? null,
         rating: pp?.rating ?? null,
         total_reviews: pp?.total_reviews ?? 0,
-        total_earnings: pp?.total_earnings ?? 0,
+        total_earnings: metrics.get(user.id).total_earnings,
         verification_status: pp?.verification_status ?? 'pending',
         is_verified: pp?.is_verified ?? false,
       };
@@ -809,7 +788,8 @@ async function getUsers(req, res) {
     if (status !== 'all') countQuery = countQuery.eq('status', status);
     if (search) countQuery = countQuery.or(`full_name.ilike.%${search}%,email.ilike.%${search}%,phone.ilike.%${search}%`);
     
-    const { count } = await countQuery;
+    const { count, error: countError } = await countQuery;
+    if (countError) throw countError;
 
     res.json({
       success: true,
@@ -1338,7 +1318,8 @@ async function getRefunds(req, res) {
     const { 
       status = 'all', 
       page = 1, 
-      pageSize = 20 
+      pageSize = 20,
+      id
     } = req.query;
     
     const offset = (page - 1) * pageSize;
@@ -1347,7 +1328,6 @@ async function getRefunds(req, res) {
       .from('refunds')
       .select(`
         id,
-        requested_by,
         refund_amount,
         refund_reason,
         status,
@@ -1372,33 +1352,22 @@ async function getRefunds(req, res) {
       .range(offset, offset + pageSize - 1)
       .order('created_at', { ascending: false });
 
-    if (status !== 'all') {
+    if (id) {
+      query = query.eq('id', id);
+    } else if (status !== 'all') {
       query = query.eq('status', status);
     }
 
     const { data: refunds, error } = await query;
     if (error) throw error;
 
-    const reqIds = [...new Set((refunds || []).map((r) => r.requested_by).filter(Boolean))];
-    let pmByUser = {};
-    if (reqIds.length > 0) {
-      const { data: pms } = await supabaseAdmin
-        .from('payment_methods')
-        .select('customer_id, label, is_default')
-        .in('customer_id', reqIds)
-        .eq('is_active', true)
-        .order('is_default', { ascending: false });
-      for (const pm of (pms || [])) {
-        if (!pmByUser[pm.customer_id]) pmByUser[pm.customer_id] = pm.label;
-      }
-    }
-    for (const r of (refunds || [])) {
-      r.customer_payment_method = pmByUser[r.requested_by] || null;
-    }
-
     // Get total count
     let countQuery = supabaseAdmin.from('refunds').select('*', { count: 'exact', head: true });
-    if (status !== 'all') countQuery = countQuery.eq('status', status);
+    if (id) {
+      countQuery = countQuery.eq('id', id);
+    } else if (status !== 'all') {
+      countQuery = countQuery.eq('status', status);
+    }
     
     const { count } = await countQuery;
 
@@ -1450,29 +1419,27 @@ async function approveRefund(req, res) {
 async function getGMVStats(req, res) {
   try {
     const now = new Date();
-    const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1, 0, 0, 0, 0);
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
 
-    // This month GMV
-    const { data: thisMonthOrders } = await supabaseAdmin
+    const { data: completedOrders } = await supabaseAdmin
       .from('orders')
-      .select('total_price')
-      .eq('status', 'completed')
-      .gte('completed_at', thisMonth.toISOString());
+      .select('total_price, completed_at, updated_at, created_at')
+      .eq('status', 'completed');
 
-    const thisGMV = thisMonthOrders?.reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0) || 0;
+    const thisMonthOrders = (completedOrders || []).filter(o => {
+      const d = new Date(o.completed_at || o.updated_at || o.created_at);
+      return d >= thisMonthStart;
+    });
 
-    // Last month GMV
-    const { data: lastMonthOrders } = await supabaseAdmin
-      .from('orders')
-      .select('total_price')
-      .eq('status', 'completed')
-      .gte('completed_at', lastMonth.toISOString())
-      .lte('completed_at', lastMonthEnd.toISOString());
+    const lastMonthOrders = (completedOrders || []).filter(o => {
+      const d = new Date(o.completed_at || o.updated_at || o.created_at);
+      return d >= lastMonthStart && d <= lastMonthEnd;
+    });
 
-    const lastGMV = lastMonthOrders?.reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0) || 0;
-
+    const thisGMV = thisMonthOrders.reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0);
+    const lastGMV = lastMonthOrders.reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0);
     const growth = lastGMV > 0 ? ((thisGMV - lastGMV) / lastGMV) * 100 : 0;
 
     res.json({
@@ -1497,22 +1464,33 @@ async function getOrderStatistics(req, res) {
   try {
     const { startDate, endDate } = req.query;
     const now = new Date();
-    const defaultStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const defaultStart = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+    const defaultEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
     
     const start = startDate ? new Date(startDate) : defaultStart;
-    const end = endDate ? new Date(endDate) : now;
+    const end = endDate ? new Date(endDate) : defaultEnd;
 
     const { data: orders } = await supabaseAdmin
       .from('orders')
-      .select('id, status, total_price')
-      .gte('created_at', start.toISOString())
-      .lte('created_at', end.toISOString());
+      .select('id, status, total_price, completed_at, updated_at, created_at');
 
-    const total_orders = orders?.length || 0;
-    const completed_count = orders?.filter(o => o.status === 'completed').length || 0;
-    const cancelled_count = orders?.filter(o => o.status === 'cancelled').length || 0;
-    const total_revenue = orders?.filter(o => o.status === 'completed')
-      .reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0) || 0;
+    const allOrders = orders || [];
+    const thisPeriodOrders = allOrders.filter(o => {
+      const d = new Date(o.created_at || o.updated_at);
+      return d >= start && d <= end;
+    });
+
+    const completedPeriodOrders = allOrders.filter(o => {
+      if (o.status !== 'completed') return false;
+      const d = new Date(o.completed_at || o.updated_at || o.created_at);
+      return d >= start && d <= end;
+    });
+
+    const total_orders = thisPeriodOrders.length;
+    const completed_count = completedPeriodOrders.length;
+    const cancelled_count = thisPeriodOrders.filter(o => o.status === 'cancelled').length;
+    const total_revenue = completedPeriodOrders
+      .reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0);
     const average_order_value = completed_count > 0 ? total_revenue / completed_count : 0;
     const completion_rate = total_orders > 0 ? (completed_count / total_orders) * 100 : 0;
 
@@ -1577,20 +1555,31 @@ async function getPlatformCommissionByMonth(req, res) {
     const now = new Date();
     const results = [];
 
-    for (let i = months - 1; i >= 0; i--) {
-      const monthStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
+    const { data: allEarnings } = await supabaseAdmin
+      .from('provider_earnings')
+      .select('platform_commission, created_at');
 
-      const { data: earnings } = await supabaseAdmin
-        .from('provider_earnings')
-        .select('platform_commission')
-        .gte('created_at', monthStart.toISOString())
-        .lte('created_at', monthEnd.toISOString());
+    const earningsList = allEarnings || [];
 
-      const commission = earnings?.reduce((sum, earning) => sum + parseFloat(earning.platform_commission || 0), 0) || 0;
+    for (let i = parseInt(months, 10) - 1; i >= 0; i--) {
+      const targetDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const y = targetDate.getFullYear();
+      const m = targetDate.getMonth();
+      const monthStr = String(m + 1).padStart(2, '0');
+      const monthKey = `${y}-${monthStr}`;
+
+      const start = new Date(y, m, 1, 0, 0, 0, 0);
+      const end = new Date(y, m + 1, 0, 23, 59, 59, 999);
+
+      const monthEarnings = earningsList.filter(e => {
+        const d = new Date(e.created_at);
+        return d >= start && d <= end;
+      });
+
+      const commission = monthEarnings.reduce((sum, earning) => sum + parseFloat(earning.platform_commission || 0), 0);
 
       results.push({
-        month: monthStart.toISOString().substr(0, 7), // YYYY-MM
+        month: monthKey,
         commission
       });
     }
@@ -1615,28 +1604,68 @@ async function getRevenueByMonth(req, res) {
     const now = new Date();
     const results = [];
 
-    for (let i = months - 1; i >= 0; i--) {
-      const monthStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
+    const { data: allOrders } = await supabaseAdmin
+      .from('orders')
+      .select('id, total_price, status, completed_at, updated_at, created_at');
 
-      const { data: orders } = await supabaseAdmin
-        .from('orders')
-        .select('total_price')
-        .eq('status', 'completed')
-        .gte('completed_at', monthStart.toISOString())
-        .lte('completed_at', monthEnd.toISOString());
+    const completedOrders = (allOrders || []).filter(o => o.status === 'completed');
 
-      const revenue = orders?.reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0) || 0;
+    for (let i = parseInt(months, 10) - 1; i >= 0; i--) {
+      const targetDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const y = targetDate.getFullYear();
+      const m = targetDate.getMonth();
+      const monthStr = String(m + 1).padStart(2, '0');
+      const monthKey = `${y}-${monthStr}`;
+
+      const start = new Date(y, m, 1, 0, 0, 0, 0);
+      const end = new Date(y, m + 1, 0, 23, 59, 59, 999);
+
+      const monthOrders = completedOrders.filter(o => {
+        const d = new Date(o.completed_at || o.updated_at || o.created_at);
+        return d >= start && d <= end;
+      });
+
+      const revenue = monthOrders.reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0);
 
       results.push({
-        month: monthStart.toISOString().substr(0, 7), // YYYY-MM
-        revenue
+        month: monthKey,
+        revenue,
+        orders: monthOrders.length
+      });
+    }
+
+    // Daily revenue for the current month
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const thisMonthDaily = [];
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayStr = String(day).padStart(2, '0');
+      const monthStr = String(currentMonth + 1).padStart(2, '0');
+      const dateKey = `${currentYear}-${monthStr}-${dayStr}`;
+
+      const dayStart = new Date(currentYear, currentMonth, day, 0, 0, 0, 0);
+      const dayEnd = new Date(currentYear, currentMonth, day, 23, 59, 59, 999);
+
+      const dayOrders = completedOrders.filter(o => {
+        const d = new Date(o.completed_at || o.updated_at || o.created_at);
+        return d >= dayStart && d <= dayEnd;
+      });
+
+      const dayRevenue = dayOrders.reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0);
+
+      thisMonthDaily.push({
+        date: dateKey,
+        revenue: dayRevenue,
+        orders: dayOrders.length
       });
     }
 
     res.json({
       success: true,
-      data: results
+      data: results,
+      thisMonthDaily
     });
   } catch (error) {
     console.error('Get revenue by month error:', error);
@@ -1981,7 +2010,11 @@ async function getPlatformSettings(req, res) {
     if (error) throw error;
 
     // Convert array to object for easier frontend use
-    const settingsObj = {};
+    const settingsObj = {
+      insurance_enabled: true,
+      marketplace_enabled: true,
+      beehub_support_enabled: true,
+    };
     settings?.forEach(setting => {
       settingsObj[setting.key] = setting.value;
     });
@@ -2003,19 +2036,51 @@ async function getPlatformSettings(req, res) {
 async function updatePlatformSettings(req, res) {
   try {
     const settings = req.body;
+    if (Object.prototype.hasOwnProperty.call(settings, 'marketplace_enabled') && typeof settings.marketplace_enabled !== 'boolean') {
+      return res.status(400).json({ success: false, message: 'Trạng thái Pass đồ phải là bật hoặc tắt.' });
+    }
+    if (Object.prototype.hasOwnProperty.call(settings, 'beehub_support_enabled') && typeof settings.beehub_support_enabled !== 'boolean') {
+      const b = settings.beehub_support_enabled;
+      settings.beehub_support_enabled = b === true || b === 'true' || b === 1 || b === '1';
+    }
+    if (Object.prototype.hasOwnProperty.call(settings, 'insurance_enabled') && typeof settings.insurance_enabled !== 'boolean') {
+      const b = settings.insurance_enabled;
+      settings.insurance_enabled = b === true || b === 'true' || b === 1 || b === '1';
+    }
+
+    const numericSettingKeys = new Set([
+      'deposit_rate',
+      'commission_rate',
+      'shared_move_discount_rate',
+      'cancel_before_accept_refund_rate',
+      'cancel_after_accept_refund_rate',
+      'min_deposit_amount',
+      'referral_reward_amount',
+    ]);
 
     const updatePromises = Object.entries(settings).map(([key, value]) => {
+      let normalizedValue = value;
+      if (numericSettingKeys.has(key)) {
+        const clean = typeof value === 'string' ? value.replace(/"/g, '').trim() : value;
+        const num = Number(clean);
+        if (!isNaN(num) && clean !== '') {
+          normalizedValue = num;
+        }
+      }
+
       return supabaseAdmin
         .from('platform_settings')
         .upsert({
           key,
-          value,
+          value: normalizedValue,
           updated_at: new Date().toISOString(),
           updated_by: req.user.id
         });
     });
 
-    await Promise.all(updatePromises);
+    const results = await Promise.all(updatePromises);
+    const failed = results.find(result => result.error);
+    if (failed) throw failed.error;
 
     res.json({
       success: true,
@@ -2232,7 +2297,8 @@ async function getWithdrawals(req, res) {
     const { 
       status = 'all', 
       page = 1, 
-      pageSize = 20 
+      pageSize = 20,
+      id
     } = req.query;
     
     const offset = (page - 1) * pageSize;
@@ -2264,7 +2330,9 @@ async function getWithdrawals(req, res) {
       .range(offset, offset + pageSize - 1)
       .order('requested_at', { ascending: false });
 
-    if (status !== 'all') {
+    if (id) {
+      query = query.eq('id', id);
+    } else if (status !== 'all') {
       query = query.eq('status', status);
     }
 
@@ -2273,7 +2341,11 @@ async function getWithdrawals(req, res) {
 
     // Get total count
     let countQuery = supabaseAdmin.from('provider_withdrawals').select('*', { count: 'exact', head: true });
-    if (status !== 'all') countQuery = countQuery.eq('status', status);
+    if (id) {
+      countQuery = countQuery.eq('id', id);
+    } else if (status !== 'all') {
+      countQuery = countQuery.eq('status', status);
+    }
     
     const { count } = await countQuery;
 

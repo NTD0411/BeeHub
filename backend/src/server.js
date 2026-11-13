@@ -42,3 +42,17 @@ server.on('error', (error) => {
   }
   throw error;
 });
+
+const { attachTrackingWebSocket } = require('./services/tracking-websocket.service');
+const { createOrderTrackingService } = require('./services/order-tracking.service');
+const { supabaseAdmin } = require('./services/supabase.service');
+const { verifyAccessToken } = require('./utils/jwt');
+const chatWsOrigins = [new URL(env.APP_URL).origin, ...(process.env.NODE_ENV === 'production' ? [] : ['http://localhost:3001', 'http://127.0.0.1:3103'])];
+require('./services/chat-websocket.service').attachChatWebSocket(server, {
+  events: require('./services/chat-events.service'), verifyToken: verifyAccessToken, allowedOrigins: chatWsOrigins,
+});
+attachTrackingWebSocket(server, {
+  service: createOrderTrackingService(supabaseAdmin), db: supabaseAdmin,
+  events: require('./services/tracking-events.service'), verifyToken: verifyAccessToken,
+  allowedOrigins: [new URL(env.APP_URL).origin, ...(process.env.NODE_ENV === 'production' ? [] : ['http://localhost:3001', 'http://127.0.0.1:3103'])],
+});

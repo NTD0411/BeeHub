@@ -38,8 +38,6 @@ function publicProfile(row, providerProfile) {
     status: row.status,
     student_id: row.student_id,
     university: row.university,
-    city: row.city,
-    address: row.address,
     created_at: row.created_at,
   };
   if (providerProfile) {

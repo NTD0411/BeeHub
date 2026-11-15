@@ -157,6 +157,8 @@ async function register(body) {
           id: userId,
           business_name: String(business_name).trim(),
           vehicle_type: 'small_truck',
+          rating: 0,
+          total_reviews: 0,
           base_price: 100000,
           price_per_km: 10000,
           price_per_floor: 15000,

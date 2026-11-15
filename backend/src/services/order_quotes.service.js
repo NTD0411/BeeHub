@@ -114,7 +114,7 @@ async function enrichQuote(quoteRow) {
     ...quoteRow,
     provider_name: profile?.business_name || userProfile?.full_name || 'Nhà xe',
     provider_avatar_url: userProfile?.avatar_url || null,
-    provider_rating: profile?.rating ?? 4.5,
+    provider_rating: profile?.rating ?? 0,
     provider_review_count: profile?.total_reviews ?? 0,
     provider_completed_trips: profile?.total_orders ?? 0,
     vehicle_label: profile?.vehicle_type || 'medium_truck',
@@ -195,24 +195,41 @@ async function selectQuote(orderId, quoteId, customerId) {
 
   const orderExpiresAt = calcOrderExpiresAt(pickupTime);
 
-  const { data: updatedOrder, error: oErr } = await supabaseAdmin
+  const updateOrderFields = {
+    provider_id: quote.provider_id,
+    base_price: quote.base_price,
+    total_price: quote.total_price,
+    scheduled_pickup_time: pickupTime,
+    status: 'matched',
+    lock_expires_at: lockExpiresAt,
+    order_expires_at: orderExpiresAt,
+    updated_at: new Date().toISOString(),
+  };
+
+  let { data: updatedOrder, error: oErr } = await supabaseAdmin
     .from('orders')
-    .update({
-      provider_id: quote.provider_id,
-      base_price: quote.base_price,
-      total_price: quote.total_price,
-      scheduled_pickup_time: pickupTime,
-      status: 'matched',
-      lock_expires_at: lockExpiresAt,
-      order_expires_at: orderExpiresAt,
-      updated_at: new Date().toISOString(),
-    })
+    .update(updateOrderFields)
     .eq('id', orderId)
     .eq('customer_id', customerId)
     .in('status', ['pending', 'matched'])
     .is('provider_id', null)
     .select('*')
     .single();
+
+  for (const col of ['order_expires_at', 'lock_expires_at', 'slot_locked_until']) {
+    if (oErr && new RegExp(col, 'i').test(oErr.message) && col in updateOrderFields) {
+      delete updateOrderFields[col];
+      ({ data: updatedOrder, error: oErr } = await supabaseAdmin
+        .from('orders')
+        .update(updateOrderFields)
+        .eq('id', orderId)
+        .eq('customer_id', customerId)
+        .in('status', ['pending', 'matched'])
+        .is('provider_id', null)
+        .select('*')
+        .single());
+    }
+  }
 
   if (oErr || !updatedOrder) {
     throw Object.assign(new Error('Không thể chốt báo giá — đơn đã được xử lý'), { status: 409 });

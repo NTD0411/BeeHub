@@ -2,18 +2,32 @@ const { supabaseAdmin } = require('./supabase.service');
 const { createNotification } = require('./notification.service');
 const { previewLabel, isImageMime } = require('./chat-attachments.service');
 const { httpError } = require('./auth.helpers');
+const chatEvents = require('./chat-events.service');
 
-const CHAT_ELIGIBLE_STATUSES = ['matched', 'accepted', 'picking_up', 'in_progress', 'completed'];
+const CHAT_ELIGIBLE_STATUSES = ['pending', 'matched', 'accepted', 'picking_up', 'in_progress', 'completed'];
 
 async function loadProfilesMap(ids) {
   const unique = [...new Set(ids.filter(Boolean))];
   if (unique.length === 0) return {};
-  const { data, error } = await supabaseAdmin
-    .from('profiles')
-    .select('id, full_name, avatar_url, phone')
-    .in('id', unique);
+  const [{ data, error }, { data: providers }] = await Promise.all([
+    supabaseAdmin.from('profiles').select('id, full_name, avatar_url, phone, role').in('id', unique),
+    supabaseAdmin.from('provider_profiles').select('id, business_name, vehicle_plate, vehicle_type').in('id', unique),
+  ]);
   if (error) throw httpError(500, error.message, 'db_error');
-  return Object.fromEntries((data || []).map((p) => [p.id, p]));
+  const providerMap = Object.fromEntries((providers || []).map((p) => [p.id, p]));
+  return Object.fromEntries((data || []).map((p) => {
+    const pp = providerMap[p.id];
+    // Nhà xe: ưu tiên tên doanh nghiệp để khách biết đang nhắn với nhà xe nào.
+    const displayName = pp?.business_name?.trim() || p.full_name?.trim() || null;
+    return [p.id, {
+      ...p,
+      full_name: displayName,
+      contact_name: p.full_name ?? null,
+      license_plate: pp?.vehicle_plate ?? null,
+      vehicle_plate: pp?.vehicle_plate ?? null,
+      vehicle_type: pp?.vehicle_type ?? null,
+    }];
+  }));
 }
 
 // ── GET /api/conversations ────────────────────────────────────────────────────
@@ -47,7 +61,7 @@ async function listConversations(userId, role) {
     orderIds.length
       ? supabaseAdmin
           .from('orders')
-          .select('id, status, service_type, created_at')
+          .select('id, order_number, status, service_type, created_at')
           .in('id', orderIds)
       : Promise.resolve({ data: [], error: null }),
     loadProfilesMap(profileIds),
@@ -76,7 +90,7 @@ async function listConversations(userId, role) {
 
   const { data: orders, error: ordersErr } = await supabaseAdmin
     .from('orders')
-    .select('id, status, service_type, created_at, customer_id, provider_id')
+    .select('id, order_number, status, service_type, created_at, customer_id, provider_id')
     .or(`customer_id.eq.${userId},provider_id.eq.${userId}`)
     .not('provider_id', 'is', null)
     .in('status', CHAT_ELIGIBLE_STATUSES)
@@ -102,6 +116,7 @@ async function listConversations(userId, role) {
       created_at: order.created_at,
       order: {
         id: order.id,
+        order_number: order.order_number,
         status: order.status,
         service_type: order.service_type,
         created_at: order.created_at,
@@ -188,6 +203,7 @@ async function getMessages(orderId, userId) {
     .order('created_at', { ascending: true });
 
   if (msgsErr) throw httpError(500, msgsErr.message, 'db_error');
+  const senderNames = await loadProfilesMap([conv.customer_id, conv.provider_id]);
 
   return {
     conversation_id: conv.id,
@@ -203,7 +219,7 @@ async function getMessages(orderId, userId) {
       is_read: m.is_read,
       read_at: m.read_at ?? null,
       is_mine: m.sender?.id === userId,
-      sender: m.sender,
+      sender: m.sender ? { ...m.sender, full_name: senderNames[m.sender.id]?.full_name ?? m.sender.full_name } : m.sender,
       reply_to: m.reply_to ?? null,
       created_at: m.created_at,
     })),
@@ -325,6 +341,8 @@ async function sendMessage(orderId, userId, body) {
         : { customer_unread_count: currentUnread + 1 }),
     })
     .eq('id', conv.id);
+
+  chatEvents.notify([recipientId, userId], { kind: 'order', order_id: orderId, message_id: msg.id });
 
   // Notify recipient (fire-and-forget)
   createNotification(

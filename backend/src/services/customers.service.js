@@ -86,9 +86,41 @@ async function getProfile(userId) {
     throw httpError(404, 'Không tìm thấy profile', 'not_found');
   }
 
+  const [ordersRes, completedRes, reviewsRes] = await Promise.all([
+    supabaseAdmin
+      .from('orders')
+      .select('id', { count: 'exact', head: true })
+      .eq('customer_id', userId)
+      .neq('status', 'cancelled'),
+    supabaseAdmin
+      .from('orders')
+      .select('id', { count: 'exact', head: true })
+      .eq('customer_id', userId)
+      .eq('status', 'completed'),
+    supabaseAdmin
+      .from('reviews')
+      .select('rating')
+      .eq('customer_id', userId),
+  ]);
+
   const { customer_profiles: cp, ...profile } = data;
   const cpRow = Array.isArray(cp) ? cp[0] : cp;
-  return { ...profile, ...(cpRow || {}) };
+  const totalOrdersCount = ordersRes.count ?? cpRow?.total_orders ?? 0;
+  const completedCount = completedRes.count ?? 0;
+  const reviewsList = reviewsRes.data || [];
+  const avgRating = reviewsList.length > 0
+    ? Math.round((reviewsList.reduce((sum, r) => sum + (Number(r.rating) || 0), 0) / reviewsList.length) * 10) / 10
+    : 0;
+  const loyaltyPoints = cpRow?.loyalty_points || (completedCount * 20);
+
+  return {
+    ...profile,
+    ...(cpRow || {}),
+    total_orders: totalOrdersCount,
+    avg_rating: avgRating,
+    total_reviews: reviewsList.length,
+    loyalty_points: loyaltyPoints,
+  };
 }
 
 /** API-009 — PATCH /api/customers/me */

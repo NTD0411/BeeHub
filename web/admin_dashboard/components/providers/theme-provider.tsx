@@ -19,11 +19,11 @@ interface ThemeContextValue {
 
 const ThemeContext = React.createContext<ThemeContextValue | null>(null);
 
-const STORAGE_KEY = "unimove-admin-theme";
+const STORAGE_KEY = "beehub-admin-theme";
 
 /* ── Inline script injected into <head> — prevents FOUC ─────────────────── */
 
-const THEME_SCRIPT = `(function(){try{var s=localStorage.getItem("unimove-admin-theme");var r=s;if(!r||r==="system"){r=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}if(r==="dark"){document.documentElement.classList.add("dark");}else{document.documentElement.classList.remove("dark");}}catch(e){}})();`;
+const THEME_SCRIPT = `(function(){try{var s=localStorage.getItem("beehub-admin-theme");var r=s;if(!r||r==="system"){r=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}if(r==="dark"){document.documentElement.classList.add("dark");}else{document.documentElement.classList.remove("dark");}}catch(e){}})();`;
 
 /* ── Helpers ─────────────────────────────────────────────────────────────── */
 

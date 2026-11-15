@@ -258,7 +258,7 @@ getRefundHistory({ page, pageSize })
 |---|---|---|
 | `platform_name` | Tên nền tảng | `"BeeHub"` |
 | `commission_rate` | % hoa hồng | `15` |
-| `support_email` | Email hỗ trợ | `"support@unimove.com"` |
+| `support_email` | Email hỗ trợ | `"support@beehub.com"` |
 
 ---
 

@@ -655,6 +655,7 @@ async function requestRefundForOrder(customerId, orderId, reason, options = {}) 
     {
       priority: 'high',
       actionData: { order_id: orderId, refund_id: refund.id, type: 'refund_approval' },
+      actionUrl: `/admin/refunds?id=${refund.id}`,
     },
   );
 
@@ -1005,11 +1006,31 @@ async function applyOrderAfterDepositPaid(paymentId) {
     updateFields.status = isPickupSameCalendarDay(order.scheduled_pickup_time) ? 'accepted' : 'scheduled';
   }
 
-  const { error: updateErr } = await supabaseAdmin
+  let { error: updateErr } = await supabaseAdmin
     .from('orders')
     .update(updateFields)
     .eq('id', order.id)
     .eq('deposit_paid', false);
+
+  for (const col of ['slot_locked_until', 'lock_expires_at', 'order_expires_at']) {
+    if (updateErr && new RegExp(col, 'i').test(updateErr.message) && col in updateFields) {
+      delete updateFields[col];
+      ({ error: updateErr } = await supabaseAdmin
+        .from('orders')
+        .update(updateFields)
+        .eq('id', order.id)
+        .eq('deposit_paid', false));
+    }
+  }
+
+  if (updateErr && /order_status|scheduled/i.test(updateErr.message) && updateFields.status === 'scheduled') {
+    updateFields.status = 'accepted';
+    ({ error: updateErr } = await supabaseAdmin
+      .from('orders')
+      .update(updateFields)
+      .eq('id', order.id)
+      .eq('deposit_paid', false));
+  }
 
   if (updateErr) {
     console.warn('[PayOS] applyOrderAfterDepositPaid failed:', updateErr.message);
@@ -1101,6 +1122,14 @@ async function applyPayOSPaymentUpdate(payment, options) {
   if (dbStatus === 'completed') {
     try {
       await applyOrderAfterDepositPaid(updated.id);
+      if (updated.order_id) {
+        await supabaseAdmin
+          .from('payments')
+          .update({ status: 'cancelled' })
+          .eq('order_id', updated.order_id)
+          .eq('status', 'pending')
+          .neq('id', updated.id);
+      }
     } catch (err) {
       console.warn('[PayOS] Order deposit update failed:', err.message);
     }
@@ -1213,6 +1242,93 @@ async function autoSyncPendingPayments(payments) {
   );
 }
 
+/**
+ * Tự động kiểm tra và đồng bộ các giao dịch đặt cọc của 1 đơn hàng từ PayOS
+ */
+async function syncOrderDepositPayments(orderId) {
+  if (!orderId) return { synced: false, completedPayment: null };
+
+  const { data: rows, error } = await supabaseAdmin
+    .from('payments')
+    .select(PAYOS_SYNC_FIELDS)
+    .eq('order_id', orderId)
+    .in('status', ['pending', 'completed'])
+    .order('created_at', { ascending: false })
+    .limit(10);
+
+  if (error || !rows?.length) {
+    return { synced: false, completedPayment: null };
+  }
+
+  const existingCompleted = rows.find((r) => r.status === 'completed');
+  if (existingCompleted) {
+    let repaired = false;
+    try {
+      const res = await applyOrderAfterDepositPaid(existingCompleted.id);
+      repaired = Boolean(res?.applied);
+      const pendingIds = rows.filter((r) => r.status === 'pending').map((r) => r.id);
+      if (pendingIds.length > 0) {
+        await supabaseAdmin.from('payments').update({ status: 'cancelled' }).in('id', pendingIds);
+      }
+    } catch (err) {
+      console.warn('[PayOS] syncOrderDepositPayments repair failed:', err.message);
+    }
+    return { synced: repaired, completedPayment: existingCompleted };
+  }
+
+  const pendingRows = rows.filter((r) => r.status === 'pending' && r.payos_order_id);
+  let completedPayment = null;
+  let synced = false;
+
+  await Promise.all(
+    pendingRows.map(async (row) => {
+      const res = await maybeAutoSyncPayment(row);
+      if (res.synced) synced = true;
+      if (res.payment?.status === 'completed') {
+        completedPayment = res.payment;
+      }
+    }),
+  );
+
+  return { synced, completedPayment };
+}
+
+/**
+ * Tự động đồng bộ các giao dịch pending gần nhất của user trước khi load danh sách đơn hàng
+ */
+async function autoSyncUserPendingPayments(userId, role = 'customer') {
+  if (!userId) return;
+  try {
+    if (role === 'customer') {
+      const { data: pending } = await supabaseAdmin
+        .from('payments')
+        .select(PAYOS_SYNC_FIELDS)
+        .eq('customer_id', userId)
+        .eq('status', 'pending')
+        .not('payos_order_id', 'is', null)
+        .order('created_at', { ascending: false })
+        .limit(5);
+      if (pending?.length) {
+        await autoSyncPendingPayments(pending);
+      }
+    } else if (role === 'provider') {
+      const { data: unpaidOrders } = await supabaseAdmin
+        .from('orders')
+        .select('id')
+        .eq('provider_id', userId)
+        .eq('deposit_paid', false)
+        .in('status', ['matched', 'pending'])
+        .order('created_at', { ascending: false })
+        .limit(5);
+      if (unpaidOrders?.length) {
+        await Promise.all(unpaidOrders.map((o) => syncOrderDepositPayments(o.id)));
+      }
+    }
+  } catch (err) {
+    console.warn('[PayOS] autoSyncUserPendingPayments failed:', err.message);
+  }
+}
+
 /** POST /api/payments/:id/sync — đồng bộ thủ công (dự phòng) */
 async function syncPaymentStatus(userId, paymentId) {
   const { data: payment, error } = await supabaseAdmin
@@ -1300,6 +1416,8 @@ module.exports = {
   syncPaymentStatus,
   syncPaymentByCode,
   syncPaymentRecord,
+  syncOrderDepositPayments,
+  autoSyncUserPendingPayments,
   processPayOSWebhook,
   applyOrderAfterDepositPaid,
 };

@@ -8,9 +8,18 @@ const { notFound, errorHandler } = require('./middleware/error.middleware');
 
 const app = express();
 
+app.set('etag', false);
+
 app.use(helmet());
 app.use(cors());
 app.use(morgan('dev'));
+
+app.use('/api', (req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
 
 // Middleware to capture raw body for webhook signature verification
 app.use(express.json({ verify: (req, res, buf, encoding) => {
@@ -19,7 +28,7 @@ app.use(express.json({ verify: (req, res, buf, encoding) => {
 
 app.use('/api', apiRoutes);
 
-const WEB_DEV_URL = process.env.WEB_DEV_URL || 'http://localhost:3001';
+const WEB_DEV_URL = process.env.APP_URL || process.env.WEB_DEV_URL || 'http://localhost:3001';
 
 app.get('/', (_req, res) => {
   res.json({

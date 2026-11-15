@@ -1,10 +1,6 @@
 const { supabaseAdmin } = require('./supabase.service');
 const { httpError } = require('./auth.helpers');
-const {
-  ensurePublicImageBucket,
-  getImageExtFromMime,
-  COMMON_IMAGE_MIME_TYPES,
-} = require('./storage.helpers');
+const { ensurePublicImageBucket, getImageExtFromMime, COMMON_IMAGE_MIME_TYPES } = require('./storage.helpers');
 
 const PROVIDER_DOCS_BUCKET = 'provider-documents';
 const FIELD_TO_DOC_TYPE = {
@@ -14,12 +10,53 @@ const FIELD_TO_DOC_TYPE = {
   driver_license: 'license',
   vehicle_photo: 'insurance',
 };
+
 const PROVIDER_SELECT = `
-  id, business_name, vehicle_type, vehicle_plate, base_price, price_per_km,
-  price_per_floor, rating, total_reviews, total_orders, is_verified,
-  is_available, service_area,
+  id,
+  business_name,
+  vehicle_type,
+  vehicle_plate,
+  base_price,
+  price_per_km,
+  price_per_floor,
+  rating,
+  total_reviews,
+  total_orders,
+  is_verified,
+  is_available,
+  service_area,
   profiles!provider_profiles_id_fkey(full_name, avatar_url, phone)
 `;
+
+async function browseProviders({ city, minRating, limit = 20 }) {
+  let query = supabaseAdmin
+    .from('provider_profiles')
+    .select(PROVIDER_SELECT)
+    .eq('is_verified', true)
+    .eq('is_available', true)
+    .order('rating', { ascending: false })
+    .limit(limit);
+
+  if (minRating) query = query.gte('rating', minRating);
+
+  const { data, error } = await query;
+  if (error) throw Object.assign(new Error(error.message), { status: 400 });
+
+  if (city) {
+    const needle = String(city).toLowerCase();
+    return (data || []).filter((row) => {
+      const areas = Array.isArray(row.service_area) ? row.service_area : [];
+      if (areas.length === 0) return needle.includes('đà nẵng') || needle.includes('da nang');
+      return areas.some(
+        (a) =>
+          String(a).toLowerCase().includes(needle) ||
+          needle.includes(String(a).toLowerCase()),
+      );
+    });
+  }
+
+  return data;
+}
 
 function mapProviderRow(row) {
   const profile = Array.isArray(row.profiles) ? row.profiles[0] : row.profiles;
@@ -79,35 +116,6 @@ function mapReview(row) {
   };
 }
 
-async function browseProviders({ city, minRating, limit = 20 }) {
-  let query = supabaseAdmin
-    .from('provider_profiles')
-    .select(PROVIDER_SELECT)
-    .eq('is_verified', true)
-    .eq('is_available', true)
-    .order('rating', { ascending: false })
-    .limit(limit);
-
-  if (minRating) query = query.gte('rating', minRating);
-
-  const { data, error } = await query;
-  if (error) throw httpError(400, error.message, 'db_error');
-
-  if (!city) return (data || []).map(mapProviderRow);
-
-  const needle = String(city).toLowerCase();
-  return (data || [])
-    .filter((row) => {
-      const areas = Array.isArray(row.service_area) ? row.service_area : [];
-      if (areas.length === 0) return needle.includes('đà nẵng') || needle.includes('da nang');
-      return areas.some((area) => {
-        const value = String(area).toLowerCase();
-        return value.includes(needle) || needle.includes(value);
-      });
-    })
-    .map(mapProviderRow);
-}
-
 async function loadProviderRow(providerId) {
   const { data, error } = await supabaseAdmin
     .from('provider_profiles')
@@ -116,13 +124,17 @@ async function loadProviderRow(providerId) {
     .maybeSingle();
 
   if (error) {
-    if (error.code === '42P01') return loadProviderFromProfilesOnly(providerId);
+    if (error.code === '42P01') {
+      return loadProviderFromProfilesOnly(providerId);
+    }
     throw httpError(500, error.message, 'db_error');
   }
   if (data) return data;
+
   return loadProviderFromProfilesOnly(providerId);
 }
 
+/** Gộp profiles (metadata) + provider_profiles (nhà xe) — tránh SELECT cột không có trên profiles. */
 async function loadProviderFromProfilesOnly(providerId) {
   const { data: profile, error: profileError } = await supabaseAdmin
     .from('profiles')
@@ -131,10 +143,12 @@ async function loadProviderFromProfilesOnly(providerId) {
     .eq('role', 'provider')
     .maybeSingle();
 
-  if (profileError) throw httpError(500, profileError.message, 'db_error');
+  if (profileError) {
+    throw httpError(500, profileError.message, 'db_error');
+  }
   if (!profile) return null;
 
-  const { data: provider, error: providerError } = await supabaseAdmin
+  const { data: pp, error: ppError } = await supabaseAdmin
     .from('provider_profiles')
     .select(
       'id, business_name, vehicle_type, vehicle_plate, base_price, price_per_km, price_per_floor, rating, total_reviews, is_verified, is_available, service_area',
@@ -142,23 +156,34 @@ async function loadProviderFromProfilesOnly(providerId) {
     .eq('id', providerId)
     .maybeSingle();
 
-  if (providerError && providerError.code !== '42P01') {
-    throw httpError(500, providerError.message, 'db_error');
+  if (ppError && ppError.code !== '42P01') {
+    throw httpError(500, ppError.message, 'db_error');
+  }
+
+  if (!pp) {
+    return {
+      id: profile.id,
+      business_name: profile.full_name,
+      vehicle_type: null,
+      vehicle_plate: null,
+      base_price: null,
+      price_per_km: null,
+      price_per_floor: null,
+      rating: 0,
+      total_reviews: 0,
+      is_verified: false,
+      is_available: false,
+      service_area: [],
+      profiles: {
+        full_name: profile.full_name,
+        avatar_url: profile.avatar_url,
+        phone: profile.phone,
+      },
+    };
   }
 
   return {
-    id: providerId,
-    business_name: provider?.business_name ?? profile.full_name,
-    vehicle_type: provider?.vehicle_type ?? null,
-    vehicle_plate: provider?.vehicle_plate ?? null,
-    base_price: provider?.base_price ?? null,
-    price_per_km: provider?.price_per_km ?? null,
-    price_per_floor: provider?.price_per_floor ?? null,
-    rating: provider?.rating ?? 0,
-    total_reviews: provider?.total_reviews ?? 0,
-    is_verified: provider?.is_verified ?? false,
-    is_available: provider?.is_available ?? false,
-    service_area: provider?.service_area ?? [],
+    ...pp,
     profiles: {
       full_name: profile.full_name,
       avatar_url: profile.avatar_url,
@@ -167,14 +192,20 @@ async function loadProviderFromProfilesOnly(providerId) {
   };
 }
 
+/** BE-020 — GET /api/providers/:id */
 async function getProviderById(providerId, { reviewsLimit = 5 } = {}) {
   const id = String(providerId || '').trim();
-  if (!id) throw httpError(400, 'Thiếu id nhà xe', 'validation_error');
+  if (!id) {
+    throw httpError(400, 'Thiếu id nhà xe', 'validation_error');
+  }
 
   const providerRow = await loadProviderRow(id);
-  if (!providerRow) throw httpError(404, 'Không tìm thấy nhà xe', 'not_found');
+  if (!providerRow) {
+    throw httpError(404, 'Không tìm thấy nhà xe', 'not_found');
+  }
 
   const limit = Math.min(Math.max(parseInt(String(reviewsLimit), 10) || 5, 1), 20);
+
   const [packagesResult, reviewsResult, summaryResult] = await Promise.all([
     supabaseAdmin
       .from('service_packages')
@@ -197,140 +228,490 @@ async function getProviderById(providerId, { reviewsLimit = 5 } = {}) {
     supabaseAdmin.from('provider_reviews_summary').select('*').eq('provider_id', id).maybeSingle(),
   ]);
 
-  for (const result of [packagesResult, reviewsResult, summaryResult]) {
-    if (result.error) throw httpError(500, result.error.message, 'db_error');
+  if (packagesResult.error) {
+    throw httpError(500, packagesResult.error.message, 'db_error');
+  }
+  if (reviewsResult.error) {
+    throw httpError(500, reviewsResult.error.message, 'db_error');
+  }
+  if (summaryResult.error) {
+    throw httpError(500, summaryResult.error.message, 'db_error');
   }
 
-  const summary = summaryResult.data;
+  const base = mapProviderRow(providerRow);
+
   return {
-    ...mapProviderRow(providerRow),
+    ...base,
     packages: (packagesResult.data || []).map(mapServicePackage),
-    reviews_summary: summary
+    reviews_summary: summaryResult.data
       ? {
-          total_reviews: summary.total_reviews ?? 0,
-          average_rating: Number(summary.average_rating ?? 0),
-          rating_5_count: summary.rating_5_count ?? 0,
-          rating_4_count: summary.rating_4_count ?? 0,
-          rating_3_count: summary.rating_3_count ?? 0,
-          rating_2_count: summary.rating_2_count ?? 0,
-          rating_1_count: summary.rating_1_count ?? 0,
-          avg_service_quality: Number(summary.avg_service_quality ?? 0),
-          avg_punctuality: Number(summary.avg_punctuality ?? 0),
-          avg_professionalism: Number(summary.avg_professionalism ?? 0),
-          avg_value_for_money: Number(summary.avg_value_for_money ?? 0),
-          response_rate: Number(summary.response_rate ?? 0),
+          total_reviews: summaryResult.data.total_reviews ?? 0,
+          average_rating: Number(summaryResult.data.average_rating ?? 0),
+          rating_5_count: summaryResult.data.rating_5_count ?? 0,
+          rating_4_count: summaryResult.data.rating_4_count ?? 0,
+          rating_3_count: summaryResult.data.rating_3_count ?? 0,
+          rating_2_count: summaryResult.data.rating_2_count ?? 0,
+          rating_1_count: summaryResult.data.rating_1_count ?? 0,
+          avg_service_quality: Number(summaryResult.data.avg_service_quality ?? 0),
+          avg_punctuality: Number(summaryResult.data.avg_punctuality ?? 0),
+          avg_professionalism: Number(summaryResult.data.avg_professionalism ?? 0),
+          avg_value_for_money: Number(summaryResult.data.avg_value_for_money ?? 0),
+          response_rate: Number(summaryResult.data.response_rate ?? 0),
         }
       : null,
     reviews: (reviewsResult.data || []).map(mapReview),
   };
 }
 
-async function getMyProfile(providerId) {
-  const { data, error } = await supabaseAdmin
-    .from('profiles')
-    .select(`
-      id, email, full_name, phone, avatar_url, role, status,
-      created_at, updated_at,
-      provider_profiles (
-        business_name, vehicle_type, vehicle_plate, is_verified, verification_status,
-        verification_notes, base_price, price_per_km, price_per_floor,
-        rating, total_reviews, total_orders, compliance_score, is_available, service_area
-      )
-    `)
-    .eq('id', providerId)
-    .single();
-
-  if (error || !data) throw httpError(404, 'Không tìm thấy thông tin tài xế', 'not_found');
-  const { provider_profiles: providerProfile, ...profile } = data;
-  const provider = Array.isArray(providerProfile) ? providerProfile[0] : providerProfile;
-  return { ...profile, ...(provider || {}) };
+function toVNDateString(dateInput) {
+  const d = new Date(dateInput);
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Ho_Chi_Minh',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(d);
 }
 
-async function getMyDocuments(providerId) {
+// ── GET /api/providers/me/earnings?period=week|month|year ─────────────────────
+async function getEarnings(providerId, period = 'week') {
+  const now = new Date();
+  let from;
+
+  if (period === 'week') {
+    from = new Date(now);
+    from.setDate(now.getDate() - 6);
+    from.setHours(0, 0, 0, 0);
+  } else if (period === 'month') {
+    from = new Date(now.getFullYear(), now.getMonth(), 1);
+  } else {
+    from = new Date(now.getFullYear(), 0, 1);
+  }
+
   const { data, error } = await supabaseAdmin
-    .from('provider_documents')
-    .select(
-      'id, document_type, document_url, document_number, issue_date, expiry_date, is_verified, notes, created_at',
-    )
+    .from('orders')
+    .select('id, total_price, base_price, completed_at, updated_at, created_at')
     .eq('provider_id', providerId)
-    .order('created_at', { ascending: false });
+    .eq('status', 'completed')
+    .order('updated_at', { ascending: true });
 
   if (error) throw httpError(500, error.message, 'db_error');
-  return (data || []).map((doc) => ({
-    ...doc,
-    doc_type: doc.notes || doc.document_type,
-    file_url: doc.document_url,
-    status: doc.is_verified ? 'verified' : 'pending',
-    uploaded_at: doc.created_at,
-  }));
+
+  const fromDateStr = toVNDateString(from);
+  const todayDateStr = toVNDateString(now);
+
+  const orders = (data || []).filter((o) => {
+    const ts = o.completed_at || o.updated_at || o.created_at;
+    if (!ts) return false;
+    const dStr = toVNDateString(ts);
+    return dStr >= fromDateStr && dStr <= todayDateStr;
+  });
+
+  const byDate = {};
+  for (const o of orders) {
+    const ts = o.completed_at || o.updated_at || o.created_at;
+    const date = toVNDateString(ts);
+    const price = Number(o.total_price ?? o.base_price) || 0;
+    if (!byDate[date]) byDate[date] = { earned: 0, orders: 0 };
+    byDate[date].earned += price;
+    byDate[date].orders += 1;
+  }
+
+  const breakdownMap = new Map();
+  const cursor = new Date(from);
+  while (toVNDateString(cursor) <= todayDateStr) {
+    const date = toVNDateString(cursor);
+    breakdownMap.set(date, {
+      date,
+      earned: byDate[date]?.earned ?? 0,
+      orders: byDate[date]?.orders ?? 0,
+    });
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  for (const [date, val] of Object.entries(byDate)) {
+    if (!breakdownMap.has(date)) {
+      breakdownMap.set(date, { date, earned: val.earned, orders: val.orders });
+    }
+  }
+
+  const breakdown = Array.from(breakdownMap.values()).sort((a, b) => a.date.localeCompare(b.date));
+
+  const total_earned = orders.reduce((s, o) => s + (Number(o.total_price ?? o.base_price) || 0), 0);
+
+  const walletSummary = await getWithdrawalSummary(providerId, data || []);
+
+  return {
+    period,
+    total_earned,
+    total_orders: orders.length,
+    breakdown,
+    ...walletSummary,
+  };
 }
 
+async function getWithdrawalSummary(providerId, completedOrdersCache = null) {
+  let completedOrders = completedOrdersCache;
+  if (!completedOrders) {
+    const { data } = await supabaseAdmin
+      .from('orders')
+      .select('id, total_price, base_price')
+      .eq('provider_id', providerId)
+      .eq('status', 'completed');
+    completedOrders = data || [];
+  }
+
+  const [{ data: earningsRows }, { data: withdrawals }, { data: profile }] = await Promise.all([
+    supabaseAdmin
+      .from('provider_earnings')
+      .select('net_earnings, order_amount, status')
+      .eq('provider_id', providerId),
+    supabaseAdmin
+      .from('provider_withdrawals')
+      .select('id, amount, bank_name, bank_account_number, bank_account_name, status, requested_at, processed_at, transaction_reference, notes, rejection_reason, created_at')
+      .eq('provider_id', providerId)
+      .order('requested_at', { ascending: false })
+      .limit(50),
+    supabaseAdmin
+      .from('provider_profiles')
+      .select('bank_name, bank_account_number, bank_account_name')
+      .eq('id', providerId)
+      .maybeSingle(),
+  ]);
+
+  const allTimeGross = (completedOrders || []).reduce(
+    (s, o) => s + (Number(o.total_price ?? o.base_price) || 0),
+    0,
+  );
+  const allTimeNetFromOrders = Math.round(allTimeGross * 0.9);
+  const allTimeNetFromTable = Math.round(
+    (earningsRows || []).reduce((s, e) => s + (Number(e.net_earnings) || 0), 0),
+  );
+  const all_time_net = Math.max(allTimeNetFromOrders, allTimeNetFromTable);
+
+  const list = withdrawals || [];
+  const total_withdrawn = Math.round(
+    list
+      .filter((w) => w.status === 'completed')
+      .reduce((s, w) => s + (Number(w.amount) || 0), 0),
+  );
+  const pending_withdrawal = Math.round(
+    list
+      .filter((w) => w.status === 'pending' || w.status === 'processing')
+      .reduce((s, w) => s + (Number(w.amount) || 0), 0),
+  );
+  const available_balance = Math.max(0, all_time_net - total_withdrawn - pending_withdrawal);
+
+  return {
+    all_time_earned: allTimeGross,
+    all_time_net,
+    available_balance,
+    total_withdrawn,
+    pending_withdrawal,
+    bank_info: {
+      bank_name: profile?.bank_name || '',
+      bank_account_number: profile?.bank_account_number || '',
+      bank_account_name: profile?.bank_account_name || '',
+    },
+    withdrawals: list.map((w) => ({
+      ...w,
+      amount: Number(w.amount) || 0,
+    })),
+  };
+}
+
+async function getMyWithdrawals(providerId) {
+  return getWithdrawalSummary(providerId);
+}
+
+async function updateBankInfo(providerId, payload = {}) {
+  const bank_name = String(payload.bank_name || '').trim();
+  const bank_account_number = String(payload.bank_account_number || '').trim();
+  const bank_account_name = String(payload.bank_account_name || '').trim().toUpperCase();
+
+  if (!bank_name || !bank_account_number || !bank_account_name) {
+    throw httpError(400, 'Vui lòng nhập đầy đủ tên ngân hàng, số tài khoản và tên chủ tài khoản', 'validation_error');
+  }
+
+  const { error } = await supabaseAdmin
+    .from('provider_profiles')
+    .update({
+      bank_name,
+      bank_account_number,
+      bank_account_name,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', providerId);
+
+  if (error) throw httpError(500, error.message, 'db_error');
+
+  return {
+    bank_info: { bank_name, bank_account_number, bank_account_name },
+  };
+}
+
+async function createWithdrawal(providerId, payload = {}) {
+  const amount = Math.round(Number(payload.amount) || 0);
+  const bank_name = String(payload.bank_name || '').trim();
+  const bank_account_number = String(payload.bank_account_number || '').trim();
+  const bank_account_name = String(payload.bank_account_name || '').trim().toUpperCase();
+  const notes = payload.notes ? String(payload.notes).trim() : null;
+
+  if (!amount || amount < 1000) {
+    throw httpError(400, 'Số tiền rút tối thiểu là 1.000đ', 'invalid_amount');
+  }
+  if (!bank_name || !bank_account_number || !bank_account_name) {
+    throw httpError(400, 'Vui lòng nhập đầy đủ thông tin tài khoản ngân hàng nhận tiền', 'validation_error');
+  }
+
+  const summary = await getWithdrawalSummary(providerId);
+  if (amount > summary.available_balance) {
+    throw httpError(
+      400,
+      `Số dư khả dụng không đủ (Hiện có: ${summary.available_balance.toLocaleString('vi-VN')}đ)`,
+      'insufficient_balance',
+    );
+  }
+
+  // Lưu luôn thông tin ngân hàng vào hồ sơ nhà xe
+  await supabaseAdmin
+    .from('provider_profiles')
+    .update({
+      bank_name,
+      bank_account_number,
+      bank_account_name,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', providerId);
+
+  const now = new Date().toISOString();
+  const { data: withdrawal, error } = await supabaseAdmin
+    .from('provider_withdrawals')
+    .insert({
+      provider_id: providerId,
+      amount,
+      bank_name,
+      bank_account_number,
+      bank_account_name,
+      notes,
+      status: 'pending',
+      requested_at: now,
+    })
+    .select('*')
+    .single();
+
+  if (error) throw httpError(500, error.message, 'db_error');
+
+  try {
+    const { data: admins } = await supabaseAdmin
+      .from('profiles')
+      .select('id')
+      .eq('role', 'admin')
+      .limit(10);
+
+    if (admins?.length) {
+      await supabaseAdmin.from('notifications').insert(
+        admins.map((a) => ({
+          user_id: a.id,
+          notification_type: 'withdrawal_processed',
+          title: 'Yêu cầu rút tiền mới từ tài xế',
+          body: `Tài xế yêu cầu rút ${amount.toLocaleString('vi-VN')}đ về ${bank_name} (${bank_account_number}).`,
+          priority: 'high',
+          action_url: `/admin/finance?tab=withdrawals&id=${withdrawal.id}`,
+          action_data: { withdrawal_id: withdrawal.id, type: 'withdrawal_request' },
+        })),
+      );
+    }
+  } catch (_) {
+    // ignore notification error
+  }
+
+  const updatedSummary = await getWithdrawalSummary(providerId);
+  return {
+    withdrawal: { ...withdrawal, amount: Number(withdrawal.amount) || 0 },
+    ...updatedSummary,
+  };
+}
+
+async function cancelWithdrawal(providerId, withdrawalId) {
+  const { data: existing, error: findErr } = await supabaseAdmin
+    .from('provider_withdrawals')
+    .select('id, provider_id, status, amount')
+    .eq('id', withdrawalId)
+    .maybeSingle();
+
+  if (findErr) throw httpError(500, findErr.message, 'db_error');
+  if (!existing) throw httpError(404, 'Không tìm thấy yêu cầu rút tiền', 'not_found');
+  if (existing.provider_id !== providerId) {
+    throw httpError(403, 'Bạn không có quyền hủy yêu cầu này', 'forbidden');
+  }
+  if (existing.status !== 'pending') {
+    throw httpError(400, 'Chỉ có thể hủy yêu cầu đang ở trạng thái chờ duyệt', 'cannot_cancel');
+  }
+
+  const { data: updated, error } = await supabaseAdmin
+    .from('provider_withdrawals')
+    .update({
+      status: 'cancelled',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', withdrawalId)
+    .select('*')
+    .single();
+
+  if (error) throw httpError(500, error.message, 'db_error');
+
+  const updatedSummary = await getWithdrawalSummary(providerId);
+  return {
+    withdrawal: { ...updated, amount: Number(updated.amount) || 0 },
+    ...updatedSummary,
+  };
+}
+
+// ── GET /api/providers/me/schedule ────────────────────────────────────────────
+async function getSchedule(providerId) {
+  const { data, error } = await supabaseAdmin
+    .from('provider_availability')
+    .select('id, day_of_week, start_time, end_time, is_available')
+    .eq('provider_id', providerId)
+    .order('day_of_week')
+    .order('start_time');
+
+  if (error) throw httpError(500, error.message, 'db_error');
+
+  const DAY_NAMES = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+
+  const days = Array.from({ length: 7 }, (_, i) => ({
+    day_of_week: i,
+    day_name: DAY_NAMES[i],
+    slots: [],
+  }));
+
+  for (const row of data || []) {
+    days[row.day_of_week].slots.push({
+      id: row.id,
+      start_time: row.start_time,
+      end_time: row.end_time,
+      is_available: row.is_available,
+    });
+  }
+
+  return days;
+}
+
+// ── PATCH /api/providers/me/schedule ─────────────────────────────────────────
+async function updateSchedule(providerId, slots) {
+  if (!Array.isArray(slots)) throw httpError(400, 'slots phải là mảng', 'validation_error');
+
+  for (const s of slots) {
+    if (s.day_of_week == null || s.day_of_week < 0 || s.day_of_week > 6)
+      throw httpError(400, 'day_of_week phải từ 0 (CN) đến 6 (T7)', 'validation_error');
+    if (!s.start_time || !s.end_time)
+      throw httpError(400, 'Thiếu start_time hoặc end_time', 'validation_error');
+  }
+
+  const { error: delErr } = await supabaseAdmin
+    .from('provider_availability')
+    .delete()
+    .eq('provider_id', providerId);
+
+  if (delErr) throw httpError(500, delErr.message, 'db_error');
+
+  if (slots.length === 0) return getSchedule(providerId);
+
+  const rows = slots.map((s) => ({
+    provider_id: providerId,
+    day_of_week: Number(s.day_of_week),
+    start_time: s.start_time,
+    end_time: s.end_time,
+    is_available: s.is_available !== false,
+  }));
+
+  const { error: insErr } = await supabaseAdmin.from('provider_availability').insert(rows);
+  if (insErr) throw httpError(500, insErr.message, 'db_error');
+
+  return getSchedule(providerId);
+}
+
+// ── POST /api/providers/me/documents ─────────────────────────────────────────
 async function uploadProviderDocuments(providerId, filesMap) {
-  if (!filesMap || Object.keys(filesMap).length === 0) {
-    throw httpError(400, 'Không có file nào được gửi lên', 'missing_files');
+  if (!filesMap || !Object.keys(filesMap).length) {
+    throw httpError(400, 'Không có file được upload', 'validation_error');
   }
 
   await ensurePublicImageBucket(PROVIDER_DOCS_BUCKET, {
-    fileSizeLimit: 5 * 1024 * 1024,
+    fileSizeLimit: 5242880,
     allowedMimeTypes: COMMON_IMAGE_MIME_TYPES,
   });
 
   const uploaded = [];
-  const uploadedUrls = {};
+
   for (const [field, files] of Object.entries(filesMap)) {
-    if (!Object.hasOwn(FIELD_TO_DOC_TYPE, field)) continue;
     const file = Array.isArray(files) ? files[0] : files;
     if (!file?.buffer?.length) continue;
 
     const ext = getImageExtFromMime(file.mimetype);
-    if (!ext) throw httpError(400, `File ${field} không phải ảnh hợp lệ`, 'invalid_file_type');
+    if (!ext) throw httpError(400, 'Chỉ chấp nhận file ảnh', 'invalid_file_type');
 
     const objectPath = `${providerId}/${field}-${Date.now()}.${ext}`;
     const { error: uploadError } = await supabaseAdmin.storage
       .from(PROVIDER_DOCS_BUCKET)
-      .upload(objectPath, file.buffer, {
-        contentType: file.mimetype,
-        upsert: true,
-        cacheControl: '3600',
-      });
+      .upload(objectPath, file.buffer, { contentType: file.mimetype, upsert: true });
 
     if (uploadError) throw httpError(500, uploadError.message, 'storage_error');
 
     const { data: urlData } = supabaseAdmin.storage
       .from(PROVIDER_DOCS_BUCKET)
       .getPublicUrl(objectPath);
-    const fileUrl = urlData?.publicUrl;
-    if (!fileUrl) throw httpError(500, `Không tạo được URL cho ${field}`, 'storage_error');
+    const url = urlData?.publicUrl;
+    if (!url) throw httpError(500, 'Không tạo được URL ảnh', 'storage_error');
 
-    const documentType = FIELD_TO_DOC_TYPE[field];
-    const { error: dbError } = await supabaseAdmin.from('provider_documents').upsert(
-      {
+    const docType = FIELD_TO_DOC_TYPE[field] || field;
+
+    // Xoá bản ghi giấy tờ cũ cùng field (hoặc cùng document_type nếu không phải id_card)
+    // vì bảng provider_documents không có UNIQUE constraint trên (provider_id, document_type)
+    // và cccd_front / cccd_back dùng chung document_type = 'id_card' (phân biệt qua notes = field).
+    await supabaseAdmin
+      .from('provider_documents')
+      .delete()
+      .eq('provider_id', providerId)
+      .eq('notes', field);
+
+    if (docType !== 'id_card') {
+      await supabaseAdmin
+        .from('provider_documents')
+        .delete()
+        .eq('provider_id', providerId)
+        .eq('document_type', docType);
+    }
+
+    const { error: dbError } = await supabaseAdmin
+      .from('provider_documents')
+      .insert({
         provider_id: providerId,
-        document_type: documentType,
-        document_slot: field,
-        document_url: fileUrl,
+        document_type: docType,
+        document_url: url,
         is_verified: false,
         notes: field,
-      },
-      { onConflict: 'provider_id,document_slot' },
-    );
+      });
+
     if (dbError) throw httpError(500, dbError.message, 'db_error');
 
-    uploadedUrls[field] = fileUrl;
-    uploaded.push({ field, url: fileUrl, document_type: documentType });
+    uploaded.push({ field, url, document_type: docType });
   }
 
-  if (uploaded.length === 0) {
-    throw httpError(400, 'Không có file hợp lệ nào được xử lý', 'no_valid_files');
+  if (!uploaded.length) {
+    throw httpError(400, 'Không có file hợp lệ', 'validation_error');
   }
 
-  const { error: profileError } = await supabaseAdmin
+  await supabaseAdmin
     .from('profiles')
     .update({ status: 'pending_verification' })
     .eq('id', providerId);
-  if (profileError) throw httpError(500, profileError.message, 'db_error');
 
-  const { error: providerError } = await supabaseAdmin
+  // If provider re-submits documents (even after being verified),
+  // the admin should see them again in the "pending" verification list.
+  await supabaseAdmin
     .from('provider_profiles')
     .update({
       verification_status: 'pending',
@@ -339,33 +720,98 @@ async function uploadProviderDocuments(providerId, filesMap) {
       verified_by: null,
     })
     .eq('id', providerId);
-  if (providerError) throw httpError(500, providerError.message, 'db_error');
 
-  return {
-    uploaded: uploaded.length,
-    documents: uploaded,
-    urls: uploadedUrls,
-    message: 'Upload thành công. Chờ admin xét duyệt.',
-  };
+  return { uploaded: uploaded.length, documents: uploaded };
 }
 
-async function requestVerification(providerId) {
-  const profile = await getMyProfile(providerId);
-  if (profile.verification_status === 'pending') {
-    throw httpError(400, 'Hồ sơ đang chờ xét duyệt', 'already_pending');
-  }
-  if (profile.is_verified && profile.verification_status === 'approved') {
-    throw httpError(400, 'Tài khoản đã được xác minh thành công', 'already_verified');
+async function getMyDocuments(providerId) {
+  const { supabaseAdmin } = require('./supabase.service');
+  const { data, error } = await supabaseAdmin
+    .from('provider_documents')
+    .select('id, document_type, document_url, document_number, issue_date, expiry_date, is_verified, notes, created_at')
+    .eq('provider_id', providerId)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
+async function getQuotedOrders(providerId) {
+  const { supabaseAdmin } = require('./supabase.service');
+
+  // Lấy tất cả quotes đã gửi của provider này
+  const { data: quotes, error: qErr } = await supabaseAdmin
+    .from('order_quotes')
+    .select('order_id, total_price, status, created_at, note')
+    .eq('provider_id', providerId)
+    .order('created_at', { ascending: false });
+
+  if (qErr) throw qErr;
+  if (!quotes || quotes.length === 0) return { orders: [] };
+
+  const orderIds = [...new Set(quotes.map((q) => q.order_id))];
+
+  // Lấy thông tin order (không join trực tiếp với users)
+  const { data: orders, error: oErr } = await supabaseAdmin
+    .from('orders')
+    .select('id, status, deposit_paid, pickup_address, delivery_address, base_price, total_price, created_at, customer_id')
+    .in('id', orderIds)
+    .order('created_at', { ascending: false });
+
+  if (oErr) throw oErr;
+
+  // Lấy thông tin profiles của từng customer
+  const customerIds = [...new Set((orders || []).map((o) => o.customer_id).filter(Boolean))];
+  let profileMap = {};
+  if (customerIds.length > 0) {
+    const { data: profiles } = await supabaseAdmin
+      .from('profiles')
+      .select('id, full_name, phone')
+      .in('id', customerIds);
+    profileMap = Object.fromEntries((profiles || []).map((p) => [p.id, p]));
   }
 
-  const { count, error: documentsError } = await supabaseAdmin
+  // Gắn thêm quote info và customer vào mỗi order
+  const quoteByOrder = Object.fromEntries(quotes.map((q) => [q.order_id, q]));
+  const result = (orders || []).map((o) => ({
+    ...o,
+    customer: profileMap[o.customer_id] ?? null,
+    my_quote: quoteByOrder[o.id] ?? null,
+  }));
+
+  return { orders: result };
+}
+
+// ── POST /api/providers/me/request-verification ──────────────────────────────
+// Tài xế yêu cầu admin xét duyệt lại sau khi đã upload đủ giấy tờ mới
+async function requestVerification(providerId) {
+  // Kiểm tra provider tồn tại và đang ở trạng thái rejected hoặc chưa verified
+  const { data: pp, error: ppErr } = await supabaseAdmin
+    .from('provider_profiles')
+    .select('id, verification_status, is_verified')
+    .eq('id', providerId)
+    .maybeSingle();
+
+  if (ppErr) throw httpError(500, ppErr.message, 'db_error');
+  if (!pp) throw httpError(404, 'Không tìm thấy hồ sơ tài xế', 'not_found');
+
+  if (pp.is_verified) {
+    throw httpError(400, 'Tài khoản đã được xác minh, không cần yêu cầu lại', 'already_verified');
+  }
+
+  // Kiểm tra đã có ít nhất 1 giấy tờ chưa
+  const { count, error: docErr } = await supabaseAdmin
     .from('provider_documents')
     .select('id', { count: 'exact', head: true })
     .eq('provider_id', providerId);
-  if (documentsError) throw httpError(500, documentsError.message, 'db_error');
-  if (!count) throw httpError(400, 'Vui lòng upload giấy tờ trước khi yêu cầu xác minh', 'no_documents');
 
-  const { error: providerError } = await supabaseAdmin
+  if (docErr) throw httpError(500, docErr.message, 'db_error');
+  if (!count || count === 0) {
+    throw httpError(400, 'Vui lòng upload giấy tờ trước khi yêu cầu xác minh', 'no_documents');
+  }
+
+  // Chuyển về pending để admin duyệt lại
+  const { error: updateErr } = await supabaseAdmin
     .from('provider_profiles')
     .update({
       verification_status: 'pending',
@@ -374,239 +820,52 @@ async function requestVerification(providerId) {
       verified_by: null,
     })
     .eq('id', providerId);
-  if (providerError) throw httpError(500, providerError.message, 'db_error');
 
-  const { error: profileError } = await supabaseAdmin
+  if (updateErr) throw httpError(500, updateErr.message, 'db_error');
+
+  await supabaseAdmin
     .from('profiles')
     .update({ status: 'pending_verification' })
     .eq('id', providerId);
-  if (profileError) throw httpError(500, profileError.message, 'db_error');
 
-  return {
-    verification_status: 'pending',
-    message: 'Yêu cầu xác minh đã được gửi đến admin.',
-  };
-}
-
-async function getDashboard(providerId) {
-  const profile = await getMyProfile(providerId);
-  const { data: orders, error } = await supabaseAdmin
-    .from('orders')
-    .select('id, status, total_price, created_at, pickup_address, delivery_address, service_type')
-    .eq('provider_id', providerId)
-    .order('created_at', { ascending: false })
-    .limit(30);
-  if (error) throw httpError(500, error.message, 'db_error');
-
-  const allOrders = orders || [];
-  const pendingOrders = allOrders.filter((order) =>
-    ['pending', 'pending_provider'].includes(order.status),
-  );
-  const activeOrders = allOrders.filter((order) =>
-    ['accepted', 'provider_accepted', 'picking_up', 'in_progress'].includes(order.status),
-  );
-  const completedOrders = allOrders.filter((order) => order.status === 'completed');
-  const monthStart = new Date();
-  monthStart.setDate(1);
-  monthStart.setHours(0, 0, 0, 0);
-  const earningsThisMonth = completedOrders
-    .filter((order) => order.created_at >= monthStart.toISOString())
-    .reduce((sum, order) => sum + (Number(order.total_price) || 0), 0);
-
-  return {
-    profile: {
-      id: profile.id,
-      full_name: profile.full_name,
-      avatar_url: profile.avatar_url,
-      business_name: profile.business_name,
-      is_verified: profile.is_verified,
-      verification_status: profile.verification_status,
-      verification_notes: profile.verification_notes,
-      rating: profile.rating,
-      total_reviews: profile.total_reviews,
-      compliance_score: profile.compliance_score,
-      is_available: profile.is_available,
-    },
-    stats: {
-      pending_orders: pendingOrders.length,
-      active_orders: activeOrders.length,
-      completed_orders: completedOrders.length,
-      earnings_this_month: earningsThisMonth,
-    },
-    recent_orders: allOrders.slice(0, 10),
-    pending_orders: pendingOrders,
-    active_orders: activeOrders,
-  };
-}
-
-async function getEarnings(providerId, period = 'month') {
-  const now = new Date();
-  let from;
-  switch (period) {
-    case 'week':
-      from = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      break;
-    case 'year':
-      from = new Date(now.getFullYear(), 0, 1);
-      break;
-    case 'month':
-    default:
-      from = new Date(now.getFullYear(), now.getMonth(), 1);
-      break;
-  }
-
-  const { data, error } = await supabaseAdmin
-    .from('orders')
-    .select('id, total_price, completed_at')
-    .eq('provider_id', providerId)
-    .eq('status', 'completed')
-    .gte('completed_at', from.toISOString())
-    .order('completed_at', { ascending: true });
-  if (error) throw httpError(500, error.message, 'db_error');
-
-  const orders = data || [];
-  const byDate = {};
-  for (const order of orders) {
-    if (!order.completed_at) continue;
-    const date = order.completed_at.slice(0, 10);
-    if (!byDate[date]) byDate[date] = { earned: 0, orders: 0 };
-    byDate[date].earned += Number(order.total_price) || 0;
-    byDate[date].orders += 1;
-  }
-
-  const breakdown = [];
-  const cursor = new Date(from);
-  while (cursor <= now) {
-    const date = cursor.toISOString().slice(0, 10);
-    breakdown.push({
-      date,
-      earned: byDate[date]?.earned ?? 0,
-      orders: byDate[date]?.orders ?? 0,
-    });
-    cursor.setDate(cursor.getDate() + 1);
-  }
-
-  const totalEarnings = orders.reduce((sum, order) => sum + (Number(order.total_price) || 0), 0);
-  return {
-    period,
-    from: from.toISOString(),
-    to: now.toISOString(),
-    total_earnings: totalEarnings,
-    total_earned: totalEarnings,
-    completed_orders: orders.length,
-    orders,
-    breakdown,
-  };
-}
-
-async function getSchedule(providerId) {
-  const { data, error } = await supabaseAdmin
-    .from('provider_availability')
-    .select('id, day_of_week, start_time, end_time, is_available')
-    .eq('provider_id', providerId)
-    .order('day_of_week')
-    .order('start_time');
-  if (error) throw httpError(500, error.message, 'db_error');
-
-  const dayNames = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
-  const days = Array.from({ length: 7 }, (_, day) => ({
-    day_of_week: day,
-    day_name: dayNames[day],
-    slots: [],
-  }));
-  for (const row of data || []) {
-    if (days[row.day_of_week]) {
-      days[row.day_of_week].slots.push({
-        id: row.id,
-        start_time: row.start_time,
-        end_time: row.end_time,
-        is_available: row.is_available,
-      });
-    }
-  }
-  return days;
-}
-
-async function updateSchedule(providerId, slots) {
-  if (!Array.isArray(slots)) throw httpError(400, 'slots phải là mảng', 'validation_error');
-  for (const slot of slots) {
-    if (slot.day_of_week == null || slot.day_of_week < 0 || slot.day_of_week > 6) {
-      throw httpError(400, 'day_of_week phải từ 0 (CN) đến 6 (T7)', 'validation_error');
-    }
-    if (!slot.start_time || !slot.end_time) {
-      throw httpError(400, 'Thiếu start_time hoặc end_time', 'validation_error');
-    }
-  }
-
-  const { error: deleteError } = await supabaseAdmin
-    .from('provider_availability')
-    .delete()
-    .eq('provider_id', providerId);
-  if (deleteError) throw httpError(500, deleteError.message, 'db_error');
-  if (slots.length === 0) return getSchedule(providerId);
-
-  const rows = slots.map((slot) => ({
-    provider_id: providerId,
-    day_of_week: Number(slot.day_of_week),
-    start_time: slot.start_time,
-    end_time: slot.end_time,
-    is_available: slot.is_available !== false,
-  }));
-  const { error: insertError } = await supabaseAdmin
-    .from('provider_availability')
-    .insert(rows);
-  if (insertError) throw httpError(500, insertError.message, 'db_error');
-  return getSchedule(providerId);
-}
-
-async function getQuotedOrders(providerId) {
-  const { data: quotes, error: quotesError } = await supabaseAdmin
-    .from('order_quotes')
-    .select('order_id, total_price, status, created_at, note')
-    .eq('provider_id', providerId)
-    .order('created_at', { ascending: false });
-  if (quotesError) throw httpError(500, quotesError.message, 'db_error');
-  if (!quotes?.length) return { orders: [] };
-
-  const orderIds = [...new Set(quotes.map((quote) => quote.order_id))];
-  const { data: orders, error: ordersError } = await supabaseAdmin
-    .from('orders')
-    .select('id, status, deposit_paid, pickup_address, delivery_address, base_price, total_price, created_at, customer_id')
-    .in('id', orderIds)
-    .order('created_at', { ascending: false });
-  if (ordersError) throw httpError(500, ordersError.message, 'db_error');
-
-  const customerIds = [...new Set((orders || []).map((order) => order.customer_id).filter(Boolean))];
-  let profilesById = {};
-  if (customerIds.length > 0) {
-    const { data: profiles, error: profilesError } = await supabaseAdmin
+  // Gửi notification cho admin (không block nếu lỗi)
+  try {
+    const { data: admins } = await supabaseAdmin
       .from('profiles')
-      .select('id, full_name, phone')
-      .in('id', customerIds);
-    if (profilesError) throw httpError(500, profilesError.message, 'db_error');
-    profilesById = Object.fromEntries((profiles || []).map((profile) => [profile.id, profile]));
+      .select('id')
+      .eq('role', 'admin')
+      .limit(10);
+
+    if (admins && admins.length > 0) {
+      await supabaseAdmin.from('notifications').insert(
+        admins.map((admin) => ({
+          user_id: admin.id,
+          notification_type: 'provider_verified',
+          title: 'Tài xế yêu cầu xác minh lại',
+          body: 'Một tài xế đã nộp lại giấy tờ và yêu cầu xét duyệt.',
+          priority: 'high',
+        })),
+      );
+    }
+  } catch (_) {
+    // Không block response nếu gửi notification lỗi
   }
 
-  const quotesByOrder = Object.fromEntries(quotes.map((quote) => [quote.order_id, quote]));
-  return {
-    orders: (orders || []).map((order) => ({
-      ...order,
-      customer: profilesById[order.customer_id] ?? null,
-      my_quote: quotesByOrder[order.id] ?? null,
-    })),
-  };
+  return { verification_status: 'pending', message: 'Yêu cầu xác minh đã được gửi đến admin.' };
 }
 
 module.exports = {
   browseProviders,
   getProviderById,
-  getMyProfile,
-  getMyDocuments,
-  uploadProviderDocuments,
-  requestVerification,
-  getDashboard,
   getEarnings,
+  getMyWithdrawals,
+  createWithdrawal,
+  cancelWithdrawal,
+  updateBankInfo,
   getSchedule,
   updateSchedule,
+  uploadProviderDocuments,
+  getMyDocuments,
   getQuotedOrders,
+  requestVerification,
 };

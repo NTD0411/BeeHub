@@ -4,6 +4,12 @@ const { requireAuth } = require('../middleware/auth.middleware');
 const { handleMarketplaceImageUpload } = require('../middleware/upload.middleware');
 
 const router = express.Router();
+const { supabaseAdmin } = require('../services/supabase.service');
+const { createMarketplaceAvailability } = require('../middleware/marketplace-availability.middleware');
+const availability = createMarketplaceAvailability(supabaseAdmin);
+router.get('/status', availability.status);
+router.use(availability.requireEnabled);
+
 
 // ── Batch 1 ──────────────────────────────────────────────────────────────────
 // API-059 — Khám phá tin

@@ -156,7 +156,7 @@ async function createPaymentLink(paymentData) {
       amount: numericAmount,
       description: paymentDescription,
       buyerName: customerName || 'Customer',
-      buyerEmail: customerEmail || 'noreply@unimove.com',
+      buyerEmail: customerEmail || 'noreply@beehub.com',
       returnUrl: successUrl,
       cancelUrl: failUrl,
       signature,
